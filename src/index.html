@@ -7,32 +7,46 @@
 
     <script type="module" src="/build/apie-form-elements.esm.js"></script>
     <script nomodule src="/build/apie-form-elements.js"></script>
+    <link rel="stylesheet" href="/build/apie-form-elements.css" />
   </head>
   <body>
-    <apie-form-group name="form[name]">
-      <input name="form[name][description]" />
-      <input name="form[name][longdescription]" />
-    </apie-form-group>
-    <script>
-      document.querySelector('apie-form-group').value = {
-        description: "test",
-        longdescription: "test here"
-      };
-    </script>
-
-    <apie-scalar-element name="test">
-      <input type="text" name="test">
-    </apie-scalar-element>
-    <script>
-      document.querySelector('apie-scalar-element').value = 'value';
-    </script>
-
     <template id="a13141414">
       <input type="text" name="__PROTO__">
     </template>
-    <apie-form-list name="apie[test]" template-id="a13141414"></apie-form-list>
+    <template id="b13141">
+      <apie-form-list name="form[test][__PROTO__]" template-id="a13141414"></apie-form-list>
+    </template>
+    <form>
+      <apie-form-group name="form">
+        <apie-form-group name="form[name]">
+          <input name="form[name][description]" />
+          <input name="form[name][longdescription]" />
+          <apie-scalar-element name="form[name][test]">
+            <input type="text" name="test">
+          </apie-scalar-element>
+        </apie-form-group>
+        <apie-form-list name="form[test]" template-id="b13141"></apie-form-list>
+        <apie-form-hashmap name="form[hashmap]" template-id="b13141"></apie-form-list>
+      </apie-form-group>
+      <input type="submit" />
+    </form>
     <script>
-      document.querySelector('apie-form-list').value = ['value'];
+      document.querySelector('apie-form-group').value = {
+        name: {
+          description: "test",
+          longdescription: "test here",
+          test: "can you see?",
+        },
+        test: [
+          ["123"],
+          ["456"],
+          ["789"]
+        ],
+        hashmap: {
+          test: ["hashmap example"]
+        }
+      };
     </script>
+    
   </body>
 </html>

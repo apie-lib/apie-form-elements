@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+gr-field-group {
+  box-shadow: var(--gr-shadow-x-large);
+  width: 100%
+}
+
+.field-list {
+  margin-left: 10%; 
+  width: 86%;
+  padding: 2%
+}
+th {
+  text-align: left;
+}

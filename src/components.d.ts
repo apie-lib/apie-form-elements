@@ -6,9 +6,19 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
+    interface ApieForm {
+        "value": Record<string, any>;
+    }
     interface ApieFormGroup {
         "name": string;
         "value": Record<string, any>;
+    }
+    interface ApieFormHashmap {
+        "label": string;
+        "name": string;
+        "replaceString": string;
+        "templateId": string;
+        "value": Record<string|number, any>;
     }
     interface ApieFormList {
         "label": string;
@@ -22,16 +32,58 @@ export namespace Components {
         "value": any;
     }
 }
+export interface ApieFormGroupCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLApieFormGroupElement;
+}
+export interface ApieFormHashmapCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLApieFormHashmapElement;
+}
 export interface ApieFormListCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLApieFormListElement;
 }
 declare global {
+    interface HTMLApieFormElement extends Components.ApieForm, HTMLStencilElement {
+    }
+    var HTMLApieFormElement: {
+        prototype: HTMLApieFormElement;
+        new (): HTMLApieFormElement;
+    };
+    interface HTMLApieFormGroupElementEventMap {
+        "input": Record<string, any>;
+    }
     interface HTMLApieFormGroupElement extends Components.ApieFormGroup, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLApieFormGroupElementEventMap>(type: K, listener: (this: HTMLApieFormGroupElement, ev: ApieFormGroupCustomEvent<HTMLApieFormGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLApieFormGroupElementEventMap>(type: K, listener: (this: HTMLApieFormGroupElement, ev: ApieFormGroupCustomEvent<HTMLApieFormGroupElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLApieFormGroupElement: {
         prototype: HTMLApieFormGroupElement;
         new (): HTMLApieFormGroupElement;
+    };
+    interface HTMLApieFormHashmapElementEventMap {
+        "input": Record<string|number, any>;
+    }
+    interface HTMLApieFormHashmapElement extends Components.ApieFormHashmap, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLApieFormHashmapElementEventMap>(type: K, listener: (this: HTMLApieFormHashmapElement, ev: ApieFormHashmapCustomEvent<HTMLApieFormHashmapElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLApieFormHashmapElementEventMap>(type: K, listener: (this: HTMLApieFormHashmapElement, ev: ApieFormHashmapCustomEvent<HTMLApieFormHashmapElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLApieFormHashmapElement: {
+        prototype: HTMLApieFormHashmapElement;
+        new (): HTMLApieFormHashmapElement;
     };
     interface HTMLApieFormListElementEventMap {
         "input": any[];
@@ -57,15 +109,29 @@ declare global {
         new (): HTMLApieScalarElementElement;
     };
     interface HTMLElementTagNameMap {
+        "apie-form": HTMLApieFormElement;
         "apie-form-group": HTMLApieFormGroupElement;
+        "apie-form-hashmap": HTMLApieFormHashmapElement;
         "apie-form-list": HTMLApieFormListElement;
         "apie-scalar-element": HTMLApieScalarElementElement;
     }
 }
 declare namespace LocalJSX {
+    interface ApieForm {
+        "value"?: Record<string, any>;
+    }
     interface ApieFormGroup {
         "name"?: string;
+        "onInput"?: (event: ApieFormGroupCustomEvent<Record<string, any>>) => void;
         "value"?: Record<string, any>;
+    }
+    interface ApieFormHashmap {
+        "label"?: string;
+        "name"?: string;
+        "onInput"?: (event: ApieFormHashmapCustomEvent<Record<string|number, any>>) => void;
+        "replaceString"?: string;
+        "templateId"?: string;
+        "value"?: Record<string|number, any>;
     }
     interface ApieFormList {
         "label"?: string;
@@ -80,7 +146,9 @@ declare namespace LocalJSX {
         "value"?: any;
     }
     interface IntrinsicElements {
+        "apie-form": ApieForm;
         "apie-form-group": ApieFormGroup;
+        "apie-form-hashmap": ApieFormHashmap;
         "apie-form-list": ApieFormList;
         "apie-scalar-element": ApieScalarElement;
     }
@@ -89,7 +157,9 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "apie-form": LocalJSX.ApieForm & JSXBase.HTMLAttributes<HTMLApieFormElement>;
             "apie-form-group": LocalJSX.ApieFormGroup & JSXBase.HTMLAttributes<HTMLApieFormGroupElement>;
+            "apie-form-hashmap": LocalJSX.ApieFormHashmap & JSXBase.HTMLAttributes<HTMLApieFormHashmapElement>;
             "apie-form-list": LocalJSX.ApieFormList & JSXBase.HTMLAttributes<HTMLApieFormListElement>;
             "apie-scalar-element": LocalJSX.ApieScalarElement & JSXBase.HTMLAttributes<HTMLApieScalarElementElement>;
         }

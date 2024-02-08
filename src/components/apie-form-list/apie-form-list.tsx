@@ -1,4 +1,4 @@
-import { Component, Prop, Host, h, State, Listen, Event, EventEmitter } from '@stencil/core';
+import { Component, Element, Prop, Host, h, State, Listen, Event, EventEmitter } from '@stencil/core';
 import { applyEventTarget } from '../../utils/utils';
 
 function loadTemplate(templateId: string): string {
@@ -18,6 +18,8 @@ function loadTemplate(templateId: string): string {
   shadow: false,
 })
 export class ApieFormList {
+  @Element() el: HTMLElement;
+
   @Prop() name: string;
 
   @Prop() label: string = '';
@@ -49,15 +51,16 @@ export class ApieFormList {
   }
 
   @Listen('input') public onInput(ev: any) {
-    if (ev?.target?.name && ev?.target?.value) {
-      setTimeout(() => {
-        this.value = [...applyEventTarget(
-          this.name,
-          this.value,
-          ev.target
-        )];
-        this.triggerInputOnChange();
-      }, 0)
+    if (ev.target === this.el) {
+      return;
+    }
+    if (ev?.target?.name) {
+      this.value = [...applyEventTarget(
+        this.name,
+        this.value,
+        ev.target
+      )];
+      this.triggerInputOnChange();
     }
   }
 
@@ -66,22 +69,20 @@ export class ApieFormList {
     const current = JSON.stringify(this.value);
     if (current !== this.previousList) {
       this.previousList = current;
-      setTimeout(() => {
-        this.inputChanged.emit(this.value);
-      }, 0);
+      this.inputChanged.emit(this.value);
     }
   }
 
   render() {
     return (
       <Host>
-        <pre>{ JSON.stringify(this.value, null, 4) }</pre>
         <gr-field-group label={this.label} style="">
+          {!this.value.length && <slot name="empty-array"></slot>}
           <gr-button onClick={() => this.handleClick()} class="unhandled-add-to-list-button" variant="secondary">
             <ion-icon name="add-circle-outline"></ion-icon> Add
           </gr-button>
           <div class="field-list">
-            { this.value.map((value: any, key: number) => 
+            { (Array.isArray(this.value) ? this.value : []).map((value: any, key: number) => 
             <div>
               <gr-button onClick={() => this.removeRow(key)}>
                 <ion-icon name="close-circle-outline">X</ion-icon>
@@ -97,30 +98,3 @@ export class ApieFormList {
     );
   }
 }
-/**
- * <gr-field-group label="{{ property('name') }}" style="box-shadow: var(--gr-shadow-x-large); width: 100%">
-  <gr-button class="unhandled-add-to-list-button" variant="secondary" data-template="{{ component('__proto__')|e }}">
-    <ion-icon name="add-circle-outline"></ion-icon> Add
-  </gr-button>
-  <div style="margin-left: 10%; width: 86%; padding: 2%">
-    {% for componentName in property('alreadyRendered') %}
-      {{ component(componentName) }}
-    {% endfor %}
-  </div>
-  <script>
-  (function (element) {
-    const id = provideId();
-    element.addEventListener('click', function (event) {
-      const target = event.target || element;
-      const listContainer = target.nextElementSibling;
-      var div = document.createElement('div');
-      div.classList.add('form-list-item' + id);
-      const keyName = document.querySelectorAll('.form-list-item' + id).length;
-      setInnerHtml(div, target.dataset.template.replace(/{{ property('name').getPrototypeName() }}|__PROTO__/g, keyName));
-      listContainer.appendChild(div);
-    })
-    element.classList.remove('unhandled-add-to-list-button');
-  }(document.querySelector('.unhandled-add-to-list-button')));
-  </script>
-</gr-field-group>
- */
