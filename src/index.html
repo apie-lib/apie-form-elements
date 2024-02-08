@@ -9,6 +9,30 @@
     <script nomodule src="/build/apie-form-elements.js"></script>
   </head>
   <body>
-    <my-component first="Stencil" last="'Don't call me a framework' JS"></my-component>
+    <apie-form-group name="form[name]">
+      <input name="form[name][description]" />
+      <input name="form[name][longdescription]" />
+    </apie-form-group>
+    <script>
+      document.querySelector('apie-form-group').value = {
+        description: "test",
+        longdescription: "test here"
+      };
+    </script>
+
+    <apie-scalar-element name="test">
+      <input type="text" name="test">
+    </apie-scalar-element>
+    <script>
+      document.querySelector('apie-scalar-element').value = 'value';
+    </script>
+
+    <template id="a13141414">
+      <input type="text" name="__PROTO__">
+    </template>
+    <apie-form-list name="apie[test]" template-id="a13141414"></apie-form-list>
+    <script>
+      document.querySelector('apie-form-list').value = ['value'];
+    </script>
   </body>
 </html>

@@ -26,6 +26,7 @@
     "generate": "stencil generate"
   },
   "dependencies": {
+    "@graphiteds/core": "^1.9.20",
     "@stencil/core": "^4.7.0"
   },
   "devDependencies": {
