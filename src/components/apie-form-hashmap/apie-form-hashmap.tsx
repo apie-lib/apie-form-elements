@@ -1,16 +1,5 @@
 import { Component, Element, Prop, Host, h, State, Listen, Event, EventEmitter } from '@stencil/core';
-import { applyEventTarget } from '../../utils/utils';
-
-function loadTemplate(templateId: string): string {
-  const templateElm = document.querySelector('#' + templateId);
-  const divElement = document.createElement('div');
-  divElement.appendChild(templateElm.cloneNode(true));
-  var el = document.createElement('div');
-  return String(templateElm.innerHTML).replace(/\&[#0-9a-z]+;/gi, function (enc) {
-    el.innerHTML = enc;
-    return el.innerText
-  });
-}
+import { applyEventTarget, loadTemplate } from '../../utils/utils';
 
 @Component({
   tag: 'apie-form-hashmap',

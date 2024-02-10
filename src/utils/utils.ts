@@ -1,5 +1,4 @@
-export function waitFor(callback: () => boolean, interval: number = 100): Promise<void>
-{
+export function waitFor(callback: () => boolean, interval: number = 100): Promise<void> {
   return new Promise((resolve) => {
     const id = setInterval(() => {
       if (callback()) {
@@ -7,6 +6,17 @@ export function waitFor(callback: () => boolean, interval: number = 100): Promis
         clearInterval(id);
       }
     }, interval);
+  });
+}
+
+export function loadTemplate(templateId: string): string {
+  const templateElm = document.querySelector('#' + templateId);
+  const divElement = document.createElement('div');
+  divElement.appendChild(templateElm.cloneNode(true));
+  var el = document.createElement('div');
+  return String(templateElm.innerHTML).replace(/\&[#0-9a-z]+;/gi, function (enc) {
+    el.innerHTML = enc;
+    return el.innerText
   });
 }
 
@@ -55,7 +65,7 @@ export function applyEventTarget(namePrefix: string, inputValue: any, target: HT
     return target.value;
   }
   if (inputValue === null) {
-    inputValue = target.value;
+    inputValue = {};
   }
   let key;
   let ptr = inputValue;

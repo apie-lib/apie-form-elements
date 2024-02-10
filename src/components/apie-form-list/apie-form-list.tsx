@@ -1,16 +1,5 @@
 import { Component, Element, Prop, Host, h, State, Listen, Event, EventEmitter } from '@stencil/core';
-import { applyEventTarget } from '../../utils/utils';
-
-function loadTemplate(templateId: string): string {
-  const templateElm = document.querySelector('#' + templateId);
-  const divElement = document.createElement('div');
-  divElement.appendChild(templateElm.cloneNode(true));
-  var el = document.createElement('div');
-  return String(templateElm.innerHTML).replace(/\&[#0-9a-z]+;/gi, function (enc) {
-    el.innerHTML = enc;
-    return el.innerText
-  });
-}
+import { applyEventTarget, loadTemplate } from '../../utils/utils';
 
 @Component({
   tag: 'apie-form-list',
@@ -77,7 +66,7 @@ export class ApieFormList {
     return (
       <Host>
         <gr-field-group label={this.label} style="">
-          {!this.value.length && <slot name="empty-array"></slot>}
+          {!this.value?.length && <slot name="empty-array"></slot>}
           <gr-button onClick={() => this.handleClick()} class="unhandled-add-to-list-button" variant="secondary">
             <ion-icon name="add-circle-outline"></ion-icon> Add
           </gr-button>
