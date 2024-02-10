@@ -62,24 +62,35 @@ export class ApieFormList {
     }
   }
 
+  private renderRow(key: string|number): any
+  {
+    let template = loadTemplate(this.templateId);
+    while (template.indexOf(this.replaceString) > -1) {
+      template = template.replace(this.replaceString, String(key));
+    }
+    return template;
+  }
+
   render() {
     return (
       <Host>
         <gr-field-group label={this.label} style="">
           {!this.value?.length && <slot name="empty-array"></slot>}
-          <gr-button onClick={() => this.handleClick()} class="unhandled-add-to-list-button" variant="secondary">
-            <ion-icon name="add-circle-outline"></ion-icon> Add
-          </gr-button>
           <div class="field-list">
             { (Array.isArray(this.value) ? this.value : []).map((value: any, key: number) => 
             <div>
               <gr-button onClick={() => this.removeRow(key)}>
                 <ion-icon name="close-circle-outline">X</ion-icon>
               </gr-button>
-              <apie-scalar-element key={key} name={this.name + '[' + key + ']'} value={value} innerHTML={loadTemplate(this.templateId).replace(this.replaceString, String(key))}>
+              <apie-scalar-element key={key} name={this.name + '[' + key + ']'} value={value} innerHTML={this.renderRow(key)}>
               </apie-scalar-element>
             </div>
             ) }
+            <div>
+              <gr-button onClick={() => this.handleClick()} variant="secondary">
+                <ion-icon name="add-circle-outline"></ion-icon> Add
+              </gr-button>
+            </div>
           </div>
           <slot></slot>
         </gr-field-group>

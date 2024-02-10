@@ -78,32 +78,41 @@ export class ApieFormHashmap {
     }
   }
 
+  private renderRow(key: string): any
+  {
+    let template = loadTemplate(this.templateId);
+    while (template.indexOf(this.replaceString) > -1) {
+      template = template.replace(this.replaceString, String(key));
+    }
+    return template;
+  }
+
   render() {
     return (
       <Host>
         <gr-field-group label={this.label} style="">
           <table class="field-list">
-            <tr>
-              <td>
-                <gr-input value={this.addKey} onInput={(event) => this.handleKeyChange(event)}></gr-input>
-              </td>
-              <td>
-                <gr-button disabled={this.isAddKeyDisabled()} onClick={() => this.handleClick()} class="unhandled-add-to-list-button" variant="secondary">
-                  <ion-icon name="add-circle-outline"></ion-icon> Add
-                </gr-button>
-              </td>
-            </tr>
             { (Object.entries(this.value || {})).map((entry: [string, any]) => 
             <tr>
               <th>{ entry[0] }</th>
               <td><gr-button onClick={() => this.removeRow(entry[0])}>
                 <ion-icon name="close-circle-outline">X</ion-icon>
               </gr-button>
-              <apie-scalar-element key={entry[0]} name={this.name + '[' + entry[0] + ']'} value={entry[1]} innerHTML={loadTemplate(this.templateId).replace(this.replaceString, String(entry[0]))}>
+              <apie-scalar-element key={entry[0]} name={this.name + '[' + entry[0] + ']'} value={entry[1]} innerHTML={this.renderRow(String(entry[0]))}>
               </apie-scalar-element>
               </td>
             </tr>
             ) }
+            <tr>
+              <td>
+                <gr-input value={this.addKey} onInput={(event) => this.handleKeyChange(event)}></gr-input>
+              </td>
+              <td>
+                <gr-button disabled={this.isAddKeyDisabled()} onClick={() => this.handleClick()} variant="secondary">
+                  <ion-icon name="add-circle-outline"></ion-icon> Add
+                </gr-button>
+              </td>
+            </tr>
           </table>
           <slot></slot>
         </gr-field-group>

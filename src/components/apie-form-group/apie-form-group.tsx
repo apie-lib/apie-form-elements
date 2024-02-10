@@ -79,7 +79,6 @@ export class ApieFormGroup {
   render() {
     return (
       <Host>
-        <pre>{ JSON.stringify(this.value, null, 4) }</pre>
         <slot></slot>
       </Host>
     );
