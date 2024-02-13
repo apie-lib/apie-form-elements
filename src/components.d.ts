@@ -8,6 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface ApieFormGroup {
         "name": string;
+        "validationErrors": Record<string, any>;
         "value": Record<string, any>;
     }
     interface ApieFormHashmap {
@@ -25,10 +26,14 @@ export namespace Components {
         "value": Array<any>;
     }
     interface ApieScalarElement {
+        "invalid": boolean;
+        "invalidText"?: string;
         "name": string;
         "value": any;
     }
     interface ApieScript {
+    }
+    interface ApieValidationError {
     }
 }
 export interface ApieFormGroupCustomEvent<T> extends CustomEvent<T> {
@@ -107,18 +112,26 @@ declare global {
         prototype: HTMLApieScriptElement;
         new (): HTMLApieScriptElement;
     };
+    interface HTMLApieValidationErrorElement extends Components.ApieValidationError, HTMLStencilElement {
+    }
+    var HTMLApieValidationErrorElement: {
+        prototype: HTMLApieValidationErrorElement;
+        new (): HTMLApieValidationErrorElement;
+    };
     interface HTMLElementTagNameMap {
         "apie-form-group": HTMLApieFormGroupElement;
         "apie-form-hashmap": HTMLApieFormHashmapElement;
         "apie-form-list": HTMLApieFormListElement;
         "apie-scalar-element": HTMLApieScalarElementElement;
         "apie-script": HTMLApieScriptElement;
+        "apie-validation-error": HTMLApieValidationErrorElement;
     }
 }
 declare namespace LocalJSX {
     interface ApieFormGroup {
         "name"?: string;
         "onInput"?: (event: ApieFormGroupCustomEvent<Record<string, any>>) => void;
+        "validationErrors"?: Record<string, any>;
         "value"?: Record<string, any>;
     }
     interface ApieFormHashmap {
@@ -138,10 +151,14 @@ declare namespace LocalJSX {
         "value"?: Array<any>;
     }
     interface ApieScalarElement {
+        "invalid"?: boolean;
+        "invalidText"?: string;
         "name"?: string;
         "value"?: any;
     }
     interface ApieScript {
+    }
+    interface ApieValidationError {
     }
     interface IntrinsicElements {
         "apie-form-group": ApieFormGroup;
@@ -149,6 +166,7 @@ declare namespace LocalJSX {
         "apie-form-list": ApieFormList;
         "apie-scalar-element": ApieScalarElement;
         "apie-script": ApieScript;
+        "apie-validation-error": ApieValidationError;
     }
 }
 export { LocalJSX as JSX };
@@ -160,6 +178,7 @@ declare module "@stencil/core" {
             "apie-form-list": LocalJSX.ApieFormList & JSXBase.HTMLAttributes<HTMLApieFormListElement>;
             "apie-scalar-element": LocalJSX.ApieScalarElement & JSXBase.HTMLAttributes<HTMLApieScalarElementElement>;
             "apie-script": LocalJSX.ApieScript & JSXBase.HTMLAttributes<HTMLApieScriptElement>;
+            "apie-validation-error": LocalJSX.ApieValidationError & JSXBase.HTMLAttributes<HTMLApieValidationErrorElement>;
         }
     }
 }

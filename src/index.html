@@ -19,8 +19,12 @@
     <form>
       <apie-form-group name="form">
         <apie-form-group name="form[name]">
-          <input name="form[name][description]" />
-          <input name="form[name][longdescription]" />
+          <apie-scalar-element name="form[name][description]">
+            <input name="form[name][description]" />
+          </apie-scalar-element>
+          <apie-scalar-element name="form[name][longdescription]">
+            <input name="form[name][longdescription]" />
+          </apie-scalar-element>
           <apie-scalar-element name="form[name][test]">
             <input type="text" name="test">
           </apie-scalar-element>
@@ -44,6 +48,12 @@
         ],
         hashmap: {
           test: ["hashmap example"]
+        }
+      };
+      document.querySelector('apie-form-group').validationErrors = {
+        name: {
+          description :"This field is required",
+          test: "This is a validation error"
         }
       };
     </apie-script>

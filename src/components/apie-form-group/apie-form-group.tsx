@@ -13,11 +13,17 @@ export class ApieFormGroup {
 
   @State() currentValue: any;
 
+  @State() currentValidationErrors: any;
+
   @State() previousMap!: string;
+
+  @State() groupError!: string;
 
   @Prop() name: string;
 
   @Prop({mutable: true}) value: Record<string, any> = {};
+
+  @Prop({mutable: true}) validationErrors: Record<string, any> = {};
 
   @Event({
     eventName: 'input',
@@ -44,6 +50,32 @@ export class ApieFormGroup {
         if (String(child.name).indexOf(this.name) === 0) {
           const fieldName = String(child.name).substring(this.name.length).split(new FormNameSplit())
           child.value = _val[fieldName[0]];
+        }
+      }
+    });
+  }
+
+  @Watch('validationErrors') async updateValidationErrors(_val) {
+    this.currentValidationErrors = _val;
+    await waitFor(() => (this.el && this.currentValidationErrors === _val));
+    if (this.currentValidationErrors !== _val) {
+      return;
+    }
+    this.groupError = _val[''];
+    this.el.childNodes.forEach((child: any) => {
+      if (child && child.name && String(child.name).indexOf(this.name) === 0) {
+        const fieldName = String(child.name).substring(this.name.length).split(new FormNameSplit())
+        const error = _val[fieldName[0]];
+        if (error === null || error === undefined) {
+          child.invalid = false;
+          child.invalidText = null;
+        } else if (typeof error === 'object') {
+          child.validationErrors = error;
+          child.invalid = true;
+          child.invalidText = null;
+        } else {
+          child.invalid = true;
+          child.invalidText = error;
         }
       }
     });
@@ -80,6 +112,7 @@ export class ApieFormGroup {
     return (
       <Host>
         <slot></slot>
+        { this.groupError && <apie-validation-error>{ this.groupError }</apie-validation-error> }
       </Host>
     );
   }
