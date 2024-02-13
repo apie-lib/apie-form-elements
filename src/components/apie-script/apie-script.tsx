@@ -11,8 +11,11 @@ export class ApieScript {
 
   componentWillLoad() {
     const script = document.createElement("script");
-    console.log(this.el.innerHTML);
-    script.innerHTML = this.el.innerHTML;
+    var tmp = document.createElement('div');
+    script.innerHTML = String(this.el.innerHTML).replace(/\&[#0-9a-z]+;/gi, function (enc) {
+      tmp.innerHTML = enc;
+      return tmp.innerText
+    });
     this.script = script;
     document.head.appendChild(script);
     this.el.style.display = 'none';
