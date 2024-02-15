@@ -29,6 +29,29 @@
     <template id="b13141">
       <apie-form-list name="form[test][__PROTO__]" template-id="a13141414"></apie-form-list>
     </template>
+    <template id="selectlist">
+      <apie-form-select class="unhandled-select" name="form[list][__PROTO__]"></apie-form-select>
+      <apie-script>
+        (function (elm) {
+          elm.classList.remove('unhandled-select');
+          elm.options = {
+            'string': {
+              label: 'String',
+              templateId: 'astring',
+              value: 'default string'
+            },
+            'subform': {
+              label: 'Subform',
+              templateId: 'asubform',
+              value: {
+                field1: 'field 1',
+                field2: 'field 2'
+              }
+            }
+          };
+        }(document.querySelector('.unhandled-select')))
+      </apie-script>
+    </template>
     <form>
       <apie-form-group name="form" debug-mode>
         <apie-form-group name="form[name]">
@@ -50,6 +73,7 @@
               }
             }
           </apie-script>
+          <apie-form-list name="form[list]" template-id="selectlist"></apie-form-list>
           <apie-scalar-element name="form[name][description]">
             <input name="form[name][description]" />
           </apie-scalar-element>
@@ -72,6 +96,7 @@
           longdescription: "test here",
           test: "can you see?",
         },
+        list: [],
         test: [
           ["123"],
           ["456"],
