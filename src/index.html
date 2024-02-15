@@ -10,6 +10,19 @@
     <link rel="stylesheet" href="/build/apie-form-elements.css" />
   </head>
   <body>
+    <template id="astring">
+      <input name="form[name][select]" />
+    </template>
+    <template id="asubform">
+      <apie-form-group name="form[name][select]">
+        <apie-scalar-element name="form[name][select][field1]">
+          <input name="form[name][select][field1]" value="12"/>
+        </apie-scalar-element>
+        <apie-scalar-element name="form[name][select][field2]">
+          <input name="form[name][select][field2]" value="13"/>
+        </apie-scalar-element>
+      </apie-form-group>
+    </template>
     <template id="a13141414">
       <input type="text" name="__PROTO__">
     </template>
@@ -17,8 +30,26 @@
       <apie-form-list name="form[test][__PROTO__]" template-id="a13141414"></apie-form-list>
     </template>
     <form>
-      <apie-form-group name="form">
+      <apie-form-group name="form" debug-mode>
         <apie-form-group name="form[name]">
+          <apie-form-select id="tmp" name="form[name][select]"></apie-form-select>
+          <apie-script>
+            document.querySelector('#tmp').options = {
+              'string': {
+                label: 'String',
+                templateId: 'astring',
+                value: 'default string'
+              },
+              'subform': {
+                label: 'Subform',
+                templateId: 'asubform',
+                value: {
+                  field1: 'field 1',
+                  field2: 'field 2'
+                }
+              }
+            }
+          </apie-script>
           <apie-scalar-element name="form[name][description]">
             <input name="form[name][description]" />
           </apie-scalar-element>
@@ -52,6 +83,9 @@
       };
       document.querySelector('apie-form-group').validationErrors = {
         name: {
+          select: {
+            "field1": "Field is empty",
+          },
           description :"This field is required",
           test: "This is a validation error"
         }

@@ -16,13 +16,15 @@ export class ApieScalarElement {
 
   @State() displayInvalidText: boolean;
 
+  @State() previousInnerHTML!: string
+
   @Prop() name: string;
 
   @Prop() value: any;
 
   @Prop() invalid: boolean = false;
 
-  @Prop() invalidText?: string = null;
+  @Prop({mutable: true}) invalidText?: string = null;
   
   @Watch('value') updateValue(_val) {
     this.currentValue = _val;
@@ -67,16 +69,28 @@ export class ApieScalarElement {
       if (this.currentInvalidText !== _val) {
         return;
       }
-      this.displayInvalidText = ![].some.call(
-        this.el.childNodes,
-        (child: any) => {
-          if (child && child.invalidText) {
-            child.invalidText = this.invalidText;
-            return true;
-          }
-        }
-      );
+      this.invalidText = _val;
+      this.displayInvalidText = true;
     })
+  }
+
+  componentDidRender() {
+    const currentInnerHTML = this.el?.innerHTML;
+    if (currentInnerHTML !== this.previousInnerHTML) {
+      try {
+        this.handleInnerHTMLChange();
+      } finally {
+        Promise.resolve().then(() => {
+          this.previousInnerHTML = currentInnerHTML;
+        })
+      }
+    }
+  }
+
+  handleInnerHTMLChange() {
+    this.updateValue(this.value);
+    this.updateInvalid(this.invalid);
+    this.updateInvalidText(this.invalidText);
   }
 
   componentWillLoad() {

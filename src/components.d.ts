@@ -5,8 +5,11 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { TypeDefinition } from "./utils/utils";
+export { TypeDefinition } from "./utils/utils";
 export namespace Components {
     interface ApieFormGroup {
+        "debugMode": boolean;
         "name": string;
         "validationErrors": Record<string, any>;
         "value": Record<string, any>;
@@ -24,6 +27,13 @@ export namespace Components {
         "replaceString": string;
         "templateId": string;
         "value": Array<any>;
+    }
+    interface ApieFormSelect {
+        "name": string;
+        "options": Record<string, TypeDefinition>;
+        "selectChoice"?: string;
+        "validationErrors": Record<string, any>;
+        "value": any;
     }
     interface ApieScalarElement {
         "invalid": boolean;
@@ -47,6 +57,10 @@ export interface ApieFormHashmapCustomEvent<T> extends CustomEvent<T> {
 export interface ApieFormListCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLApieFormListElement;
+}
+export interface ApieFormSelectCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLApieFormSelectElement;
 }
 declare global {
     interface HTMLApieFormGroupElementEventMap {
@@ -100,6 +114,23 @@ declare global {
         prototype: HTMLApieFormListElement;
         new (): HTMLApieFormListElement;
     };
+    interface HTMLApieFormSelectElementEventMap {
+        "input": any[];
+    }
+    interface HTMLApieFormSelectElement extends Components.ApieFormSelect, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLApieFormSelectElementEventMap>(type: K, listener: (this: HTMLApieFormSelectElement, ev: ApieFormSelectCustomEvent<HTMLApieFormSelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLApieFormSelectElementEventMap>(type: K, listener: (this: HTMLApieFormSelectElement, ev: ApieFormSelectCustomEvent<HTMLApieFormSelectElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLApieFormSelectElement: {
+        prototype: HTMLApieFormSelectElement;
+        new (): HTMLApieFormSelectElement;
+    };
     interface HTMLApieScalarElementElement extends Components.ApieScalarElement, HTMLStencilElement {
     }
     var HTMLApieScalarElementElement: {
@@ -122,6 +153,7 @@ declare global {
         "apie-form-group": HTMLApieFormGroupElement;
         "apie-form-hashmap": HTMLApieFormHashmapElement;
         "apie-form-list": HTMLApieFormListElement;
+        "apie-form-select": HTMLApieFormSelectElement;
         "apie-scalar-element": HTMLApieScalarElementElement;
         "apie-script": HTMLApieScriptElement;
         "apie-validation-error": HTMLApieValidationErrorElement;
@@ -129,6 +161,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface ApieFormGroup {
+        "debugMode"?: boolean;
         "name"?: string;
         "onInput"?: (event: ApieFormGroupCustomEvent<Record<string, any>>) => void;
         "validationErrors"?: Record<string, any>;
@@ -150,6 +183,14 @@ declare namespace LocalJSX {
         "templateId"?: string;
         "value"?: Array<any>;
     }
+    interface ApieFormSelect {
+        "name"?: string;
+        "onInput"?: (event: ApieFormSelectCustomEvent<any[]>) => void;
+        "options"?: Record<string, TypeDefinition>;
+        "selectChoice"?: string;
+        "validationErrors"?: Record<string, any>;
+        "value"?: any;
+    }
     interface ApieScalarElement {
         "invalid"?: boolean;
         "invalidText"?: string;
@@ -164,6 +205,7 @@ declare namespace LocalJSX {
         "apie-form-group": ApieFormGroup;
         "apie-form-hashmap": ApieFormHashmap;
         "apie-form-list": ApieFormList;
+        "apie-form-select": ApieFormSelect;
         "apie-scalar-element": ApieScalarElement;
         "apie-script": ApieScript;
         "apie-validation-error": ApieValidationError;
@@ -176,6 +218,7 @@ declare module "@stencil/core" {
             "apie-form-group": LocalJSX.ApieFormGroup & JSXBase.HTMLAttributes<HTMLApieFormGroupElement>;
             "apie-form-hashmap": LocalJSX.ApieFormHashmap & JSXBase.HTMLAttributes<HTMLApieFormHashmapElement>;
             "apie-form-list": LocalJSX.ApieFormList & JSXBase.HTMLAttributes<HTMLApieFormListElement>;
+            "apie-form-select": LocalJSX.ApieFormSelect & JSXBase.HTMLAttributes<HTMLApieFormSelectElement>;
             "apie-scalar-element": LocalJSX.ApieScalarElement & JSXBase.HTMLAttributes<HTMLApieScalarElementElement>;
             "apie-script": LocalJSX.ApieScript & JSXBase.HTMLAttributes<HTMLApieScriptElement>;
             "apie-validation-error": LocalJSX.ApieValidationError & JSXBase.HTMLAttributes<HTMLApieValidationErrorElement>;

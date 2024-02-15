@@ -21,6 +21,8 @@ export class ApieFormGroup {
 
   @Prop() name: string;
 
+  @Prop() debugMode: boolean = false;
+
   @Prop({mutable: true}) value: Record<string, any> = {};
 
   @Prop({mutable: true}) validationErrors: Record<string, any> = {};
@@ -111,6 +113,7 @@ export class ApieFormGroup {
   render() {
     return (
       <Host>
+        { this.debugMode && <pre>{JSON.stringify(this.value, null, 4)}</pre> }
         <slot></slot>
         { this.groupError && <apie-validation-error>{ this.groupError }</apie-validation-error> }
       </Host>

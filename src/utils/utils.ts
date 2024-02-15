@@ -25,6 +25,12 @@ interface HTMLElementWithNameAndValue extends HTMLElement {
   value: any;
 }
 
+export interface TypeDefinition {
+  label: string;
+  templateId: string;
+  value: any;
+}
+
 export class FormNameSplit
 {
   [Symbol.split](input: string): string[] {
