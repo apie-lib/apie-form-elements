@@ -107,7 +107,9 @@ export class ApieFormGroup {
   }
 
   componentWillLoad() {
-    this.updateValue(this.value);
+    if (this.value) {
+      this.updateValue(this.value);
+    }
   }
 
   render() {
