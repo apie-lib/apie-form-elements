@@ -83,9 +83,12 @@ export class ApieFormGroup {
     });
   }
 
-  @Listen('input') public onInput(ev: any) {
+  @Listen('input') public async onInput(ev: any) {
     if (ev.target === this.el) {
       return;
+    }
+    if (!this.value) {
+      await this.createValueFromInnerHTML();
     }
     if (ev?.target?.name && ev?.target?.value) {
       this.value = {...applyEventTarget(
@@ -120,6 +123,7 @@ export class ApieFormGroup {
       }
     });
     this.value = newValue;
+    this.triggerInputOnChange();
   }
 
   componentWillLoad() {
