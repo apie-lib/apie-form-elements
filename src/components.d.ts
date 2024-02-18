@@ -12,7 +12,7 @@ export namespace Components {
         "debugMode": boolean;
         "name": string;
         "validationErrors": Record<string, any>;
-        "value": Record<string, any>;
+        "value"?: Record<string, any>;
     }
     interface ApieFormHashmap {
         "label": string;

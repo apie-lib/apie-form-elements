@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="/build/apie-form-elements.esm.js"></script>
+    <script nomodule src="/build/apie-form-elements.js"></script>
+    <link rel="stylesheet" href="/build/apie-form-elements.css" />
+  </head>
+  <body>
+    <template id="astring">
+      <input name="form[name][select]" />
+    </template>
+    <template id="asubform">
+      <apie-form-group name="form[name][select]">
+        <apie-scalar-element name="form[name][select][field1]">
+          <input name="form[name][select][field1]" value="12"/>
+        </apie-scalar-element>
+        <apie-scalar-element name="form[name][select][field2]">
+          <input name="form[name][select][field2]" value="13"/>
+        </apie-scalar-element>
+      </apie-form-group>
+    </template>
+    <template id="a13141414">
+      <input type="text" name="__PROTO__">
+    </template>
+    <template id="b13141">
+      <apie-form-list name="form[test][__PROTO__]" template-id="a13141414"></apie-form-list>
+    </template>
+    <template id="selectlist">
+      <apie-form-select class="unhandled-select" name="form[list][__PROTO__]"></apie-form-select>
+      <apie-script>
+        (function (elm) {
+          elm.classList.remove('unhandled-select');
+          elm.options = {
+            'string': {
+              label: 'String',
+              templateId: 'astring',
+              value: 'default string'
+            },
+            'subform': {
+              label: 'Subform',
+              templateId: 'asubform',
+              value: {
+                field1: 'field 1',
+                field2: 'field 2'
+              }
+            }
+          };
+        }(document.querySelector('.unhandled-select')))
+      </apie-script>
+    </template>
+    <form>
+      <apie-form-group name="form" debug-mode>
+        <input name="form[test]" value="2">
+        <input name="form[test2]" value="3">
+      </apie-form-group>
+      <input type="submit" />
+    </form>
+</body>

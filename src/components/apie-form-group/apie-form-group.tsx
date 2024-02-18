@@ -23,7 +23,7 @@ export class ApieFormGroup {
 
   @Prop() debugMode: boolean = false;
 
-  @Prop({mutable: true}) value: Record<string, any> = {};
+  @Prop({mutable: true}) value?: Record<string, any> = undefined;
 
   @Prop({mutable: true}) validationErrors: Record<string, any> = {};
 
@@ -106,9 +106,27 @@ export class ApieFormGroup {
     }
   }
 
+  private async createValueFromInnerHTML()
+  {
+    await waitFor(() => (this.el && !this.value));
+    if (this.value) {
+      return;
+    }
+    const newValue : Record<string, any> = {};
+    this.el.childNodes.forEach((child: any) => {
+      if (child && child.name && String(child.name).indexOf(this.name) === 0) {
+        const fieldName = String(child.name).substring(this.name.length).split(new FormNameSplit())
+        newValue[fieldName[0]] = child.value;
+      }
+    });
+    this.value = newValue;
+  }
+
   componentWillLoad() {
     if (this.value) {
       this.updateValue(this.value);
+    } else {
+      this.createValueFromInnerHTML();
     }
   }
 
