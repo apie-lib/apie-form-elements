@@ -35,6 +35,11 @@ export namespace Components {
         "validationErrors": Record<string, any>;
         "value": any;
     }
+    interface ApieListenOtherEvent {
+        "eventName": string;
+        "name": string;
+        "value": any;
+    }
     interface ApieScalarElement {
         "invalid": boolean;
         "invalidText"?: string;
@@ -61,6 +66,10 @@ export interface ApieFormListCustomEvent<T> extends CustomEvent<T> {
 export interface ApieFormSelectCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLApieFormSelectElement;
+}
+export interface ApieListenOtherEventCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLApieListenOtherEventElement;
 }
 declare global {
     interface HTMLApieFormGroupElementEventMap {
@@ -131,6 +140,23 @@ declare global {
         prototype: HTMLApieFormSelectElement;
         new (): HTMLApieFormSelectElement;
     };
+    interface HTMLApieListenOtherEventElementEventMap {
+        "input": any;
+    }
+    interface HTMLApieListenOtherEventElement extends Components.ApieListenOtherEvent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLApieListenOtherEventElementEventMap>(type: K, listener: (this: HTMLApieListenOtherEventElement, ev: ApieListenOtherEventCustomEvent<HTMLApieListenOtherEventElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLApieListenOtherEventElementEventMap>(type: K, listener: (this: HTMLApieListenOtherEventElement, ev: ApieListenOtherEventCustomEvent<HTMLApieListenOtherEventElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLApieListenOtherEventElement: {
+        prototype: HTMLApieListenOtherEventElement;
+        new (): HTMLApieListenOtherEventElement;
+    };
     interface HTMLApieScalarElementElement extends Components.ApieScalarElement, HTMLStencilElement {
     }
     var HTMLApieScalarElementElement: {
@@ -154,6 +180,7 @@ declare global {
         "apie-form-hashmap": HTMLApieFormHashmapElement;
         "apie-form-list": HTMLApieFormListElement;
         "apie-form-select": HTMLApieFormSelectElement;
+        "apie-listen-other-event": HTMLApieListenOtherEventElement;
         "apie-scalar-element": HTMLApieScalarElementElement;
         "apie-script": HTMLApieScriptElement;
         "apie-validation-error": HTMLApieValidationErrorElement;
@@ -191,6 +218,12 @@ declare namespace LocalJSX {
         "validationErrors"?: Record<string, any>;
         "value"?: any;
     }
+    interface ApieListenOtherEvent {
+        "eventName"?: string;
+        "name"?: string;
+        "onInput"?: (event: ApieListenOtherEventCustomEvent<any>) => void;
+        "value"?: any;
+    }
     interface ApieScalarElement {
         "invalid"?: boolean;
         "invalidText"?: string;
@@ -206,6 +239,7 @@ declare namespace LocalJSX {
         "apie-form-hashmap": ApieFormHashmap;
         "apie-form-list": ApieFormList;
         "apie-form-select": ApieFormSelect;
+        "apie-listen-other-event": ApieListenOtherEvent;
         "apie-scalar-element": ApieScalarElement;
         "apie-script": ApieScript;
         "apie-validation-error": ApieValidationError;
@@ -219,6 +253,7 @@ declare module "@stencil/core" {
             "apie-form-hashmap": LocalJSX.ApieFormHashmap & JSXBase.HTMLAttributes<HTMLApieFormHashmapElement>;
             "apie-form-list": LocalJSX.ApieFormList & JSXBase.HTMLAttributes<HTMLApieFormListElement>;
             "apie-form-select": LocalJSX.ApieFormSelect & JSXBase.HTMLAttributes<HTMLApieFormSelectElement>;
+            "apie-listen-other-event": LocalJSX.ApieListenOtherEvent & JSXBase.HTMLAttributes<HTMLApieListenOtherEventElement>;
             "apie-scalar-element": LocalJSX.ApieScalarElement & JSXBase.HTMLAttributes<HTMLApieScalarElementElement>;
             "apie-script": LocalJSX.ApieScript & JSXBase.HTMLAttributes<HTMLApieScriptElement>;
             "apie-validation-error": LocalJSX.ApieValidationError & JSXBase.HTMLAttributes<HTMLApieValidationErrorElement>;

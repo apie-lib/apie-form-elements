@@ -90,7 +90,7 @@ export class ApieFormGroup {
     if (!this.value) {
       await this.createValueFromInnerHTML();
     }
-    if (ev?.target?.name && ev?.target?.value) {
+    if (ev?.target?.name && ev?.target?.value !== undefined) {
       this.value = {...applyEventTarget(
         this.name,
         this.value,

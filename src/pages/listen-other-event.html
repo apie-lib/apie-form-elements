@@ -12,8 +12,14 @@
   <body>
     <form>
       <apie-form-group name="form" debug-mode>
-        <input name="form[test]" value="2">
-        <input name="form[test2]" value="3">
+        <apie-scalar-element name="form[test]" value="M">
+          <apie-listen-other-event name="form[test]" event-name="gr-change">        
+            <gr-select name="form[test]" value="M">
+              <gr-menu-item value="M">Male</gr-menu-item>
+              <gr-menu-item value="F">Female</gr-menu-item>
+            </gr-select>
+          </apie-listen-other-event>
+        </apie-scalar-element>
       </apie-form-group>
       <input type="submit" />
     </form>
