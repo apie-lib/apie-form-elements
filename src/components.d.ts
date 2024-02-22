@@ -36,14 +36,17 @@ export namespace Components {
         "value": any;
     }
     interface ApieListenOtherEvent {
+        "checked": boolean;
         "eventName": string;
         "name": string;
+        "useChecked": boolean;
         "value": any;
     }
     interface ApieScalarElement {
         "invalid": boolean;
         "invalidText"?: string;
         "name": string;
+        "useChecked": boolean;
         "value": any;
     }
     interface ApieScript {
@@ -219,15 +222,18 @@ declare namespace LocalJSX {
         "value"?: any;
     }
     interface ApieListenOtherEvent {
+        "checked"?: boolean;
         "eventName"?: string;
         "name"?: string;
         "onInput"?: (event: ApieListenOtherEventCustomEvent<any>) => void;
+        "useChecked"?: boolean;
         "value"?: any;
     }
     interface ApieScalarElement {
         "invalid"?: boolean;
         "invalidText"?: string;
         "name"?: string;
+        "useChecked"?: boolean;
         "value"?: any;
     }
     interface ApieScript {

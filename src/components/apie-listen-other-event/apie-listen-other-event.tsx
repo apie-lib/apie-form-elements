@@ -12,9 +12,13 @@ export class ApieListenOtherEvent {
 
   @Prop({mutable: true, reflect: true}) value: any;
 
+  @Prop({mutable: true, reflect: true}) checked: boolean = false
+
   @Prop() eventName: string;
 
   @State() private currentEventName!: string;
+
+  @Prop() useChecked: boolean = false;
 
   @State()
   private callback: Function;
@@ -29,7 +33,12 @@ export class ApieListenOtherEvent {
   constructor() {
     this.callback = (ev) => {
       if (this.name === ev?.target?.name) {
-        this.inputChanged.emit(this.value = ev.target.value)
+        if (this.useChecked) {
+          this.inputChanged.emit(this.checked = this.value = ev.target.checked);
+        } else {
+          this.checked = false;
+          this.inputChanged.emit(this.value = ev.target.value);
+        }
       }
     };
   }

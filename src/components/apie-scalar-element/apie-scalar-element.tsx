@@ -20,11 +20,13 @@ export class ApieScalarElement {
 
   @Prop() name: string;
 
-  @Prop() value: any;
+  @Prop({mutable: true}) value: any;
 
   @Prop() invalid: boolean = false;
 
   @Prop({mutable: true}) invalidText?: string = null;
+
+  @Prop() useChecked: boolean = false;
   
   @Watch('value') updateValue(_val) {
     this.currentValue = _val;
@@ -37,7 +39,13 @@ export class ApieScalarElement {
         (child: any) => {
           if (child && child.name) {
             child.name = this.name;
-            child.value = this.value;
+            if (this.useChecked) {
+              child.checked = Boolean(this.value);
+              Promise.resolve().then(() => { child.value = child.checked ? '1' : ''; });
+              
+            } else {
+              child.value = this.value;
+            }
             return true;
           }
         }
@@ -94,6 +102,17 @@ export class ApieScalarElement {
   }
 
   componentWillLoad() {
+    if (!this.value && this.el) {
+      [].some.call(
+        this.el.querySelectorAll('*[name]'),
+        (child) => {
+          if (child.name === this.name) {
+            this.value = this.useChecked ? child.checked : child.value;
+            return String(child.tagName).toLowerCase() !== 'apie-listen-other-event';
+          }
+        }
+      )
+    }
     this.updateValue(this.value);
     this.updateInvalid(this.invalid);
     this.updateInvalidText(this.invalidText);

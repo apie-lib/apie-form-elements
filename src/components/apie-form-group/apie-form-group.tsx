@@ -119,7 +119,7 @@ export class ApieFormGroup {
     this.el.childNodes.forEach((child: any) => {
       if (child && child.name && String(child.name).indexOf(this.name) === 0) {
         const fieldName = String(child.name).substring(this.name.length).split(new FormNameSplit())
-        newValue[fieldName[0]] = child.value;
+        newValue[fieldName[0]] =  (child.checked === true || child.checked === false) ? child.checked : child.value;
       }
     });
     this.value = newValue;
