@@ -1,5 +1,66 @@
 export * from './validation-errors';
 
+class Fallback {
+  private _map: Map<string, string|null> = new Map();
+
+  public get length(): number
+  {
+    return this._map.size;
+  }
+
+  public clear(): void
+  {
+    this._map.clear();
+  }
+
+  public getItem(key: string): string | null
+  {
+    return this._map.get(key);
+  }
+
+  removeItem(key: string): void
+  {
+    this._map.delete(key);
+  }
+
+  setItem(key: string, value: string): void
+  {
+    this._map.set(key, value);
+  }
+}
+
+function getStorage(): Fallback|Storage {
+  try {
+    return window.localStorage;
+  } catch (err) {
+    try {
+      return window.sessionStorage;
+    } catch (err) {
+      return new Fallback();
+    }
+  }
+}
+
+export function getStorageValue(key: string): any {
+  const storage = getStorage();
+  try {
+    return JSON.parse(storage.getItem(key));
+  }  catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
+export function setStorageValue(key: string, value: any): void {
+  const storage = getStorage();
+  try {
+    storage.setItem(key, JSON.stringify(value));
+  }  catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
 export function waitFor(callback: () => boolean, interval: number = 100): Promise<void> {
   return new Promise((resolve) => {
     const id = setInterval(() => {

@@ -1,5 +1,5 @@
 import { Component, Event, EventEmitter, Host, State, Prop, h } from '@stencil/core';
-import { loadTemplate } from '../../utils/utils';
+import { getStorageValue, loadTemplate, setStorageValue } from '../../utils/utils';
 import type { TypeDefinition, ValidationErrorState } from '../../utils/utils';
 
 @Component({
@@ -54,6 +54,7 @@ export class ApieFormSelect {
       this.options[this.selectChoice].value = this.value;
     }
     this.selectChoice = event.target.value;
+    setStorageValue('types.' + this.name, this.selectChoice);
     const def = this.getCurrentType();
     this.value = def?.value;
     this.triggerInputOnChange();
@@ -73,6 +74,16 @@ export class ApieFormSelect {
     if (current !== this.previousValue) {
       this.previousValue = current;
       this.inputChanged.emit(this.value);
+    }
+  }
+
+  componentWillLoad(): void {
+    this.selectChoice = getStorageValue('types.' + this.name);
+    if (this.selectChoice) {
+      setTimeout(() => {
+        const def = this.getCurrentType();
+        this.value = def?.value;
+      }, 1);
     }
   }
 
