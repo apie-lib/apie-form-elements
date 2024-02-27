@@ -1,5 +1,5 @@
 import { Component, Element, State, Prop, Host, Watch, h } from '@stencil/core';
-import { waitFor } from '../../utils/utils';
+import { ValidationErrorState, waitFor } from '../../utils/utils';
 @Component({
   tag: 'apie-scalar-element',
   styleUrl: 'apie-scalar-element.css',
@@ -10,21 +10,12 @@ export class ApieScalarElement {
 
   @State() currentValue: any;
 
-  @State() currentInvalid: boolean;
-
-  @State() currentInvalidText!: string;
-
-  @State() displayInvalidText: boolean;
-
   @State() previousInnerHTML!: string
 
   @Prop() name: string;
+  @Prop({mutable: true, reflect: true}) validationError?: ValidationErrorState = null;
 
-  @Prop({mutable: true}) value: any;
-
-  @Prop() invalid: boolean = false;
-
-  @Prop({mutable: true}) invalidText?: string = null;
+  @Prop({mutable: true, reflect: true}) value: any;
 
   @Prop() useChecked: boolean = false;
   
@@ -53,35 +44,6 @@ export class ApieScalarElement {
     })
   }
 
-  @Watch('invalid') updateInvalid(_val) {
-    this.currentInvalid = _val;
-    waitFor(() => (this.el && this.currentInvalid === _val)).then(() => {
-      if (this.currentInvalid !== _val) {
-        return;
-      }
-      [].some.call(
-        this.el.childNodes,
-        (child: any) => {
-          if (child && child.invalid) {
-            child.invalid = this.invalid;
-            return true;
-          }
-        }
-      );
-    })
-  }
-
-  @Watch('invalidText') updateInvalidText(_val) {
-    this.currentInvalidText = _val;
-    waitFor(() => (this.el && this.currentInvalidText === _val)).then(() => {
-      if (this.currentInvalidText !== _val) {
-        return;
-      }
-      this.invalidText = _val;
-      this.displayInvalidText = true;
-    })
-  }
-
   componentDidRender() {
     const currentInnerHTML = this.el?.innerHTML;
     if (currentInnerHTML !== this.previousInnerHTML) {
@@ -97,8 +59,6 @@ export class ApieScalarElement {
 
   handleInnerHTMLChange() {
     this.updateValue(this.value);
-    this.updateInvalid(this.invalid);
-    this.updateInvalidText(this.invalidText);
   }
 
   componentWillLoad() {
@@ -114,15 +74,13 @@ export class ApieScalarElement {
       )
     }
     this.updateValue(this.value);
-    this.updateInvalid(this.invalid);
-    this.updateInvalidText(this.invalidText);
   }
 
   render() {
     return (
       <Host>
         <slot></slot>
-        {this.displayInvalidText && <apie-validation-error>{this.invalidText}</apie-validation-error>}
+        <apie-display-missing-validation-errors validationError={this.validationError} />
       </Host>
     );
   }

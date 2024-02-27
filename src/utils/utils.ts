@@ -1,3 +1,5 @@
+export * from './validation-errors';
+
 export function waitFor(callback: () => boolean, interval: number = 100): Promise<void> {
   return new Promise((resolve) => {
     const id = setInterval(() => {

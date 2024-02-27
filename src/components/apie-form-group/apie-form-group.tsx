@@ -1,5 +1,5 @@
 import { Component, Event, EventEmitter, Element, State, Prop, Host, Watch, h, Listen } from '@stencil/core';
-import { FormNameSplit, applyEventTarget, waitFor } from '../../utils/utils';
+import { FormNameSplit, ValidationErrorState, applyEventTarget, waitFor } from '../../utils/utils';
 
 @Component({
   tag: 'apie-form-group',
@@ -13,11 +13,7 @@ export class ApieFormGroup {
 
   @State() currentValue: any;
 
-  @State() currentValidationErrors: any;
-
   @State() previousMap!: string;
-
-  @State() groupError!: string;
 
   @Prop() name: string;
 
@@ -25,7 +21,7 @@ export class ApieFormGroup {
 
   @Prop({mutable: true}) value?: Record<string, any> = undefined;
 
-  @Prop({mutable: true}) validationErrors: Record<string, any> = {};
+  @Prop({mutable: true}) validationError: ValidationErrorState|null = null;
 
   @Event({
     eventName: 'input',
@@ -52,32 +48,6 @@ export class ApieFormGroup {
         if (String(child.name).indexOf(this.name) === 0) {
           const fieldName = String(child.name).substring(this.name.length).split(new FormNameSplit())
           child.value = _val[fieldName[0]];
-        }
-      }
-    });
-  }
-
-  @Watch('validationErrors') async updateValidationErrors(_val) {
-    this.currentValidationErrors = _val;
-    await waitFor(() => (this.el && this.currentValidationErrors === _val));
-    if (this.currentValidationErrors !== _val) {
-      return;
-    }
-    this.groupError = _val[''];
-    this.el.childNodes.forEach((child: any) => {
-      if (child && child.name && String(child.name).indexOf(this.name) === 0) {
-        const fieldName = String(child.name).substring(this.name.length).split(new FormNameSplit())
-        const error = _val[fieldName[0]];
-        if (error === null || error === undefined) {
-          child.invalid = false;
-          child.invalidText = null;
-        } else if (typeof error === 'object') {
-          child.validationErrors = error;
-          child.invalid = true;
-          child.invalidText = null;
-        } else {
-          child.invalid = true;
-          child.invalidText = error;
         }
       }
     });
@@ -119,7 +89,7 @@ export class ApieFormGroup {
     this.el.childNodes.forEach((child: any) => {
       if (child && child.name && String(child.name).indexOf(this.name) === 0) {
         const fieldName = String(child.name).substring(this.name.length).split(new FormNameSplit())
-        newValue[fieldName[0]] =  (child.checked === true || child.checked === false) ? child.checked : child.value;
+        newValue[fieldName[0]] = child.checked === true ? child.checked : child.value;
       }
     });
     this.value = newValue;
@@ -132,6 +102,20 @@ export class ApieFormGroup {
     } else {
       this.createValueFromInnerHTML();
     }
+    this.componentShouldUpdate();
+  }
+
+  componentShouldUpdate() {
+    if (this.validationError) {
+      this.validationError.markAllErrorsAsUnused();
+      this.el.childNodes.forEach((child: any) => {
+        if (child && child.name && String(child.name).indexOf(this.name) === 0) {
+          const fieldName = String(child.name).substring(this.name.length).split(new FormNameSplit())
+          this.validationError.markError(fieldName[0]);
+          child.validationError = this.validationError.getSubValidation(fieldName[0]);
+        }
+      });
+    }
   }
 
   render() {
@@ -139,7 +123,7 @@ export class ApieFormGroup {
       <Host>
         { this.debugMode && <pre>{JSON.stringify(this.value, null, 4)}</pre> }
         <slot></slot>
-        { this.groupError && <apie-validation-error>{ this.groupError }</apie-validation-error> }
+        { this.validationError && <apie-display-missing-validation-errors validationError={this.validationError} /> }
       </Host>
     );
   }

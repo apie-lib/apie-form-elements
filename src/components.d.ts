@@ -5,13 +5,16 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { TypeDefinition } from "./utils/utils";
-export { TypeDefinition } from "./utils/utils";
+import { TypeDefinition, ValidationErrorState } from "./utils/utils";
+export { TypeDefinition, ValidationErrorState } from "./utils/utils";
 export namespace Components {
+    interface ApieDisplayMissingValidationErrors {
+        "validationError": ValidationErrorState;
+    }
     interface ApieFormGroup {
         "debugMode": boolean;
         "name": string;
-        "validationErrors": Record<string, any>;
+        "validationError": ValidationErrorState|null;
         "value"?: Record<string, any>;
     }
     interface ApieFormHashmap {
@@ -26,13 +29,14 @@ export namespace Components {
         "name": string;
         "replaceString": string;
         "templateId": string;
+        "validationError"?: ValidationErrorState;
         "value": Array<any>;
     }
     interface ApieFormSelect {
         "name": string;
         "options": Record<string, TypeDefinition>;
         "selectChoice"?: string;
-        "validationErrors": Record<string, any>;
+        "validationError"?: ValidationErrorState;
         "value": any;
     }
     interface ApieListenOtherEvent {
@@ -43,10 +47,9 @@ export namespace Components {
         "value": any;
     }
     interface ApieScalarElement {
-        "invalid": boolean;
-        "invalidText"?: string;
         "name": string;
         "useChecked": boolean;
+        "validationError"?: ValidationErrorState;
         "value": any;
     }
     interface ApieScript {
@@ -75,6 +78,12 @@ export interface ApieListenOtherEventCustomEvent<T> extends CustomEvent<T> {
     target: HTMLApieListenOtherEventElement;
 }
 declare global {
+    interface HTMLApieDisplayMissingValidationErrorsElement extends Components.ApieDisplayMissingValidationErrors, HTMLStencilElement {
+    }
+    var HTMLApieDisplayMissingValidationErrorsElement: {
+        prototype: HTMLApieDisplayMissingValidationErrorsElement;
+        new (): HTMLApieDisplayMissingValidationErrorsElement;
+    };
     interface HTMLApieFormGroupElementEventMap {
         "input": Record<string, any>;
     }
@@ -179,6 +188,7 @@ declare global {
         new (): HTMLApieValidationErrorElement;
     };
     interface HTMLElementTagNameMap {
+        "apie-display-missing-validation-errors": HTMLApieDisplayMissingValidationErrorsElement;
         "apie-form-group": HTMLApieFormGroupElement;
         "apie-form-hashmap": HTMLApieFormHashmapElement;
         "apie-form-list": HTMLApieFormListElement;
@@ -190,11 +200,14 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface ApieDisplayMissingValidationErrors {
+        "validationError"?: ValidationErrorState;
+    }
     interface ApieFormGroup {
         "debugMode"?: boolean;
         "name"?: string;
         "onInput"?: (event: ApieFormGroupCustomEvent<Record<string, any>>) => void;
-        "validationErrors"?: Record<string, any>;
+        "validationError"?: ValidationErrorState|null;
         "value"?: Record<string, any>;
     }
     interface ApieFormHashmap {
@@ -211,6 +224,7 @@ declare namespace LocalJSX {
         "onInput"?: (event: ApieFormListCustomEvent<any[]>) => void;
         "replaceString"?: string;
         "templateId"?: string;
+        "validationError"?: ValidationErrorState;
         "value"?: Array<any>;
     }
     interface ApieFormSelect {
@@ -218,7 +232,7 @@ declare namespace LocalJSX {
         "onInput"?: (event: ApieFormSelectCustomEvent<any[]>) => void;
         "options"?: Record<string, TypeDefinition>;
         "selectChoice"?: string;
-        "validationErrors"?: Record<string, any>;
+        "validationError"?: ValidationErrorState;
         "value"?: any;
     }
     interface ApieListenOtherEvent {
@@ -230,10 +244,9 @@ declare namespace LocalJSX {
         "value"?: any;
     }
     interface ApieScalarElement {
-        "invalid"?: boolean;
-        "invalidText"?: string;
         "name"?: string;
         "useChecked"?: boolean;
+        "validationError"?: ValidationErrorState;
         "value"?: any;
     }
     interface ApieScript {
@@ -241,6 +254,7 @@ declare namespace LocalJSX {
     interface ApieValidationError {
     }
     interface IntrinsicElements {
+        "apie-display-missing-validation-errors": ApieDisplayMissingValidationErrors;
         "apie-form-group": ApieFormGroup;
         "apie-form-hashmap": ApieFormHashmap;
         "apie-form-list": ApieFormList;
@@ -255,6 +269,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "apie-display-missing-validation-errors": LocalJSX.ApieDisplayMissingValidationErrors & JSXBase.HTMLAttributes<HTMLApieDisplayMissingValidationErrorsElement>;
             "apie-form-group": LocalJSX.ApieFormGroup & JSXBase.HTMLAttributes<HTMLApieFormGroupElement>;
             "apie-form-hashmap": LocalJSX.ApieFormHashmap & JSXBase.HTMLAttributes<HTMLApieFormHashmapElement>;
             "apie-form-list": LocalJSX.ApieFormList & JSXBase.HTMLAttributes<HTMLApieFormListElement>;

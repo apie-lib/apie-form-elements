@@ -1,6 +1,6 @@
 import { Component, Event, EventEmitter, Host, State, Prop, h } from '@stencil/core';
 import { loadTemplate } from '../../utils/utils';
-import type { TypeDefinition } from '../../utils/utils';
+import type { TypeDefinition, ValidationErrorState } from '../../utils/utils';
 
 @Component({
   tag: 'apie-form-select',
@@ -18,7 +18,7 @@ export class ApieFormSelect {
 
   @State() previousValue!: string;
 
-  @Prop({mutable: true}) validationErrors: Record<string, any> = {};
+  @Prop({mutable: true}) validationError?: ValidationErrorState = null;
 
   @Event({
     eventName: 'input',
@@ -87,7 +87,7 @@ export class ApieFormSelect {
             <gr-menu-item value={option[0]}>{ option[1].label }</gr-menu-item>
           )}
         </gr-select>
-        <apie-scalar-element onInput={ (ev) => this.onInput(ev) } name={this.name} value={this.value} innerHTML={this.renderTemplate()}></apie-scalar-element>
+        <apie-scalar-element onInput={ (ev) => this.onInput(ev) } name={this.name} value={this.value} validationError={this.validationError} innerHTML={this.renderTemplate()}></apie-scalar-element>
       </Host>
     );
   }

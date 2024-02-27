@@ -5,9 +5,22 @@ gr-field-group {
   box-shadow: var(--gr-shadow-x-large);
   width: 100%
 }
+.row {
+  display: table-row;
+  width: 100%;
+}
+.remove-button {
+  max-width: 10%;
+  float: right;
+}
+.form-item {
+  width: 90%;
+  float: left;
+}
 
 .field-list {
   margin-left: 10%; 
   width: 86%;
-  padding: 2%
+  padding: 2%;
+  display: table;
 }
