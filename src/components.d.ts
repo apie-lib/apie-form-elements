@@ -53,6 +53,7 @@ export namespace Components {
         "value": any;
     }
     interface ApieScript {
+        "type": string;
     }
     interface ApieValidationError {
     }
@@ -250,6 +251,7 @@ declare namespace LocalJSX {
         "value"?: any;
     }
     interface ApieScript {
+        "type": string;
     }
     interface ApieValidationError {
     }

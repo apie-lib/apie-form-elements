@@ -1,4 +1,4 @@
-import { Component, Element, Host, h } from '@stencil/core';
+import { Component, Element, Host, Prop, h } from '@stencil/core';
 
 @Component({
   tag: 'apie-script',
@@ -6,6 +6,8 @@ import { Component, Element, Host, h } from '@stencil/core';
 })
 export class ApieScript {
   @Element() el: HTMLElement;
+
+  @Prop() type!: string;
 
   private script!: HTMLElement;
 
@@ -16,6 +18,9 @@ export class ApieScript {
       tmp.innerHTML = enc;
       return tmp.innerText
     });
+    if (this.type) {
+      script.type = this.type;
+    }
     this.script = script;
     document.head.appendChild(script);
     this.el.style.display = 'none';
