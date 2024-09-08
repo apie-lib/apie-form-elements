@@ -1,104 +1,61 @@
-import { Component, Event, EventEmitter, Host, State, Prop, h } from '@stencil/core';
-import { getStorageValue, loadTemplate, setStorageValue } from '../../utils/utils';
-import type { TypeDefinition, ValidationErrorState } from '../../utils/utils';
+import { Component, Host, h, Prop, Event, EventEmitter } from '@stencil/core';
+import { APIE_FORM_CONTROLLER, ChangeEvent, Option } from '../../utils/utils';
+import { renderTemplates } from '../../utils/renderTemplates';
 
 @Component({
   tag: 'apie-form-select',
   styleUrl: 'apie-form-select.css',
-  shadow: false,
+  shadow: true,
 })
 export class ApieFormSelect {
-  @Prop() name: string;
+  @Prop({reflect: true}) name: string;
 
-  @Prop({mutable: true}) options: Record<string, TypeDefinition>
+  @Prop({reflect: true, mutable: true}) value: string;
 
-  @Prop({mutable: true}) value: any = null;
+  @Prop({reflect: true, mutable: true}) internalState: Record<string, any> = {}
 
-  @Prop({mutable: true}) selectChoice?: string = null;
+  @Prop({reflect: true}) options: Option[];
 
-  @State() previousValue!: string;
+  @Prop({reflect: true}) apie: Symbol = APIE_FORM_CONTROLLER;
 
-  @Prop({mutable: true}) validationError?: ValidationErrorState = null;
+  @Prop() replaceString: string;
 
-  @Event({
-    eventName: 'input',
-    composed: true,
-    cancelable: true,
-    bubbles: true,
-  }) inputChanged: EventEmitter<any[]>;
+  @Event() triggerChange: EventEmitter<ChangeEvent>
 
-  public getCurrentType(): TypeDefinition|null
-  {
-    if (!this.selectChoice) {
+  @Event() triggerInternalState: EventEmitter<ChangeEvent>
+
+  private renderSelect() {
+    return renderTemplates.renderSelect({
+      name: '_internal' + this.name,
+      value: this.internalState?.option || null,
+      options: this.options,
+      valueChanged: (newValue: string) => {
+        if (newValue !== this.internalState.option) {
+          this.internalState.option = newValue;
+          this.internalState = { ...this.internalState };
+          this.triggerInternalState.emit({ name: this.name, value: this.internalState.option })
+        }
+      }
+    })
+  }
+
+  private getSelectedOption(): string|null {
+    if (!this.internalState.option) {
       return null;
     }
-    if (!Object.prototype.hasOwnProperty.call(this.options, this.selectChoice)) {
-      return null;
+    for (let option of this.options) {
+      if (option.value === this.internalState.option) {
+        return String(option.value);
+      }
     }
-
-    return this.options[this.selectChoice];
+    return null;
   }
-
-  public renderTemplate(): string
-  {
-    const def = this.getCurrentType();
-    if (!def) {
-      return '';
-    }
-    return loadTemplate(def.templateId);
-  }
-
-  public onSelectChange(event): void
-  {
-    if (this.selectChoice && Object.prototype.hasOwnProperty.call(this.options, this.selectChoice)) {
-      this.options[this.selectChoice].value = this.value;
-    }
-    this.selectChoice = event.target.value;
-    setStorageValue('types.' + this.name, this.selectChoice);
-    const def = this.getCurrentType();
-    this.value = def?.value;
-    this.triggerInputOnChange();
-  }
-
-  public onInput(event): void
-  {
-    if (event?.target?.name === this.name) {
-      this.value = event.target.value;
-      this.triggerInputOnChange();
-    }
-  }
-
-  private triggerInputOnChange(): void
-  {
-    const current = JSON.stringify(this.value);
-    if (current !== this.previousValue) {
-      this.previousValue = current;
-      this.inputChanged.emit(this.value);
-    }
-  }
-
-  componentWillLoad(): void {
-    this.selectChoice = getStorageValue('types.' + this.name);
-    if (this.selectChoice) {
-      setTimeout(() => {
-        const def = this.getCurrentType();
-        this.value = def?.value;
-      }, 1);
-    }
-  }
-
   render() {
-    if (!this.options) {
-      return <Host></Host>
-    }
     return (
       <Host>
-        <gr-select ongr-change={(ev) => this.onSelectChange(ev)}name={ '_apie' + this.name } value={this.selectChoice}>
-          { Object.entries(this.options).map((option: [string, TypeDefinition]) => 
-            <gr-menu-item value={option[0]}>{ option[1].label }</gr-menu-item>
-          )}
-        </gr-select>
-        <apie-scalar-element onInput={ (ev) => this.onInput(ev) } name={this.name} value={this.value} validationError={this.validationError} innerHTML={this.renderTemplate()}></apie-scalar-element>
+        {this.renderSelect()}
+        {this.getSelectedOption() && <apie-render-template internal-state={this.internalState} replace-string={this.replaceString} name={this.name} value={this.value} template-id={this.getSelectedOption()}></apie-render-template>}
+        <slot></slot>
       </Host>
     );
   }

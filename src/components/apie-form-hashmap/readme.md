@@ -7,39 +7,35 @@
 
 ## Properties
 
-| Property        | Attribute        | Description | Type                                      | Default       |
-| --------------- | ---------------- | ----------- | ----------------------------------------- | ------------- |
-| `label`         | `label`          |             | `string`                                  | `''`          |
-| `name`          | `name`           |             | `string`                                  | `undefined`   |
-| `replaceString` | `replace-string` |             | `string`                                  | `'__PROTO__'` |
-| `templateId`    | `template-id`    |             | `string`                                  | `undefined`   |
-| `value`         | --               |             | `{ [x: string]: any; [x: number]: any; }` | `{}`          |
+| Property          | Attribute        | Description | Type                    | Default                |
+| ----------------- | ---------------- | ----------- | ----------------------- | ---------------------- |
+| `apie`            | --               |             | `Symbol`                | `APIE_FORM_CONTROLLER` |
+| `name`            | `name`           |             | `string`                | `undefined`            |
+| `replaceString`   | `replace-string` |             | `string`                | `undefined`            |
+| `templateId`      | `template-id`    |             | `string`                | `undefined`            |
+| `validationError` | --               |             | `{ [x: string]: any; }` | `{}`                   |
+| `value`           | --               |             | `{ [x: string]: any; }` | `{}`                   |
 
 
 ## Events
 
-| Event   | Description | Type                                                   |
-| ------- | ----------- | ------------------------------------------------------ |
-| `input` |             | `CustomEvent<{ [x: string]: any; [x: number]: any; }>` |
+| Event           | Description | Type                       |
+| --------------- | ----------- | -------------------------- |
+| `triggerChange` |             | `CustomEvent<ChangeEvent>` |
 
 
 ## Dependencies
 
 ### Depends on
 
-- gr-field-group
-- gr-input
-- gr-button
-- [apie-scalar-element](../apie-scalar-element)
+- [apie-form-group](../apie-form-group)
+- [apie-render-template](../apie-render-template)
 
 ### Graph
 ```mermaid
 graph TD;
-  apie-form-hashmap --> gr-field-group
-  apie-form-hashmap --> gr-input
-  apie-form-hashmap --> gr-button
-  apie-form-hashmap --> apie-scalar-element
-  gr-button --> gr-spinner
+  apie-form-hashmap --> apie-form-group
+  apie-form-hashmap --> apie-render-template
   style apie-form-hashmap fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

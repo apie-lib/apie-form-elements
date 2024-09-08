@@ -1,97 +1,50 @@
 export * from './validation-errors';
 
-class Fallback {
-  private _map: Map<string, string|null> = new Map();
+export const APIE_FORM_CONTROLLER = Symbol('APIE_FORM_CONTROLLER');
+export const APIE_CONSTRAINT = Symbol('APIE_CONSTRAINT');
 
-  public get length(): number
-  {
-    return this._map.size;
-  }
-
-  public clear(): void
-  {
-    this._map.clear();
-  }
-
-  public getItem(key: string): string | null
-  {
-    return this._map.get(key);
-  }
-
-  removeItem(key: string): void
-  {
-    this._map.delete(key);
-  }
-
-  setItem(key: string, value: string): void
-  {
-    this._map.set(key, value);
-  }
+export interface Option {
+  name: string;
+  value: string|Record<string, any>|File;
 }
 
-function getStorage(): Fallback|Storage {
-  try {
-    return window.localStorage;
-  } catch (err) {
-    try {
-      return window.sessionStorage;
-    } catch (err) {
-      return new Fallback();
-    }
-  }
+export interface ChangeEvent extends Option {
+  force?: boolean;
 }
 
-export function getStorageValue(key: string): any {
-  const storage = getStorage();
-  try {
-    return JSON.parse(storage.getItem(key));
-  }  catch (err) {
-    console.error(err);
-    return null;
-  }
+export interface FileData {
+  base64: string;
+  originalFilename: string;
 }
 
-export function setStorageValue(key: string, value: any): void {
-  const storage = getStorage();
-  try {
-    storage.setItem(key, JSON.stringify(value));
-  }  catch (err) {
-    console.error(err);
-    return null;
-  }
-}
 
-export function waitFor(callback: () => boolean, interval: number = 100): Promise<void> {
-  return new Promise((resolve) => {
-    const id = setInterval(() => {
-      if (callback()) {
-        resolve();
-        clearInterval(id);
-      }
-    }, interval);
-  });
-}
-
-export function loadTemplate(templateId: string): string {
-  const templateElm = document.querySelector('#' + templateId);
-  const divElement = document.createElement('div');
-  divElement.appendChild(templateElm.cloneNode(true));
-  var el = document.createElement('div');
-  return String(templateElm.innerHTML).replace(/\&[#0-9a-z]+;/gi, function (enc) {
-    el.innerHTML = enc;
-    return el.innerText
-  });
-}
-
-interface HTMLElementWithNameAndValue extends HTMLElement {
+export interface ApieFormElement extends HTMLElement {
   name: string;
   value: any;
+  apie: typeof APIE_FORM_CONTROLLER;
+  onTriggerChange: (ev: ChangeEvent) => void|any;
+  internalState: any;
 }
 
-export interface TypeDefinition {
-  label: string;
-  templateId: string;
+export interface ApieConstraintElement extends HTMLElement {
+  name: string;
   value: any;
+  apie: typeof APIE_CONSTRAINT;
+}
+
+export interface ValidationError {
+  '': string;
+  [key: string]: string | ValidationError;
+}
+
+export function isApieFormElement(el: HTMLElement): el is ApieFormElement
+{
+  return (el as any).apie === APIE_FORM_CONTROLLER;
+}
+
+export function isApieConstraint(el: HTMLElement): el is ApieConstraintElement
+{
+  return (el as any).apie === APIE_CONSTRAINT;
 }
 
 export class FormNameSplit
@@ -123,30 +76,57 @@ export class FormNameSplit
   }
 }
 
-export function applyEventTarget(namePrefix: string, inputValue: any, target: HTMLElementWithNameAndValue): any
-{
-  if (!target.name.startsWith(namePrefix)) {
-    return inputValue;
-  }
+export function loadTemplate(templateId: string): string {
+  const templateElm = document.querySelector('#' + templateId);
+  const divElement = document.createElement('div');
+  divElement.appendChild(templateElm.cloneNode(true));
+  var el = document.createElement('div');
+  return String(templateElm.innerHTML).replace(/\&[#0-9a-z]+;/gi, function (enc) {
+    el.innerHTML = enc;
+    return el.innerText
+  });
+}
 
-  const keys = target.name.substring(namePrefix.length).split(new FormNameSplit());
-  if (keys.length === 0) {
-    return target.value;
+export function missingValidationErrors(validationErrors: ValidationError, foundIds: string[], prefix: string = ''): ChangeEvent[]{
+  const tmp = new Set(foundIds);
+  const result: ChangeEvent[] = [];
+  Object.keys(validationErrors).filter((key: string) => !tmp.has(key))
+    .map((key: string) => {
+      if (typeof validationErrors[key] === 'string') {
+        result.push({name: prefix + key, value: validationErrors[key]})
+      } else {
+        if (validationErrors[key]['']) {
+          result.push({name: prefix + key, value: validationErrors[key]})
+        }
+        result.push(...missingValidationErrors(validationErrors[key] as ValidationError, [''], prefix + key + '.'));
+      }
+    });
+
+  return result;
+}
+
+export function toFileList(f: string|number|File): FileList {
+  const dataTransfer = new DataTransfer();
+  if (f instanceof File) {
+    dataTransfer.items.add(f);
   }
-  if (inputValue === null) {
-    inputValue = {};
+  return dataTransfer.files;
+}
+
+export function toEmptyFileList(): FileList {
+  const dataTransfer = new DataTransfer();
+  return dataTransfer.files;
+}
+
+export function toString(value: boolean|string|File|null|number|undefined): string {
+  if (value === true) {
+    return 'on';
   }
-  let key;
-  let ptr = inputValue;
-  for(ptr=inputValue;keys.length > 0;) {
-    key = keys.shift()
-    if (!Object.hasOwnProperty.call(ptr, key) || ptr[key] === undefined || ptr[key] === null) {
-      ptr[key] = {}
-    }
-    if (keys.length === 0) {
-      ptr[key] = target.value;
-    }
-    ptr = ptr[key];
+  if (!value && value !== 0) {
+    return '';
   }
-  return inputValue;
+  if (value instanceof File) {
+    return value.name;
+  }
+  return String(value);
 }

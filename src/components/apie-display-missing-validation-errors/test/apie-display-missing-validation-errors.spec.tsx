@@ -10,7 +10,6 @@ describe('apie-display-missing-validation-errors', () => {
     expect(page.root).toEqualHtml(`
       <apie-display-missing-validation-errors>
         <mock:shadow-root>
-          <slot></slot>
         </mock:shadow-root>
       </apie-display-missing-validation-errors>
     `);

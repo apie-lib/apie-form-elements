@@ -1,121 +1,107 @@
-import { Component, Element, Prop, Host, h, State, Listen, Event, EventEmitter } from '@stencil/core';
-import { applyEventTarget, loadTemplate } from '../../utils/utils';
+import { Component, Host, Prop, h, Event, EventEmitter, State } from '@stencil/core';
+import { APIE_FORM_CONTROLLER, ChangeEvent, toString } from '../../utils/utils';
+import { renderTemplates } from '../../utils/renderTemplates';
 
 @Component({
   tag: 'apie-form-hashmap',
   styleUrl: 'apie-form-hashmap.css',
-  shadow: false,
+  shadow: true,
 })
 export class ApieFormHashmap {
-  @Element() el: HTMLElement;
-
-  @Prop() name: string;
-
-  @Prop() label: string = '';
-
-  @Prop({reflect: true, mutable: true}) value: Record<string|number, any> = {};
-
   @Prop() templateId: string;
 
-  @Prop() replaceString: string = '__PROTO__';
+  @Prop() replaceString: string;
 
-  @State() previousList!: string;
+  @Prop({ reflect: true }) name: string;
 
-  @State() addKey: string = '';
+  @Prop({ reflect: true, mutable: true }) value: Record<any, any> = {};
 
-  @Event({
-    eventName: 'input',
-    composed: true,
-    cancelable: true,
-    bubbles: true,
-  }) inputChanged: EventEmitter<Record<string|number, any>>;
+  @Prop({reflect: true, mutable: true}) validationError: Record<string, any> = {}
 
-  public handleClick() {
-    if (!this.value) {
-      this.value = {};
-    }
-    this.value[this.addKey] = null;
-    this.value = { ...this.value }
-    this.addKey = '';
-    this.triggerInputOnChange();
+  @Prop({ reflect: true }) apie: Symbol = APIE_FORM_CONTROLLER;
+
+  @State() valueState!: string;
+
+  @State() keyToAdd: string = '';
+
+  @Event() triggerChange: EventEmitter<ChangeEvent>
+
+  private renderKeyInput(): any {
+    return renderTemplates.renderInput({
+      name: '_internal[apie]' + this.name,
+      value: this.keyToAdd,
+      valueChanged: (newValue?: string) => { this.keyToAdd = toString(newValue) }
+    })
   }
 
-  public removeRow(key: string) {
-    delete this.value[key];
-    this.value = { ...this.value };
-    this.triggerInputOnChange();
+  private renderAddButton(): any {
+    return renderTemplates.renderAddButton({
+      disabled: !this.keyToAdd || Object.hasOwnProperty.call(this.value, this.keyToAdd),
+      addButtonClicked: () => {
+        this.value[this.keyToAdd] = {}
+        this.keyToAdd = ''
+        this.triggerChangeIfNeeded()
+      }
+    })
   }
 
-  @Listen('input') public onInput(ev: any) {
-    if (ev.target === this.el) {
-      return;
-    }
-    if (ev?.target?.name) {
-      this.value = {...applyEventTarget(
-        this.name,
-        this.value,
-        ev.target
-      )};
-      this.triggerInputOnChange();
-    }
+  private renderRemoveButton(index: string): any {
+    return renderTemplates.renderRemoveButton({
+      disabled: false,
+      addButtonClicked: () => {
+        delete this.value[index];
+        this.value = {...this.value};
+        this.triggerChangeIfNeeded();
+      }
+    })
   }
 
-  public handleKeyChange(event) {
-    this.addKey = event.target.value;
-  }
-
-  public isAddKeyDisabled(): boolean
+  private renderEmptyList(): any
   {
-    return this.addKey.length === 0 || (this.value && Object.hasOwnProperty.call(this.value, this.addKey));
+    return renderTemplates.renderEmptyList();
   }
 
-  private triggerInputOnChange(): void
+  private triggerChangeIfNeeded(): void
   {
-    const current = JSON.stringify(this.value);
-    if (current !== this.previousList) {
-      this.previousList = current;
-      this.inputChanged.emit(this.value);
+    const valueState = JSON.stringify(this.value);
+    if (valueState !== this.valueState) {
+      Promise.resolve().then(() => {
+        this.valueState = valueState;
+        this.triggerChange.emit({ name: this.name, value: this.value});
+      })
     }
   }
 
-  private renderRow(key: string): any
-  {
-    let template = loadTemplate(this.templateId);
-    while (template.indexOf(this.replaceString) > -1) {
-      template = template.replace(this.replaceString, String(key));
+  private updateValue(newValue: Record<string|number, any>) {
+    if (newValue) {
+      this.value = {...newValue}
+      this.triggerChangeIfNeeded();
     }
-    return template;
+  }
+
+  private getObjectValue(): Record<string|number, any>
+  {
+    return {...this.value}
   }
 
   render() {
     return (
       <Host>
-        <gr-field-group label={this.label} style="">
-          <table class="field-list">
-            { (Object.entries(this.value || {})).map((entry: [string, any]) => 
-            <tr>
-              <th>{ entry[0] }</th>
-              <td><gr-button onClick={() => this.removeRow(entry[0])}>
-                <ion-icon name="close-circle-outline">X</ion-icon>
-              </gr-button>
-              <apie-scalar-element key={entry[0]} name={this.name + '[' + entry[0] + ']'} value={entry[1]} innerHTML={this.renderRow(String(entry[0]))}>
-              </apie-scalar-element>
-              </td>
-            </tr>
-            ) }
-            <tr>
-              <td>
-                <gr-input value={this.addKey} onInput={(event) => this.handleKeyChange(event)}></gr-input>
-              </td>
-              <td>
-                <gr-button disabled={this.isAddKeyDisabled()} onClick={() => this.handleClick()} variant="secondary">
-                  <ion-icon name="add-circle-outline"></ion-icon> Add
-                </gr-button>
-              </td>
-            </tr>
-          </table>
-          <slot></slot>
-        </gr-field-group>
+        <apie-form-group class="form-list" name={this.name} value={this.getObjectValue()} validation-error={this.validationError} onTriggerChange={(ev) => { this.updateValue(ev.detail.value as any) } }>
+          { Object.entries(this.value).map(
+            ([index, item]) =>
+              [
+                <div>{ index }</div>,
+                <apie-render-template class="form-item" key={index} replace-string={this.replaceString} template-id={this.templateId} value={item} name={this.name + '[' + index + ']'}>
+                </apie-render-template>,
+                this.renderRemoveButton(index)
+              ]
+          )}
+          { !this.value.length && this.renderEmptyList() }
+        </apie-form-group>
+        {this.renderKeyInput()}
+        {this.renderAddButton()}
+        <slot></slot>
       </Host>
     );
   }

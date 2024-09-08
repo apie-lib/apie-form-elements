@@ -7,37 +7,35 @@
 
 ## Properties
 
-| Property        | Attribute        | Description | Type     | Default       |
-| --------------- | ---------------- | ----------- | -------- | ------------- |
-| `label`         | `label`          |             | `string` | `''`          |
-| `name`          | `name`           |             | `string` | `undefined`   |
-| `replaceString` | `replace-string` |             | `string` | `'__PROTO__'` |
-| `templateId`    | `template-id`    |             | `string` | `undefined`   |
-| `value`         | --               |             | `any[]`  | `[]`          |
+| Property          | Attribute        | Description | Type                    | Default                |
+| ----------------- | ---------------- | ----------- | ----------------------- | ---------------------- |
+| `apie`            | --               |             | `Symbol`                | `APIE_FORM_CONTROLLER` |
+| `name`            | `name`           |             | `string`                | `undefined`            |
+| `replaceString`   | `replace-string` |             | `string`                | `undefined`            |
+| `templateId`      | `template-id`    |             | `string`                | `undefined`            |
+| `validationError` | --               |             | `{ [x: string]: any; }` | `{}`                   |
+| `value`           | --               |             | `any[]`                 | `[]`                   |
 
 
 ## Events
 
-| Event   | Description | Type                 |
-| ------- | ----------- | -------------------- |
-| `input` |             | `CustomEvent<any[]>` |
+| Event           | Description | Type                       |
+| --------------- | ----------- | -------------------------- |
+| `triggerChange` |             | `CustomEvent<ChangeEvent>` |
 
 
 ## Dependencies
 
 ### Depends on
 
-- gr-field-group
-- gr-button
-- [apie-scalar-element](../apie-scalar-element)
+- [apie-form-group](../apie-form-group)
+- [apie-render-template](../apie-render-template)
 
 ### Graph
 ```mermaid
 graph TD;
-  apie-form-list --> gr-field-group
-  apie-form-list --> gr-button
-  apie-form-list --> apie-scalar-element
-  gr-button --> gr-spinner
+  apie-form-list --> apie-form-group
+  apie-form-list --> apie-render-template
   style apie-form-list fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

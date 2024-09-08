@@ -10,11 +10,10 @@
     <link rel="stylesheet" href="/build/apie-form-elements.css" />
   </head>
   <body>
-    <form>
-      <apie-form-group name="form" debug-mode>
-        <input name="form[test]" value="2">
-        <input name="form[test2]" value="3">
-      </apie-form-group>
-      <input type="submit" />
-    </form>
+    <apie-form method="get" debug-mode>
+        <apie-single-input types="text" name="form[test]" label="Test" value="2"></apie-single-input>
+        <apie-single-input types="text" name="form[test2]" label="Test" value="3"></apie-single-input>
+    </apie-form>
+    <script src="/pages/hydrateFromLocation.js">
+    </script>
 </body>

@@ -13,30 +13,27 @@
     <template id="tid">
         <input name="form[__PROTO__]" value="">
     </template>
-    <form>
-      <apie-form-group name="form" debug-mode>
+    <apie-form debug-mode>
         <input name="form[test]" value="2">
         <apie-form-list name="form[test2]" template-id="tid"></apie-form-list>
-      </apie-form-group>
-      <apie-script>
-        document.querySelector('apie-form-group').validationError = new ValidationErrorState(
-            {
-                test2: {
-                    1: "Error!"
-                }
-            }
-        )
-      </apie-script>
-      <apie-display-missing-validation-errors></apie-display-missing-validation-errors>
-      <apie-script>
-        document.querySelector('apie-display-missing-validation-errors').validationError = new ValidationErrorState(
-            {
-                test2: {
-                    1: "Error!"
-                }
-            }
-        )
-      </apie-script>
-      <input type="submit" />
-    </form>
+        <apie-script>
+          document.querySelector('apie-form').validationError = new ValidationErrorState(
+              {
+                  test2: {
+                      1: "Error!"
+                  }
+              }
+          )
+        </apie-script>
+        <apie-display-missing-validation-errors></apie-display-missing-validation-errors>
+        <apie-script>
+          document.querySelector('apie-display-missing-validation-errors').validationError = new ValidationErrorState(
+              {
+                  test2: {
+                      1: "Error!"
+                  }
+              }
+          )
+        </apie-script>
+    </apie-form>
 </body>

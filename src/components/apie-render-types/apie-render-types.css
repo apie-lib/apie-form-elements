@@ -1,0 +1,10 @@
+:host {
+  display: block;
+}
+textarea.hidden-field, input.hidden-field {
+  visibility: hidden;
+  position: absolute;
+  overflow: hidden;
+  width: 0;
+  height: 0;
+}

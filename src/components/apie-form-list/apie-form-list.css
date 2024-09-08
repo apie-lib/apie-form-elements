@@ -1,26 +1,27 @@
 :host {
   display: block;
-}
-gr-field-group {
-  box-shadow: var(--gr-shadow-x-large);
-  width: 100%
-}
-.row {
-  display: table-row;
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
-.remove-button {
-  max-width: 10%;
-  float: right;
-}
-.form-item {
-  width: 90%;
-  float: left;
+.form-list {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
 }
 
-.field-list {
-  margin-left: 10%; 
-  width: 86%;
-  padding: 2%;
-  display: table;
+.form-item {
+  padding: 10px;
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: 90%;
+  align-self: auto;
+}
+
+.form-item + * {
+  padding: 10px;
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: auto;
+  align-self: auto;
 }
