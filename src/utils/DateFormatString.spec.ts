@@ -3,7 +3,6 @@ import { PhpDate } from './PhpDate';
 import { Timezone, timezones } from './timezones';
 
 describe('DateFormatString', function () {
-    return;
     const testcases = ['', ...('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-:'.split(''))];
 //    const testcases = ['y']
     const mapping = {
@@ -15,7 +14,7 @@ describe('DateFormatString', function () {
         displayMonth: 'month',
         displayYear: 'resolvedYear',
     };
-    timezones.forEach((timezone: Timezone) => {
+    [timezones[0]].forEach((timezone: Timezone) => {
         describe('It works with timezone "' + timezone.timezone_id + '".', () => {
             testcases.forEach((format) => {
                 describe('It encodes "' + format + '" perfectly.', () => {

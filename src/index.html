@@ -10,79 +10,18 @@
     <link rel="stylesheet" href="/build/apie-form-elements.css" />
   </head>
   <body>
-    <template id="asubform">
-      <apie-form-group name="__FORMNAME__">
-        <apie-single-input types="text" name="__FORMNAME__[field1]" value="12">
-        </apie-single-input>
-        <apie-single-input types="text" name="__FORMNAME__[field2]" value="13">
-        </apie-single-input>
-        <apie-file-input name="__FORMNAME__[field3]">
-        </apie-file-input>
-      </apie-form-group>
-    </template>
-    <template id="stringinput">
-      <apie-single-input types="text" name="__FORMNAME__"></apie-single-input>
-    </template>
-    <template id="nullinput">
-      <apie-null-input name="__FORMNAME__"></apie-null-input>
-    </template>
-      <apie-form action="?name={name}" debug-mode>
-        <apie-csrf-token value="csrf"></apie-csrf-token>
-        <apie-single-input label="Name" types="text" name="form[name]"></apie-single-input>
-        <apie-single-input label="Textarea" types="textarea" name="form[textarea]"></apie-single-input>
-        <apie-single-input label="Upload" types="file" name="form[file]"></apie-single-input>
-        <apie-single-input label="WYSIWYG" types="html" name="form[html]"></apie-single-input>
-        <apie-single-input types="null" name="form[null]"></apie-single-input>
-        <apie-date name="form[date]" date-format="H:i:s"></apie-date>
-        <apie-date name="form[datetime]" date-format="r"></apie-date>
-        <apie-form-hashmap label="Map" name="form[map]" replace-string="__FORMNAME__" template-id="asubform"></apie-form-list>
-      </apie-form>
-      <apie-form action="?name={name}" debug-mode>
-        <apie-render-template name="form[clone]" replace-string="__FORMNAME__" template-id="asubform"></apie-render-template>
-        <apie-render-template name="form[clone2]" replace-string="__FORMNAME__" template-id="asubform"></apie-render-template>
-        <apie-form-list name="form[list]" replace-string="__FORMNAME__" template-id="asubform"></apie-form-list>
-        <apie-single-input types="text" name="form[name]" value="42"></apie-single-input>
-        <apie-form-select replace-string="__FORMNAME__" name="form[form_select]">
-        </apie-form-select>
-        <script>
-  document.querySelector('apie-form-select').options = [
-    {
-      name: 'string',
-      value: 'stringinput'
-    },
-    {
-      name: 'null',
-      value: 'nullinput',
-    }
-  ];
-        </script>
-        <apie-null-input name="form[null]"></apie-null-input>
-        <apie-textarea name="form[multi]" value="1 2 3"></apie-textarea>
-        <apie-form-group name="form[group]" label="label">
-          <apie-single-input types="text" name="form[group][name]" value="4632622"></apie-single-input>
-          <apie-null-input name="form[group][null]"></apie-null-input>
-          <apie-textarea name="form[group][multi]" value="1 2 3 4y462"></apie-textarea>
-          <apie-form-group name="form[group][subgroup]"></apie-form-group>
-        </apie-form-group>
-        <apie-select name="form[select]" value="M"></apie-select>
-        <apie-select name="form[select2]" value="unk"></apie-select>
-        <script>
-          for (let a of document.querySelectorAll('apie-select')) {
-            a.options = [
-              { name: 'Male', value: 'M' },
-              { name: 'Female', value: 'F' },
-            ]
-          }
-        </script>
-        <apie-single-input types="text" name="form[password]">
-        </apie-single-input>
-        <apie-validation-check name="form[password]" matches-regex="^.{6,20}$" text="Password should be between 6 to 20 characters">
-        </apie-validation-check>
-      </apie-form>
-      <script>
-        document.querySelector('apie-form').validationError = {
-          'does-not-exist': {'': 'hi'}
-        }
-      </script>  
+    <apie-form-field-definition id="list-item" name="test" types="text" label="test"></apie-form-field-definition>
+    <apie-form-definition id="definition">
+      <apie-form-field-definition name="test" types="text" label="test"></apie-form-field-definition>
+      <apie-form-field-definition name="test2" types="text" label="test2"></apie-form-field-definition>
+      <apie-form-field-definition id="fileUpload" name="fileUpload" types="file" label="file upload"></apie-form-field-definition>
+      <apie-form-group-definition name="group">
+        <apie-form-field-definition name="test" types="text" label="test"></apie-form-field-definition>
+        <apie-form-field-definition name="test2" types="text" label="test 2"></apie-form-field-definition>
+      </apie-form-group-definition>
+      <apie-form-list-definition name="list" definition-id="list-item"></apie-form-list-definition>
+      <apie-form-list-definition name="files" definition-id="fileUpload"></apie-form-list-definition>
+    </apie-form-definition>  
+    <apie-form definition-id="definition" supports-multipart debug-mode></apie-form>    
   </body>
 </html>

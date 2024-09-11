@@ -5,93 +5,44 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ChangeEvent, Option, ValidationErrorState } from "./utils/utils";
-export { ChangeEvent, Option, ValidationErrorState } from "./utils/utils";
+import { FieldList, FormDefinition, FormField, FormGroupField, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
+import { ChangeEvent } from "./utils/utils";
+export { FieldList, FormDefinition, FormField, FormGroupField, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
+export { ChangeEvent } from "./utils/utils";
 export namespace Components {
-    interface ApieCsrfToken {
-        "value": string;
-    }
-    interface ApieDate {
-        "apie": Symbol;
-        "dateFormat": string;
-        "internalState": {
-    date: string,
-    month: string,
-    year: string,
-    hours: string,
-    minutes: string,
-    seconds: string,
-    microseconds: string,
-    timezone: string,
-  };
-        "label": string | null;
-        "name": string;
-        "types": string;
-        "value": string | null;
-    }
-    interface ApieDisplayMissingValidationErrors {
-        "validationError": ValidationErrorState;
-    }
-    interface ApieFileInput {
-        "apie": Symbol;
-        "name": string;
-        "value": File|null;
-    }
     interface ApieForm {
         "action": string;
+        "csrfToken": string|null;
         "debugMode": boolean;
-        "internalState": Record<string, any>;
+        "definitionId": string;
+        "formDefinition": FormDefinition;
+        "internalState": NestedRecord<Primitive>;
         "method": string;
         "submitLabel": string;
         "supportsMultipart": boolean;
-        "validationError": Record<string, any>;
-        "value": Record<string, any>;
+        "validationErrors": NestedRecord<string>;
+        "value": NestedRecord<SubmitField>;
     }
-    interface ApieFormGroup {
-        "apie": Symbol;
-        "internalState": Record<string, any>;
-        "label": string | null;
+    interface ApieFormDefinition {
+        "getDefinition": () => Promise<FormDefinition>;
+    }
+    interface ApieFormFieldDefinition {
+        "additionalSettings"?: SingleFieldSettings;
+        "getDefinition": () => Promise<SingleField>;
+        "label": string;
         "name": string;
-        "validationError": Record<string, any>;
-        "value": Record<string, any>;
+        "types": string;
     }
-    interface ApieFormHashmap {
-        "apie": Symbol;
+    interface ApieFormGroupDefinition {
+        "getDefinition": () => Promise<FormGroupField>;
+        "label": string|null;
         "name": string;
-        "replaceString": string;
-        "templateId": string;
-        "validationError": Record<string, any>;
-        "value": Record<any, any>;
     }
-    interface ApieFormList {
-        "apie": Symbol;
+    interface ApieFormListDefinition {
+        "definitionId": string;
+        "getDefinition": () => Promise<FieldList>;
+        "label": string|null;
         "name": string;
-        "replaceString": string;
-        "templateId": string;
-        "validationError": Record<string, any>;
-        "value": any[];
-    }
-    interface ApieFormSelect {
-        "apie": Symbol;
-        "internalState": Record<string, any>;
-        "name": string;
-        "options": Option[];
-        "replaceString": string;
-        "value": string;
-    }
-    interface ApieFormSplit {
-    }
-    interface ApieNullInput {
-        "apie": Symbol;
-        "name": string;
-        "value": any;
-    }
-    interface ApieRenderTemplate {
-        "apie": Symbol;
-        "name": string;
-        "replaceString": string;
-        "templateId": string;
-        "value": any;
     }
     interface ApieRenderTypes {
         "csrfToken": string|null;
@@ -102,14 +53,6 @@ export namespace Components {
     interface ApieScript {
         "type": string;
     }
-    interface ApieSelect {
-        "apie": Symbol;
-        "name": string;
-        "options": Option[];
-        "value": string;
-    }
-    interface ApieServersideError {
-    }
     interface ApieSingleInput {
         "apie": Symbol;
         "label": string | null;
@@ -117,227 +60,41 @@ export namespace Components {
         "types": string;
         "value": string;
     }
-    interface ApieTextarea {
-        "apie": Symbol;
-        "name": string;
-        "value": string;
-    }
-    interface ApieValidationCheck {
-        "apie": Symbol;
-        "matchesRegex": string | null;
-        "name": string;
-        "notMatchesRegex": string | null;
-        "text": string;
-        "value": string;
-    }
-}
-export interface ApieDateCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLApieDateElement;
-}
-export interface ApieFileInputCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLApieFileInputElement;
-}
-export interface ApieFormGroupCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLApieFormGroupElement;
-}
-export interface ApieFormHashmapCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLApieFormHashmapElement;
-}
-export interface ApieFormListCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLApieFormListElement;
-}
-export interface ApieFormSelectCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLApieFormSelectElement;
-}
-export interface ApieNullInputCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLApieNullInputElement;
-}
-export interface ApieRenderTemplateCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLApieRenderTemplateElement;
-}
-export interface ApieSelectCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLApieSelectElement;
 }
 export interface ApieSingleInputCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLApieSingleInputElement;
 }
-export interface ApieTextareaCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLApieTextareaElement;
-}
 declare global {
-    interface HTMLApieCsrfTokenElement extends Components.ApieCsrfToken, HTMLStencilElement {
-    }
-    var HTMLApieCsrfTokenElement: {
-        prototype: HTMLApieCsrfTokenElement;
-        new (): HTMLApieCsrfTokenElement;
-    };
-    interface HTMLApieDateElementEventMap {
-        "triggerChange": ChangeEvent;
-        "triggerInternalState": ChangeEvent;
-    }
-    interface HTMLApieDateElement extends Components.ApieDate, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLApieDateElementEventMap>(type: K, listener: (this: HTMLApieDateElement, ev: ApieDateCustomEvent<HTMLApieDateElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLApieDateElementEventMap>(type: K, listener: (this: HTMLApieDateElement, ev: ApieDateCustomEvent<HTMLApieDateElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLApieDateElement: {
-        prototype: HTMLApieDateElement;
-        new (): HTMLApieDateElement;
-    };
-    interface HTMLApieDisplayMissingValidationErrorsElement extends Components.ApieDisplayMissingValidationErrors, HTMLStencilElement {
-    }
-    var HTMLApieDisplayMissingValidationErrorsElement: {
-        prototype: HTMLApieDisplayMissingValidationErrorsElement;
-        new (): HTMLApieDisplayMissingValidationErrorsElement;
-    };
-    interface HTMLApieFileInputElementEventMap {
-        "triggerChange": ChangeEvent;
-    }
-    interface HTMLApieFileInputElement extends Components.ApieFileInput, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLApieFileInputElementEventMap>(type: K, listener: (this: HTMLApieFileInputElement, ev: ApieFileInputCustomEvent<HTMLApieFileInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLApieFileInputElementEventMap>(type: K, listener: (this: HTMLApieFileInputElement, ev: ApieFileInputCustomEvent<HTMLApieFileInputElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLApieFileInputElement: {
-        prototype: HTMLApieFileInputElement;
-        new (): HTMLApieFileInputElement;
-    };
     interface HTMLApieFormElement extends Components.ApieForm, HTMLStencilElement {
     }
     var HTMLApieFormElement: {
         prototype: HTMLApieFormElement;
         new (): HTMLApieFormElement;
     };
-    interface HTMLApieFormGroupElementEventMap {
-        "triggerChange": ChangeEvent;
-        "triggerInternalState": ChangeEvent;
+    interface HTMLApieFormDefinitionElement extends Components.ApieFormDefinition, HTMLStencilElement {
     }
-    interface HTMLApieFormGroupElement extends Components.ApieFormGroup, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLApieFormGroupElementEventMap>(type: K, listener: (this: HTMLApieFormGroupElement, ev: ApieFormGroupCustomEvent<HTMLApieFormGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLApieFormGroupElementEventMap>(type: K, listener: (this: HTMLApieFormGroupElement, ev: ApieFormGroupCustomEvent<HTMLApieFormGroupElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLApieFormGroupElement: {
-        prototype: HTMLApieFormGroupElement;
-        new (): HTMLApieFormGroupElement;
+    var HTMLApieFormDefinitionElement: {
+        prototype: HTMLApieFormDefinitionElement;
+        new (): HTMLApieFormDefinitionElement;
     };
-    interface HTMLApieFormHashmapElementEventMap {
-        "triggerChange": ChangeEvent;
+    interface HTMLApieFormFieldDefinitionElement extends Components.ApieFormFieldDefinition, HTMLStencilElement {
     }
-    interface HTMLApieFormHashmapElement extends Components.ApieFormHashmap, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLApieFormHashmapElementEventMap>(type: K, listener: (this: HTMLApieFormHashmapElement, ev: ApieFormHashmapCustomEvent<HTMLApieFormHashmapElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLApieFormHashmapElementEventMap>(type: K, listener: (this: HTMLApieFormHashmapElement, ev: ApieFormHashmapCustomEvent<HTMLApieFormHashmapElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLApieFormHashmapElement: {
-        prototype: HTMLApieFormHashmapElement;
-        new (): HTMLApieFormHashmapElement;
+    var HTMLApieFormFieldDefinitionElement: {
+        prototype: HTMLApieFormFieldDefinitionElement;
+        new (): HTMLApieFormFieldDefinitionElement;
     };
-    interface HTMLApieFormListElementEventMap {
-        "triggerChange": ChangeEvent;
+    interface HTMLApieFormGroupDefinitionElement extends Components.ApieFormGroupDefinition, HTMLStencilElement {
     }
-    interface HTMLApieFormListElement extends Components.ApieFormList, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLApieFormListElementEventMap>(type: K, listener: (this: HTMLApieFormListElement, ev: ApieFormListCustomEvent<HTMLApieFormListElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLApieFormListElementEventMap>(type: K, listener: (this: HTMLApieFormListElement, ev: ApieFormListCustomEvent<HTMLApieFormListElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLApieFormListElement: {
-        prototype: HTMLApieFormListElement;
-        new (): HTMLApieFormListElement;
+    var HTMLApieFormGroupDefinitionElement: {
+        prototype: HTMLApieFormGroupDefinitionElement;
+        new (): HTMLApieFormGroupDefinitionElement;
     };
-    interface HTMLApieFormSelectElementEventMap {
-        "triggerChange": ChangeEvent;
-        "triggerInternalState": ChangeEvent;
+    interface HTMLApieFormListDefinitionElement extends Components.ApieFormListDefinition, HTMLStencilElement {
     }
-    interface HTMLApieFormSelectElement extends Components.ApieFormSelect, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLApieFormSelectElementEventMap>(type: K, listener: (this: HTMLApieFormSelectElement, ev: ApieFormSelectCustomEvent<HTMLApieFormSelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLApieFormSelectElementEventMap>(type: K, listener: (this: HTMLApieFormSelectElement, ev: ApieFormSelectCustomEvent<HTMLApieFormSelectElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLApieFormSelectElement: {
-        prototype: HTMLApieFormSelectElement;
-        new (): HTMLApieFormSelectElement;
-    };
-    interface HTMLApieFormSplitElement extends Components.ApieFormSplit, HTMLStencilElement {
-    }
-    var HTMLApieFormSplitElement: {
-        prototype: HTMLApieFormSplitElement;
-        new (): HTMLApieFormSplitElement;
-    };
-    interface HTMLApieNullInputElementEventMap {
-        "triggerChange": ChangeEvent;
-    }
-    interface HTMLApieNullInputElement extends Components.ApieNullInput, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLApieNullInputElementEventMap>(type: K, listener: (this: HTMLApieNullInputElement, ev: ApieNullInputCustomEvent<HTMLApieNullInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLApieNullInputElementEventMap>(type: K, listener: (this: HTMLApieNullInputElement, ev: ApieNullInputCustomEvent<HTMLApieNullInputElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLApieNullInputElement: {
-        prototype: HTMLApieNullInputElement;
-        new (): HTMLApieNullInputElement;
-    };
-    interface HTMLApieRenderTemplateElementEventMap {
-        "triggerChange": ChangeEvent;
-    }
-    interface HTMLApieRenderTemplateElement extends Components.ApieRenderTemplate, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLApieRenderTemplateElementEventMap>(type: K, listener: (this: HTMLApieRenderTemplateElement, ev: ApieRenderTemplateCustomEvent<HTMLApieRenderTemplateElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLApieRenderTemplateElementEventMap>(type: K, listener: (this: HTMLApieRenderTemplateElement, ev: ApieRenderTemplateCustomEvent<HTMLApieRenderTemplateElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLApieRenderTemplateElement: {
-        prototype: HTMLApieRenderTemplateElement;
-        new (): HTMLApieRenderTemplateElement;
+    var HTMLApieFormListDefinitionElement: {
+        prototype: HTMLApieFormListDefinitionElement;
+        new (): HTMLApieFormListDefinitionElement;
     };
     interface HTMLApieRenderTypesElement extends Components.ApieRenderTypes, HTMLStencilElement {
     }
@@ -350,29 +107,6 @@ declare global {
     var HTMLApieScriptElement: {
         prototype: HTMLApieScriptElement;
         new (): HTMLApieScriptElement;
-    };
-    interface HTMLApieSelectElementEventMap {
-        "triggerChange": ChangeEvent;
-    }
-    interface HTMLApieSelectElement extends Components.ApieSelect, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLApieSelectElementEventMap>(type: K, listener: (this: HTMLApieSelectElement, ev: ApieSelectCustomEvent<HTMLApieSelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLApieSelectElementEventMap>(type: K, listener: (this: HTMLApieSelectElement, ev: ApieSelectCustomEvent<HTMLApieSelectElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLApieSelectElement: {
-        prototype: HTMLApieSelectElement;
-        new (): HTMLApieSelectElement;
-    };
-    interface HTMLApieServersideErrorElement extends Components.ApieServersideError, HTMLStencilElement {
-    }
-    var HTMLApieServersideErrorElement: {
-        prototype: HTMLApieServersideErrorElement;
-        new (): HTMLApieServersideErrorElement;
     };
     interface HTMLApieSingleInputElementEventMap {
         "triggerChange": ChangeEvent;
@@ -391,147 +125,47 @@ declare global {
         prototype: HTMLApieSingleInputElement;
         new (): HTMLApieSingleInputElement;
     };
-    interface HTMLApieTextareaElementEventMap {
-        "triggerChange": ChangeEvent;
-    }
-    interface HTMLApieTextareaElement extends Components.ApieTextarea, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLApieTextareaElementEventMap>(type: K, listener: (this: HTMLApieTextareaElement, ev: ApieTextareaCustomEvent<HTMLApieTextareaElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLApieTextareaElementEventMap>(type: K, listener: (this: HTMLApieTextareaElement, ev: ApieTextareaCustomEvent<HTMLApieTextareaElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLApieTextareaElement: {
-        prototype: HTMLApieTextareaElement;
-        new (): HTMLApieTextareaElement;
-    };
-    interface HTMLApieValidationCheckElement extends Components.ApieValidationCheck, HTMLStencilElement {
-    }
-    var HTMLApieValidationCheckElement: {
-        prototype: HTMLApieValidationCheckElement;
-        new (): HTMLApieValidationCheckElement;
-    };
     interface HTMLElementTagNameMap {
-        "apie-csrf-token": HTMLApieCsrfTokenElement;
-        "apie-date": HTMLApieDateElement;
-        "apie-display-missing-validation-errors": HTMLApieDisplayMissingValidationErrorsElement;
-        "apie-file-input": HTMLApieFileInputElement;
         "apie-form": HTMLApieFormElement;
-        "apie-form-group": HTMLApieFormGroupElement;
-        "apie-form-hashmap": HTMLApieFormHashmapElement;
-        "apie-form-list": HTMLApieFormListElement;
-        "apie-form-select": HTMLApieFormSelectElement;
-        "apie-form-split": HTMLApieFormSplitElement;
-        "apie-null-input": HTMLApieNullInputElement;
-        "apie-render-template": HTMLApieRenderTemplateElement;
+        "apie-form-definition": HTMLApieFormDefinitionElement;
+        "apie-form-field-definition": HTMLApieFormFieldDefinitionElement;
+        "apie-form-group-definition": HTMLApieFormGroupDefinitionElement;
+        "apie-form-list-definition": HTMLApieFormListDefinitionElement;
         "apie-render-types": HTMLApieRenderTypesElement;
         "apie-script": HTMLApieScriptElement;
-        "apie-select": HTMLApieSelectElement;
-        "apie-serverside-error": HTMLApieServersideErrorElement;
         "apie-single-input": HTMLApieSingleInputElement;
-        "apie-textarea": HTMLApieTextareaElement;
-        "apie-validation-check": HTMLApieValidationCheckElement;
     }
 }
 declare namespace LocalJSX {
-    interface ApieCsrfToken {
-        "value"?: string;
-    }
-    interface ApieDate {
-        "apie"?: Symbol;
-        "dateFormat"?: string;
-        "internalState"?: {
-    date: string,
-    month: string,
-    year: string,
-    hours: string,
-    minutes: string,
-    seconds: string,
-    microseconds: string,
-    timezone: string,
-  };
-        "label"?: string | null;
-        "name"?: string;
-        "onTriggerChange"?: (event: ApieDateCustomEvent<ChangeEvent>) => void;
-        "onTriggerInternalState"?: (event: ApieDateCustomEvent<ChangeEvent>) => void;
-        "types"?: string;
-        "value"?: string | null;
-    }
-    interface ApieDisplayMissingValidationErrors {
-        "validationError"?: ValidationErrorState;
-    }
-    interface ApieFileInput {
-        "apie"?: Symbol;
-        "name"?: string;
-        "onTriggerChange"?: (event: ApieFileInputCustomEvent<ChangeEvent>) => void;
-        "value"?: File|null;
-    }
     interface ApieForm {
         "action"?: string;
+        "csrfToken"?: string|null;
         "debugMode"?: boolean;
-        "internalState"?: Record<string, any>;
+        "definitionId"?: string;
+        "formDefinition"?: FormDefinition;
+        "internalState"?: NestedRecord<Primitive>;
         "method"?: string;
         "submitLabel"?: string;
         "supportsMultipart"?: boolean;
-        "validationError"?: Record<string, any>;
-        "value"?: Record<string, any>;
+        "validationErrors"?: NestedRecord<string>;
+        "value"?: NestedRecord<SubmitField>;
     }
-    interface ApieFormGroup {
-        "apie"?: Symbol;
-        "internalState"?: Record<string, any>;
-        "label"?: string | null;
+    interface ApieFormDefinition {
+    }
+    interface ApieFormFieldDefinition {
+        "additionalSettings"?: SingleFieldSettings;
+        "label"?: string;
         "name"?: string;
-        "onTriggerChange"?: (event: ApieFormGroupCustomEvent<ChangeEvent>) => void;
-        "onTriggerInternalState"?: (event: ApieFormGroupCustomEvent<ChangeEvent>) => void;
-        "validationError"?: Record<string, any>;
-        "value"?: Record<string, any>;
+        "types"?: string;
     }
-    interface ApieFormHashmap {
-        "apie"?: Symbol;
+    interface ApieFormGroupDefinition {
+        "label"?: string|null;
         "name"?: string;
-        "onTriggerChange"?: (event: ApieFormHashmapCustomEvent<ChangeEvent>) => void;
-        "replaceString"?: string;
-        "templateId"?: string;
-        "validationError"?: Record<string, any>;
-        "value"?: Record<any, any>;
     }
-    interface ApieFormList {
-        "apie"?: Symbol;
+    interface ApieFormListDefinition {
+        "definitionId"?: string;
+        "label"?: string|null;
         "name"?: string;
-        "onTriggerChange"?: (event: ApieFormListCustomEvent<ChangeEvent>) => void;
-        "replaceString"?: string;
-        "templateId"?: string;
-        "validationError"?: Record<string, any>;
-        "value"?: any[];
-    }
-    interface ApieFormSelect {
-        "apie"?: Symbol;
-        "internalState"?: Record<string, any>;
-        "name"?: string;
-        "onTriggerChange"?: (event: ApieFormSelectCustomEvent<ChangeEvent>) => void;
-        "onTriggerInternalState"?: (event: ApieFormSelectCustomEvent<ChangeEvent>) => void;
-        "options"?: Option[];
-        "replaceString"?: string;
-        "value"?: string;
-    }
-    interface ApieFormSplit {
-    }
-    interface ApieNullInput {
-        "apie"?: Symbol;
-        "name"?: string;
-        "onTriggerChange"?: (event: ApieNullInputCustomEvent<ChangeEvent>) => void;
-        "value"?: any;
-    }
-    interface ApieRenderTemplate {
-        "apie"?: Symbol;
-        "name"?: string;
-        "onTriggerChange"?: (event: ApieRenderTemplateCustomEvent<ChangeEvent>) => void;
-        "replaceString"?: string;
-        "templateId"?: string;
-        "value"?: any;
     }
     interface ApieRenderTypes {
         "csrfToken"?: string|null;
@@ -542,15 +176,6 @@ declare namespace LocalJSX {
     interface ApieScript {
         "type": string;
     }
-    interface ApieSelect {
-        "apie"?: Symbol;
-        "name"?: string;
-        "onTriggerChange"?: (event: ApieSelectCustomEvent<ChangeEvent>) => void;
-        "options"?: Option[];
-        "value"?: string;
-    }
-    interface ApieServersideError {
-    }
     interface ApieSingleInput {
         "apie"?: Symbol;
         "label"?: string | null;
@@ -559,65 +184,29 @@ declare namespace LocalJSX {
         "types"?: string;
         "value"?: string;
     }
-    interface ApieTextarea {
-        "apie"?: Symbol;
-        "name"?: string;
-        "onTriggerChange"?: (event: ApieTextareaCustomEvent<ChangeEvent>) => void;
-        "value"?: string;
-    }
-    interface ApieValidationCheck {
-        "apie"?: Symbol;
-        "matchesRegex"?: string | null;
-        "name"?: string;
-        "notMatchesRegex"?: string | null;
-        "text"?: string;
-        "value"?: string;
-    }
     interface IntrinsicElements {
-        "apie-csrf-token": ApieCsrfToken;
-        "apie-date": ApieDate;
-        "apie-display-missing-validation-errors": ApieDisplayMissingValidationErrors;
-        "apie-file-input": ApieFileInput;
         "apie-form": ApieForm;
-        "apie-form-group": ApieFormGroup;
-        "apie-form-hashmap": ApieFormHashmap;
-        "apie-form-list": ApieFormList;
-        "apie-form-select": ApieFormSelect;
-        "apie-form-split": ApieFormSplit;
-        "apie-null-input": ApieNullInput;
-        "apie-render-template": ApieRenderTemplate;
+        "apie-form-definition": ApieFormDefinition;
+        "apie-form-field-definition": ApieFormFieldDefinition;
+        "apie-form-group-definition": ApieFormGroupDefinition;
+        "apie-form-list-definition": ApieFormListDefinition;
         "apie-render-types": ApieRenderTypes;
         "apie-script": ApieScript;
-        "apie-select": ApieSelect;
-        "apie-serverside-error": ApieServersideError;
         "apie-single-input": ApieSingleInput;
-        "apie-textarea": ApieTextarea;
-        "apie-validation-check": ApieValidationCheck;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "apie-csrf-token": LocalJSX.ApieCsrfToken & JSXBase.HTMLAttributes<HTMLApieCsrfTokenElement>;
-            "apie-date": LocalJSX.ApieDate & JSXBase.HTMLAttributes<HTMLApieDateElement>;
-            "apie-display-missing-validation-errors": LocalJSX.ApieDisplayMissingValidationErrors & JSXBase.HTMLAttributes<HTMLApieDisplayMissingValidationErrorsElement>;
-            "apie-file-input": LocalJSX.ApieFileInput & JSXBase.HTMLAttributes<HTMLApieFileInputElement>;
             "apie-form": LocalJSX.ApieForm & JSXBase.HTMLAttributes<HTMLApieFormElement>;
-            "apie-form-group": LocalJSX.ApieFormGroup & JSXBase.HTMLAttributes<HTMLApieFormGroupElement>;
-            "apie-form-hashmap": LocalJSX.ApieFormHashmap & JSXBase.HTMLAttributes<HTMLApieFormHashmapElement>;
-            "apie-form-list": LocalJSX.ApieFormList & JSXBase.HTMLAttributes<HTMLApieFormListElement>;
-            "apie-form-select": LocalJSX.ApieFormSelect & JSXBase.HTMLAttributes<HTMLApieFormSelectElement>;
-            "apie-form-split": LocalJSX.ApieFormSplit & JSXBase.HTMLAttributes<HTMLApieFormSplitElement>;
-            "apie-null-input": LocalJSX.ApieNullInput & JSXBase.HTMLAttributes<HTMLApieNullInputElement>;
-            "apie-render-template": LocalJSX.ApieRenderTemplate & JSXBase.HTMLAttributes<HTMLApieRenderTemplateElement>;
+            "apie-form-definition": LocalJSX.ApieFormDefinition & JSXBase.HTMLAttributes<HTMLApieFormDefinitionElement>;
+            "apie-form-field-definition": LocalJSX.ApieFormFieldDefinition & JSXBase.HTMLAttributes<HTMLApieFormFieldDefinitionElement>;
+            "apie-form-group-definition": LocalJSX.ApieFormGroupDefinition & JSXBase.HTMLAttributes<HTMLApieFormGroupDefinitionElement>;
+            "apie-form-list-definition": LocalJSX.ApieFormListDefinition & JSXBase.HTMLAttributes<HTMLApieFormListDefinitionElement>;
             "apie-render-types": LocalJSX.ApieRenderTypes & JSXBase.HTMLAttributes<HTMLApieRenderTypesElement>;
             "apie-script": LocalJSX.ApieScript & JSXBase.HTMLAttributes<HTMLApieScriptElement>;
-            "apie-select": LocalJSX.ApieSelect & JSXBase.HTMLAttributes<HTMLApieSelectElement>;
-            "apie-serverside-error": LocalJSX.ApieServersideError & JSXBase.HTMLAttributes<HTMLApieServersideErrorElement>;
             "apie-single-input": LocalJSX.ApieSingleInput & JSXBase.HTMLAttributes<HTMLApieSingleInputElement>;
-            "apie-textarea": LocalJSX.ApieTextarea & JSXBase.HTMLAttributes<HTMLApieTextareaElement>;
-            "apie-validation-check": LocalJSX.ApieValidationCheck & JSXBase.HTMLAttributes<HTMLApieValidationCheckElement>;
         }
     }
 }

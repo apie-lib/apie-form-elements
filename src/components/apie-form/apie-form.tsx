@@ -1,59 +1,144 @@
-import { Component, Element, Host, Listen, State, Prop, h, VNode } from '@stencil/core';
+import { Component, Host, Prop, Watch, h } from '@stencil/core';
+import { createFormFieldState, FormDefinition, FormField, FormFieldState, FormStateDefinition, NestedRecord, Primitive, SubmitField, toChildState } from '../../utils/FormDefinition';
+import { toString } from '../../utils/utils';
 import { renderTemplates } from '../../utils/renderTemplates';
-import { ChangeEvent, FormNameSplit, isApieConstraint, isApieFormElement } from '../../utils/utils';
-
 @Component({
   tag: 'apie-form',
   styleUrl: 'apie-form.css',
   shadow: false,
 })
 export class ApieForm {
-  @Element() el: HTMLElement;
-
+  @Prop({mutable: true, reflect: true}) formDefinition: FormDefinition;
   @Prop({reflect: true}) action: string = window.location.href;
-
   @Prop({reflect: true}) method: string = 'post';
-
-  @Prop({reflect: true, mutable: true}) value: Record<string, any> = {};
-
-  @Prop({reflect: true, mutable: true}) internalState: Record<string, any> = {}
-
-  @Prop({reflect: true, mutable: true}) validationError: Record<string, any> = {}
-
-  @Prop({reflect: true }) supportsMultipart: boolean = false;
-
   @Prop({reflect: true}) submitLabel: string = 'Submit';
 
-  @Prop() debugMode: boolean = false;
+  @Prop() csrfToken: string|null = null;
+  @Prop({reflect: true, mutable: true}) value: NestedRecord<SubmitField> = {};
+  @Prop({reflect: true, mutable: true}) internalState: NestedRecord<Primitive> = {};
+  @Prop({reflect: true, mutable: true}) validationErrors: NestedRecord<string> = {};
 
-  @State() csrfToken!: string;
+  @Prop() definitionId: string;
 
-  @State() foundInputs: string[] = [];
+  @Prop({ reflect: true }) supportsMultipart: boolean = false;
 
-  @State() valueState!: string;
+  @Prop({ reflect: true }) debugMode: boolean = false;
 
-  @State() internalStateState!: string;
+  instantiated: boolean = false;
 
-  @Listen('triggerChange') onTriggerChange(event: CustomEvent<ChangeEvent>) {
-    const child: any = event.target;
-    if (isApieFormElement(child)) {
-      const childName = child.name.split(new FormNameSplit());
-      if (childName[0] === 'form' && childName.length === 2) {
-        this.value[childName[1]] = event.detail.value;
-        this.updateValuesIfNeeded();
-      }
+  private onFieldUpdate(fieldNamePath: string[], value: SubmitField) {
+    if (fieldNamePath.length === 0) {
+      // todo ensure {}
+      this.value = value as any;
+      return;
     }
+    let ptr: any = this.value;
+    let fieldName: string = fieldNamePath[0];
+    if (fieldNamePath.length === 1) {
+      ptr[fieldName] = value;
+      this.value = { ...this.value }
+      return;
+    }
+    while (fieldNamePath.length > 1) {
+      fieldName = fieldNamePath.shift();
+      if (!Object.prototype.hasOwnProperty.call(ptr, fieldName)) {
+        ptr[fieldName] = {};
+      }
+      ptr = ptr[fieldName];
+    }
+    fieldName = fieldNamePath.shift();
+    ptr[fieldName] = value;
+    this.value = { ...this.value }
   }
 
-  @Listen('triggerInternalState') onTriggerInternalState(event: CustomEvent<ChangeEvent>) {
-    const child: any = event.target;
-    if (isApieFormElement(child)) {
-      const childName = child.name.split(new FormNameSplit());
-      if (childName[0] === 'form' && childName.length === 2) {
-        this.internalState[childName[0]] = event.detail.value;
-        this.updateValuesIfNeeded();
-      }
+  private onAddItemList(fieldNamePath: string[]) {
+    let fieldNamePathCopy = fieldNamePath.slice(0)
+    let ptr: any = this.value;
+    let fieldName: string;
+    while (fieldNamePathCopy.length > 0) {
+      fieldName = fieldNamePathCopy.shift();
+      ptr = ptr[fieldName] ? ptr[fieldName] : [];
     }
+    ptr = Array.from(ptr ?? []);
+    ptr.push(null);
+    this.onFieldUpdate(fieldNamePath, ptr);
+  }
+
+  private renderRootField(formField: FormField, formDefinition: FormStateDefinition) {
+    const formFieldState = createFormFieldState(formField, formDefinition);
+    return this.renderField(formFieldState, []);
+  }
+
+  @Watch('definitionId') async onDefinitionIdChange(newValue): Promise<void> {
+    const definition = await new Promise((resolve, reject) => {
+      const id = setInterval(() => {
+        if (!this.instantiated || this.definitionId !== newValue) {
+          clearInterval(id);
+          reject(new Error('definitionId changed or component destroyed'));
+        }
+        const definition = document.getElementById(this.definitionId);
+        if (definition) {
+          clearInterval(id);
+          resolve(definition);
+        }
+      })
+    });
+    this.formDefinition = await (definition as any).getDefinition();
+  }
+
+  private formName(prefixes: string[]): string
+  {
+    if (prefixes.length === 0) {
+      return 'form';
+    }
+    return 'form[' + prefixes.join('][') + ']';
+  }
+
+  private renderField(state: FormFieldState, prefixes: string[], key: number | null = null) {
+    const newPrefix = [...prefixes, state.form.name];
+    if (state.form.fieldType === 'single') {
+      return <apie-single-input
+        key={key ?? state.form.name}
+        name={this.formName(newPrefix)}
+        types={state.form.types.join(',')}
+        label={state.form.label}
+        value={toString(state.value as any)}
+        onTriggerChange={(ev) => { this.onFieldUpdate(newPrefix.slice(0), ev.detail.value as any)}}
+      ></apie-single-input>
+    }
+    if (state.form.fieldType === 'group') {
+      const subElements = [];
+      let index = 0;
+      for (let formField of state.form.fields) {
+        let newState = toChildState(formField, state);
+        subElements.push(this.renderField(newState, newPrefix, index));
+        index++;
+      }
+      return <div key={key ?? state.form.name}>{subElements}</div>
+    }
+    if (state.form.fieldType === 'list') {
+      const subElements = [];
+      const list = Array.from(state.value as any ?? []);
+      for (let index = 0; index < list.length; index++) {
+        const subFormField: FormField = JSON.parse(JSON.stringify(state.form.subField));
+        subFormField.name = String(index);
+        let newState = toChildState(subFormField, state);
+        subElements.push(this.renderField(newState, newPrefix, index));
+      }
+      return <div>
+        <div key={key ?? state.form.name}>{subElements}</div>
+        <button type="button" onClick={() => this.onAddItemList(newPrefix.slice(0)) }>Add</button>
+      </div>
+    }
+    // TODO map
+    return <div></div>
+  }
+
+  private renderSubmitButton() {
+    return renderTemplates.renderSubmitButton({
+      label: this.submitLabel,
+      disabled: false
+    })
   }
 
   private getCalculatedAction(): string {
@@ -65,89 +150,42 @@ export class ApieForm {
     );
   }
 
-  private updateValuesIfNeeded(): void {
-    const valueState = JSON.stringify(this.value);
-    const internalStateState: string = JSON.stringify(this.internalState);
-    if (valueState !== this.valueState) {
-      Promise.resolve().then(() => {
-        this.valueState = valueState;
-        this.value = { ...this.value };
-      })
-    }
-    if (internalStateState !== this.internalStateState) {
-      Promise.resolve().then(() => {
-        this.internalStateState = internalStateState;
-        this.internalState = { ...this.internalState };
-      })
+  connectedCallback() {
+    this.instantiated = true;
+    if (this.definitionId) {
+      this.onDefinitionIdChange(this.definitionId);
     }
   }
 
-  private renderSubmitButton() {
-    return renderTemplates.renderSubmitButton({
-      label: this.submitLabel,
-      disabled: false
-    })
-  }
-
-  public componentDidRender()
-  {
-    const foundInputs = [];
-    const form = this.el.querySelector('form .form');
-    if (!form) {
-      return;
-    }
-    let csrfToken = null;
-    form.childNodes.forEach((child: any) => {
-      if (!child.name) {
-        if (child.nodeName === 'apie-csrf-token') {
-          csrfToken = child.value;
-        }
-        return;
-      }
-      const childName = child.name.split(new FormNameSplit());
-        if (isApieFormElement(child)) {
-          if (childName.length > 1 && childName[0] === 'form') {
-            foundInputs.push(childName[1]);
-          }
-          if (childName.length === 2) {
-            this.value[childName[1]] = child.value;
-            this.internalState[childName[1]] = child.internalState;
-          }
-        } else if (isApieConstraint(child)) {
-          if (childName.length > 1 && childName[0] === 'form') {
-            child.value = this.value[childName[1]];
-          }
-        }
-    });
-    this.updateValuesIfNeeded();
-    if (this.csrfToken !== csrfToken) {
-      Promise.resolve().then(() => {
-        this.csrfToken = csrfToken;
-      })
-    }  
-  }
-
-  private renderMainGroup(content: VNode): VNode {
-    return renderTemplates.renderFormGroup({content, label: null})
+  disconnectedCallback() {
+    this.instantiated = false;
   }
 
   render() {
+    const formDefinition = this.formDefinition;
+    if (!formDefinition) {
+      return <Host></Host>
+    }
+    const state: FormStateDefinition = {
+      form: formDefinition,
+      csrfToken: this.csrfToken,
+      value: this.value,
+      internalState: this.internalState,
+      validationErrors: this.validationErrors,
+    }
     return (
       <Host>
-        { this.debugMode && <table>
-          <tr>
-            <td>
-              <pre>{ JSON.stringify(this.value, null, 4) }</pre>
-            </td>
-            <td>
-              <pre>{ JSON.stringify(this.internalState, null, 4) }</pre>
-            </td>
-          </tr>
-        </table>}
+        { this.debugMode && <pre>{ JSON.stringify(this.value, null, 4) }</pre>}
+        <slot></slot>
         <form action={this.getCalculatedAction()} method={this.method} enctype={this.supportsMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded'}>
-          { this.renderMainGroup(<div class="form"><slot></slot>{this.renderSubmitButton()}</div>) }
-          <apie-render-types csrfToken={this.csrfToken} value={this.value} internalState={this.internalState} supportsMultipart={this.supportsMultipart}/>
-        </form>
+        { formDefinition.fields.map((formField: FormField) => this.renderRootField(formField, state))}
+         <apie-render-types
+         value={this.value}
+         csrfToken={this.csrfToken}
+         internalState={this.internalState}
+         supportsMultipart={this.supportsMultipart}></apie-render-types>
+         {this.renderSubmitButton()}
+         </form>
       </Host>
     );
   }
