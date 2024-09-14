@@ -130,3 +130,18 @@ export function toString(value: boolean|string|File|null|number|undefined): stri
   }
   return String(value);
 }
+
+export function toArray(value: Record<any, any>|Array<any>|boolean|string|File|null|number|undefined): Array<any> {
+  if (value === undefined || value === null || value instanceof File || typeof value === 'string' || typeof value === 'number' || value === true || value === false) {
+    return [];
+  }
+  if (typeof value === 'object' && Object.hasOwnProperty.call(value, 0)) {
+    const result = [];
+    for (let counter =0; Object.hasOwnProperty.call(value, counter); counter++) {
+      result.push(value[counter]);
+    }
+    return result;
+  }
+
+  return Array.from(value as any);
+}

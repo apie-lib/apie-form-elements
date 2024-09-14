@@ -1,6 +1,6 @@
 import { Component, Host, Prop, Watch, h } from '@stencil/core';
 import { createFormFieldState, FormDefinition, FormField, FormFieldState, FormStateDefinition, NestedRecord, Primitive, SubmitField, toChildState } from '../../utils/FormDefinition';
-import { toString } from '../../utils/utils';
+import { toArray, toString } from '../../utils/utils';
 import { renderTemplates } from '../../utils/renderTemplates';
 @Component({
   tag: 'apie-form',
@@ -63,14 +63,14 @@ export class ApieForm {
   }
 
   private onAddItemList(fieldNamePath: string[]) {
-    const ptr: any[] = Array.from(this.getItem(fieldNamePath) ?? []);
+    const ptr: any[] = toArray(this.getItem(fieldNamePath)).slice(0);
     ptr.push(null);
     this.onFieldUpdate(fieldNamePath, ptr as any);
   }
 
   private removeFromList(fieldNamePath: string[], index: number)
   {
-    const ptr: any[] = Array.from(this.getItem(fieldNamePath) ?? []).slice(0);
+    const ptr: any[] = toArray(this.getItem(fieldNamePath)).slice(0);
     ptr.splice(index, 1);
     this.onFieldUpdate(fieldNamePath, ptr as any);
   }
@@ -149,7 +149,7 @@ export class ApieForm {
     }
     if (state.form.fieldType === 'list') {
       const subElements = [];
-      const list = Array.from(state.value as any ?? []);
+      const list = toArray(state.value).slice(0);
       for (let index = 0; index < list.length; index++) {
         const subFormField: FormField = JSON.parse(JSON.stringify(state.form.subField));
         subFormField.name = String(index);
