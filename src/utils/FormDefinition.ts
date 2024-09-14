@@ -35,14 +35,15 @@ export interface FieldList {
     subField: FormField;
 }
 
-export interface FormGroupMap {
+export interface FieldMap {
     fieldType: 'map',
     name: string;
     label: string|null;
     types: string[];
+    subField: FormField;
 }
 
-export type FormField = FormGroupField | SingleField | FormGroupField | FieldList;
+export type FormField = FormGroupField | SingleField | FieldMap | FieldList;
 
 export interface FormDefinition {
     fields: Array<FormField>
@@ -85,7 +86,12 @@ export function toChildState(formField: FormField, state: FormFieldState): FormF
   }
 }
 
-const FORM_FIELDS = ['apie-form-field-definition', 'apie-form-group-definition', 'apie-form-list-definition'];
+const FORM_FIELDS = [
+  'apie-form-field-definition',
+  'apie-form-group-definition',
+  'apie-form-list-definition',
+  'apie-form-map-definition'
+];
 
 export async function toFormField(list: NodeListOf<ChildNode>): Promise<FormField[]>
 {

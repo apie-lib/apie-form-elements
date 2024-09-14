@@ -18,7 +18,7 @@ export class ApieSingleInput {
 
   @Prop({reflect: true}) apie: Symbol = APIE_FORM_CONTROLLER;
 
-  @Event() triggerChange: EventEmitter<ChangeEvent>
+  @Event() triggerChange: EventEmitter<ChangeEvent>;
   private renderInput()  {
     return renderTemplates.renderSingleInput({
       name: this.name,

@@ -51,7 +51,7 @@ export class ApieForm {
     this.value = { ...this.value }
   }
 
-  private onAddItemList(fieldNamePath: string[]) {
+  private getItem(fieldNamePath: string[]): any {
     let fieldNamePathCopy = fieldNamePath.slice(0)
     let ptr: any = this.value;
     let fieldName: string;
@@ -59,9 +59,20 @@ export class ApieForm {
       fieldName = fieldNamePathCopy.shift();
       ptr = ptr[fieldName] ? ptr[fieldName] : [];
     }
-    ptr = Array.from(ptr ?? []);
+    return ptr;
+  }
+
+  private onAddItemList(fieldNamePath: string[]) {
+    const ptr: any[] = Array.from(this.getItem(fieldNamePath) ?? []);
     ptr.push(null);
-    this.onFieldUpdate(fieldNamePath, ptr);
+    this.onFieldUpdate(fieldNamePath, ptr as any);
+  }
+
+  private removeFromList(fieldNamePath: string[], index: number)
+  {
+    const ptr: any[] = Array.from(this.getItem(fieldNamePath) ?? []).slice(0);
+    ptr.splice(index, 1);
+    this.onFieldUpdate(fieldNamePath, ptr as any);
   }
 
   private renderRootField(formField: FormField, formDefinition: FormStateDefinition) {
@@ -116,6 +127,26 @@ export class ApieForm {
       }
       return <div key={key ?? state.form.name}>{subElements}</div>
     }
+    if (state.form.fieldType === 'map') {
+      const subElements = [];
+      const formName = this.formName(newPrefix);
+      const list = Array.from(Object.entries(state.value as any ?? {}));
+      for (let index = 0; index < list.length; index++) {
+        const subFormField: FormField = JSON.parse(JSON.stringify(state.form.subField));
+        subFormField.name = String(list[index][0]);
+        let newState = toChildState(subFormField, state);
+        subElements.push(this.renderField(newState, newPrefix, index));
+      }
+      return <apie-form-map
+        key={key ?? state.form.name}
+        subElements={subElements}
+        name={formName}
+        types={state.form.types.join(',')}
+        label={state.form.label}
+        value={state.value}
+        onTriggerChange={(ev) => { ev.detail.name === formName && this.onFieldUpdate(newPrefix, ev.detail.value as any)}}
+        ></apie-form-map>
+    }
     if (state.form.fieldType === 'list') {
       const subElements = [];
       const list = Array.from(state.value as any ?? []);
@@ -126,11 +157,13 @@ export class ApieForm {
         subElements.push(this.renderField(newState, newPrefix, index));
       }
       return <div>
-        <div key={key ?? state.form.name}>{subElements}</div>
+        <div key={key ?? state.form.name}>{subElements.map((subElement, index) => {
+          return [subElement, <button type="button" onClick={() => this.removeFromList(newPrefix.slice(0), index)}>X</button>]
+        })}</div>
         <button type="button" onClick={() => this.onAddItemList(newPrefix.slice(0)) }>Add</button>
       </div>
     }
-    // TODO map
+    // TODO split
     return <div></div>
   }
 
@@ -175,10 +208,17 @@ export class ApieForm {
     }
     return (
       <Host>
-        { this.debugMode && <pre>{ JSON.stringify(this.value, null, 4) }</pre>}
+        { this.debugMode && <pre>{ JSON.stringify(
+          this.value,
+          (_key: string, value: any) => {
+            if (value instanceof File) { return { name: value.name, type: value.type, lastModified: value.lastModified, size: value.size }; }
+            return value;
+          },
+          4
+        ) }</pre>}
         <slot></slot>
-        <form action={this.getCalculatedAction()} method={this.method} enctype={this.supportsMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded'}>
         { formDefinition.fields.map((formField: FormField) => this.renderRootField(formField, state))}
+        <form action={this.getCalculatedAction()} method={this.method} enctype={this.supportsMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded'}>
          <apie-render-types
          value={this.value}
          csrfToken={this.csrfToken}
