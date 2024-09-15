@@ -33,8 +33,6 @@ export class ApieFormSelect {
       disabled: this.options.length === 0,
       valueChanged: (newValue?: string): void => {
         const internalState = this.internalState ? { ...this.internalState } : {}
-        console.log(internalState);
-        debugger;
         const prevSplit = internalState._split ?? null;
         internalState._split = newValue;
         if (prevSplit) {
