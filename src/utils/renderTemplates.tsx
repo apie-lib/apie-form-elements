@@ -90,7 +90,7 @@ export const renderSingleTemplates = {
       return <select disabled><option selected>{state.value}</option></select>
     }
 
-    return <select disabled={state.disabled}>
+    return <select disabled={state.disabled} onChange={(ev: any) => state.valueChanged(ev.target.value)}>
       {state.additionalSettings.options.map((opt) => <option value={toString(opt.value as any)} selected={state.value === opt.value}>{opt.name}</option>)}
     </select>
   },

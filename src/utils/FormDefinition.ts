@@ -1,4 +1,4 @@
-import { Option } from './utils';
+import { clone, Option } from './utils';
 
 export type NestedRecord<T> = { [key: string]: NestedRecordField<T> }
 export type NestedRecordField<T> = T | NestedRecord<T>
@@ -8,6 +8,13 @@ export type Primitive = NestedRecord<string|boolean|number|null>;
 export interface SingleFieldSettings {
     options?: Option[], // used by Select
     dateFormat?: string, // used by date time formats
+}
+
+export interface FormSelectOption extends Option
+{
+  name: string;
+  value: string|Record<string, any>|File;
+  definition?: FormField
 }
 
 export interface SingleField {
@@ -43,7 +50,14 @@ export interface FieldMap {
     subField: FormField;
 }
 
-export type FormField = FormGroupField | SingleField | FieldMap | FieldList;
+export interface FieldSplit {
+  fieldType: 'split';
+  name: string;
+  label: string|null;
+  subFields: Array<FormSelectOption>;
+}
+
+export type FormField = FormGroupField | SingleField | FieldMap | FieldList | FieldSplit;
 
 export interface FormDefinition {
     fields: Array<FormField>
@@ -86,11 +100,19 @@ export function toChildState(formField: FormField, state: FormFieldState): FormF
   }
 }
 
+export function changeForm(formField: FormField, state: FormFieldState): FormFieldState
+{
+  state = clone(state);
+  state.form = formField;
+  return state;
+}
+
 const FORM_FIELDS = [
   'apie-form-field-definition',
   'apie-form-group-definition',
   'apie-form-list-definition',
-  'apie-form-map-definition'
+  'apie-form-map-definition',
+  'apie-form-select-definition',
 ];
 
 export async function toFormField(list: NodeListOf<ChildNode>): Promise<FormField[]>

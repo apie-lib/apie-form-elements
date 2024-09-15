@@ -1,6 +1,6 @@
 import { Component, Host, Prop, Watch, h } from '@stencil/core';
-import { createFormFieldState, FormDefinition, FormField, FormFieldState, FormStateDefinition, NestedRecord, Primitive, SubmitField, toChildState } from '../../utils/FormDefinition';
-import { toArray, toString } from '../../utils/utils';
+import { changeForm, createFormFieldState, FormDefinition, FormField, FormFieldState, FormStateDefinition, NestedRecord, Primitive, SubmitField, toChildState } from '../../utils/FormDefinition';
+import { clone, toArray } from '../../utils/utils';
 import { renderTemplates } from '../../utils/renderTemplates';
 @Component({
   tag: 'apie-form',
@@ -25,6 +25,31 @@ export class ApieForm {
   @Prop({ reflect: true }) debugMode: boolean = false;
 
   instantiated: boolean = false;
+
+  private onInternalStateUpdate(fieldNamePath: string[], value: SubmitField) {
+    if (fieldNamePath.length === 0) {
+      // todo ensure {}
+      this.internalState = value as any;
+      return;
+    }
+    let ptr: any = this.internalState;
+    let fieldName: string = fieldNamePath[0];
+    if (fieldNamePath.length === 1) {
+      ptr[fieldName] = value;
+      this.internalState = { ...this.internalState }
+      return;
+    }
+    while (fieldNamePath.length > 1) {
+      fieldName = fieldNamePath.shift();
+      if (!Object.prototype.hasOwnProperty.call(ptr, fieldName)) {
+        ptr[fieldName] = {};
+      }
+      ptr = ptr[fieldName];
+    }
+    fieldName = fieldNamePath.shift();
+    ptr[fieldName] = value;
+    this.internalState = { ...this.internalState }
+  }
 
   private onFieldUpdate(fieldNamePath: string[], value: SubmitField) {
     if (fieldNamePath.length === 0) {
@@ -105,7 +130,7 @@ export class ApieForm {
     return 'form[' + prefixes.join('][') + ']';
   }
 
-  private renderField(state: FormFieldState, prefixes: string[], key: number | null = null) {
+  private renderField(state: FormFieldState, prefixes: string[], key: number | string | null = null) {
     const newPrefix = [...prefixes, state.form.name];
     if (state.form.fieldType === 'single') {
       return <apie-single-input
@@ -113,7 +138,7 @@ export class ApieForm {
         name={this.formName(newPrefix)}
         types={state.form.types.join(',')}
         label={state.form.label}
-        value={toString(state.value as any)}
+        value={state.value as any}
         onTriggerChange={(ev) => { this.onFieldUpdate(newPrefix.slice(0), ev.detail.value as any)}}
       ></apie-single-input>
     }
@@ -132,7 +157,7 @@ export class ApieForm {
       const formName = this.formName(newPrefix);
       const list = Array.from(Object.entries(state.value as any ?? {}));
       for (let index = 0; index < list.length; index++) {
-        const subFormField: FormField = JSON.parse(JSON.stringify(state.form.subField));
+        const subFormField: FormField = clone(state.form.subField);
         subFormField.name = String(list[index][0]);
         let newState = toChildState(subFormField, state);
         subElements.push(this.renderField(newState, newPrefix, index));
@@ -151,7 +176,7 @@ export class ApieForm {
       const subElements = [];
       const list = toArray(state.value).slice(0);
       for (let index = 0; index < list.length; index++) {
-        const subFormField: FormField = JSON.parse(JSON.stringify(state.form.subField));
+        const subFormField: FormField = clone(state.form.subField);
         subFormField.name = String(index);
         let newState = toChildState(subFormField, state);
         subElements.push(this.renderField(newState, newPrefix, index));
@@ -164,6 +189,33 @@ export class ApieForm {
       </div>
     }
     // TODO split
+    if (state.form.fieldType = 'split') {
+      const formName = this.formName(newPrefix);
+      const selected = state.internalState?._split ?? null;
+      let selectedField = null;
+      for (let subField of state.form.subFields) {
+        if (subField.value === selected) {
+          selectedField = subField;
+          break;
+        }
+      }
+
+      return [
+        <apie-form-select 
+          key={key ?? state.form.name}
+          name={formName}
+          label={state.form.label}
+          value={state.value}
+          options={state.form.subFields}
+          internalState={state.internalState ?? {}}
+          onTriggerChange={(ev) => { ev.detail.name === formName && this.onFieldUpdate(newPrefix, ev.detail.value as any)}}
+          onTriggerInternalState={(ev) => { ev.detail.name === formName && this.onInternalStateUpdate(newPrefix, ev.detail.value as any)}}
+          ></apie-form-select>,
+          selectedField && this.renderField(changeForm(selectedField.definition, state), prefixes, key + '_subform')
+        ]
+       
+    }
+    console.log(state);
     return <div></div>
   }
 

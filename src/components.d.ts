@@ -5,12 +5,12 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { FieldList, FieldMap, FormDefinition, FormField, FormGroupField, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
+import { FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
 import { VNode } from "@stencil/core";
-import { ChangeEvent } from "./utils/utils";
-export { FieldList, FieldMap, FormDefinition, FormField, FormGroupField, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
+import { ChangeEvent, Option } from "./utils/utils";
+export { FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
 export { VNode } from "@stencil/core";
-export { ChangeEvent } from "./utils/utils";
+export { ChangeEvent, Option } from "./utils/utils";
 export namespace Components {
     interface ApieForm {
         "action": string;
@@ -60,6 +60,20 @@ export namespace Components {
         "label": string|null;
         "name": string;
     }
+    interface ApieFormSelect {
+        "internalState": Record<string, any>;
+        "label": string | null;
+        "name": string;
+        "options": Array<Option>;
+        "subElements": VNode[];
+        "value": Record<string, any>;
+    }
+    interface ApieFormSelectDefinition {
+        "definitionIdList": Array<FormSelectOption>;
+        "getDefinition": () => Promise<FieldSplit>;
+        "label": string|null;
+        "name": string;
+    }
     interface ApieRenderTypes {
         "csrfToken": string|null;
         "internalState": Record<string, any>;
@@ -80,6 +94,10 @@ export namespace Components {
 export interface ApieFormMapCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLApieFormMapElement;
+}
+export interface ApieFormSelectCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLApieFormSelectElement;
 }
 export interface ApieSingleInputCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -139,6 +157,30 @@ declare global {
         prototype: HTMLApieFormMapDefinitionElement;
         new (): HTMLApieFormMapDefinitionElement;
     };
+    interface HTMLApieFormSelectElementEventMap {
+        "triggerChange": ChangeEvent;
+        "triggerInternalState": ChangeEvent;
+    }
+    interface HTMLApieFormSelectElement extends Components.ApieFormSelect, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLApieFormSelectElementEventMap>(type: K, listener: (this: HTMLApieFormSelectElement, ev: ApieFormSelectCustomEvent<HTMLApieFormSelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLApieFormSelectElementEventMap>(type: K, listener: (this: HTMLApieFormSelectElement, ev: ApieFormSelectCustomEvent<HTMLApieFormSelectElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLApieFormSelectElement: {
+        prototype: HTMLApieFormSelectElement;
+        new (): HTMLApieFormSelectElement;
+    };
+    interface HTMLApieFormSelectDefinitionElement extends Components.ApieFormSelectDefinition, HTMLStencilElement {
+    }
+    var HTMLApieFormSelectDefinitionElement: {
+        prototype: HTMLApieFormSelectDefinitionElement;
+        new (): HTMLApieFormSelectDefinitionElement;
+    };
     interface HTMLApieRenderTypesElement extends Components.ApieRenderTypes, HTMLStencilElement {
     }
     var HTMLApieRenderTypesElement: {
@@ -176,6 +218,8 @@ declare global {
         "apie-form-list-definition": HTMLApieFormListDefinitionElement;
         "apie-form-map": HTMLApieFormMapElement;
         "apie-form-map-definition": HTMLApieFormMapDefinitionElement;
+        "apie-form-select": HTMLApieFormSelectElement;
+        "apie-form-select-definition": HTMLApieFormSelectDefinitionElement;
         "apie-render-types": HTMLApieRenderTypesElement;
         "apie-script": HTMLApieScriptElement;
         "apie-single-input": HTMLApieSingleInputElement;
@@ -226,6 +270,21 @@ declare namespace LocalJSX {
         "label"?: string|null;
         "name"?: string;
     }
+    interface ApieFormSelect {
+        "internalState"?: Record<string, any>;
+        "label"?: string | null;
+        "name"?: string;
+        "onTriggerChange"?: (event: ApieFormSelectCustomEvent<ChangeEvent>) => void;
+        "onTriggerInternalState"?: (event: ApieFormSelectCustomEvent<ChangeEvent>) => void;
+        "options"?: Array<Option>;
+        "subElements"?: VNode[];
+        "value"?: Record<string, any>;
+    }
+    interface ApieFormSelectDefinition {
+        "definitionIdList"?: Array<FormSelectOption>;
+        "label"?: string|null;
+        "name"?: string;
+    }
     interface ApieRenderTypes {
         "csrfToken"?: string|null;
         "internalState"?: Record<string, any>;
@@ -251,6 +310,8 @@ declare namespace LocalJSX {
         "apie-form-list-definition": ApieFormListDefinition;
         "apie-form-map": ApieFormMap;
         "apie-form-map-definition": ApieFormMapDefinition;
+        "apie-form-select": ApieFormSelect;
+        "apie-form-select-definition": ApieFormSelectDefinition;
         "apie-render-types": ApieRenderTypes;
         "apie-script": ApieScript;
         "apie-single-input": ApieSingleInput;
@@ -267,6 +328,8 @@ declare module "@stencil/core" {
             "apie-form-list-definition": LocalJSX.ApieFormListDefinition & JSXBase.HTMLAttributes<HTMLApieFormListDefinitionElement>;
             "apie-form-map": LocalJSX.ApieFormMap & JSXBase.HTMLAttributes<HTMLApieFormMapElement>;
             "apie-form-map-definition": LocalJSX.ApieFormMapDefinition & JSXBase.HTMLAttributes<HTMLApieFormMapDefinitionElement>;
+            "apie-form-select": LocalJSX.ApieFormSelect & JSXBase.HTMLAttributes<HTMLApieFormSelectElement>;
+            "apie-form-select-definition": LocalJSX.ApieFormSelectDefinition & JSXBase.HTMLAttributes<HTMLApieFormSelectDefinitionElement>;
             "apie-render-types": LocalJSX.ApieRenderTypes & JSXBase.HTMLAttributes<HTMLApieRenderTypesElement>;
             "apie-script": LocalJSX.ApieScript & JSXBase.HTMLAttributes<HTMLApieScriptElement>;
             "apie-single-input": LocalJSX.ApieSingleInput & JSXBase.HTMLAttributes<HTMLApieSingleInputElement>;

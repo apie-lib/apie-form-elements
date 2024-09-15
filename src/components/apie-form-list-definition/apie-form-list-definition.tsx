@@ -25,7 +25,6 @@ export class ApieFormListDefinition {
     this.instantiated = false;
   }
 
-
   @Method()
   async getDefinition(): Promise<FieldList> {
     const newValue = this.definitionId;

@@ -20,6 +20,7 @@ export class ApieSingleInput {
 
   @Event() triggerChange: EventEmitter<ChangeEvent>;
   private renderInput()  {
+    console.log(this.name, this.value);
     return renderTemplates.renderSingleInput({
       name: this.name,
       label: this.label,

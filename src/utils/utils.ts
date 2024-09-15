@@ -145,3 +145,24 @@ export function toArray(value: Record<any, any>|Array<any>|boolean|string|File|n
 
   return Array.from(value as any);
 }
+
+export function clone(value: any): any{
+  if (value === null) {
+    return null;
+  }
+  if (typeof value !== 'object' || value instanceof File) {
+    return value;
+  }
+  if (Array.isArray(value)) {
+    const newArray = [];
+    for (let i = 0; i < value.length; i++) {
+      newArray[i] = clone(value[i]);
+    }
+    return newArray;
+  }
+  const newObject = {};
+  Object.keys(value).forEach((key: string) => {
+    newObject[key] = clone(value[key]);
+  });
+  return newObject;
+}
