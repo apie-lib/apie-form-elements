@@ -105,8 +105,32 @@ export function missingValidationErrors(validationErrors: ValidationError, found
   return result;
 }
 
-export function toFileList(f: string|number|File): FileList {
+export function isFileData(f: any): f is FileData
+{
+  return f !== null && typeof f === 'object' && f.originalFilename && f.base64;
+}
+
+export function toFile(f: FileData): File
+{
+  const byteCharacters = atob(f.base64);
+  const byteNumbers = new Array(byteCharacters.length);
+  
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  
+  const byteArray = new Uint8Array(byteNumbers);
+  
+  const blob = new Blob([byteArray]);
+  
+  return new File([blob], f.originalFilename, { type: 'text/plain' });
+}
+
+export function toFileList(f: string|number|File|FileData): FileList {
   const dataTransfer = new DataTransfer();
+  if (isFileData(f)) {
+    f = toFile(f);
+  }
   if (f instanceof File) {
     dataTransfer.items.add(f);
   }

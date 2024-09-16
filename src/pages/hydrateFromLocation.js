@@ -12,12 +12,16 @@ function setNestedValue(obj, keys, value) {
 }
 
 function applyInternal(obj) {
-  debugger;
   function apply(form, internal) {
     if (typeof form === 'undefined' || typeof internal === 'undefined') {
       return;
     }
     Object.keys(internal).forEach((key) => {
+      if (typeof internal[key] === 'object') {
+        form[key] ??= {};
+        apply(form[key], internal[key]);
+        return;
+      }
       switch (internal[key]) {
         case 'null':
           if (!form[key]) {
@@ -34,10 +38,24 @@ function applyInternal(obj) {
             form[key] = {};
           }
           return;
-        // TODO: file
+        case 'Psr\\Http\\Message\\UploadedFileInterface':
+          const byteCharacters = atob(form[key].base64);
+          const byteNumbers = new Array(byteCharacters.length);
+          
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          
+          const byteArray = new Uint8Array(byteNumbers);
+          
+          const blob = new Blob([byteArray]);
+          
+          form[key] = new File([blob], form[key].originalFilename, { type: 'text/plain' });
+          return;
+        default:
+          console.log('Unknown internal key', internal[key])
+          return;
       }
-      form[key] ??= {};
-      apply(form[key], internal[key]);
     })
   }
   apply(obj.form, obj._apie);
