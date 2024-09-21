@@ -88,4 +88,12 @@ export class RenderInfo {
     {
         return <button type="button" disabled={state.disabled} onClick={() => state.onRowAdd() }>Add</button>
     }
+
+    public renderAddItemToMap(keyField: VNode|VNode[], button: VNode|VNode[]): VNode|VNode[]
+    {
+        return [
+            ...(Array.isArray(keyField) ? keyField : [keyField]),
+            ...(Array.isArray(button) ? button : [button])
+        ];
+    }
 }

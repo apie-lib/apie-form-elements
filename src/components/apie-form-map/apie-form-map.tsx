@@ -59,6 +59,19 @@ export class ApieFormMap {
   }
 
   render() {
+    const keyField = this.renderInfo.renderSingleInput(['map_key_field', 'text'], {
+      name: '_internal' + this.name,
+      label: 'Key',
+      value: this.enteredKey,
+      valueChanged: (newValue?: string) => this.enteredKey = newValue ?? '',
+    });
+    const addButton = this.renderInfo.renderAddItemToList({
+      mappingKey: '__add' + this.enteredKey,
+      disabled: this.canNotAdd(),
+      isMap: true,
+      label: 'Add',
+      onRowAdd: () => this.onAddItemMap()
+    });
     return (
       <Host>
         <div>{this.subElements.map((subElement, index) => {
@@ -71,19 +84,7 @@ export class ApieFormMap {
             subElement
           );
         })}</div>
-        { this.renderInfo.renderSingleInput(['map_key_field', 'text'], {
-          name: '_internal' + this.name,
-          label: 'Key',
-          value: this.enteredKey,
-          valueChanged: (newValue?: string) => this.enteredKey = newValue ?? '',
-        }) }
-        { this.renderInfo.renderAddItemToList({
-          mappingKey: '__add' + this.enteredKey,
-          disabled: this.canNotAdd(),
-          isMap: true,
-          label: 'Add',
-          onRowAdd: () => this.onAddItemMap()
-        }) }
+        { this.renderInfo.renderAddItemToMap(keyField, addButton) }
       </Host>
     );
   }
