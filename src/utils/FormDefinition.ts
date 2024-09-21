@@ -1,4 +1,5 @@
-import { clone, Option } from './utils';
+import { clone } from './utils';
+import { Option } from './RenderInfo';
 
 export type NestedRecord<T> = { [key: string]: NestedRecordField<T> }
 export type NestedRecordField<T> = T | NestedRecord<T>

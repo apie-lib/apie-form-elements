@@ -7,13 +7,13 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type     | Default                |
-| -------- | --------- | ----------- | -------- | ---------------------- |
-| `apie`   | --        |             | `Symbol` | `APIE_FORM_CONTROLLER` |
-| `label`  | `label`   |             | `string` | `null`                 |
-| `name`   | `name`    |             | `string` | `undefined`            |
-| `types`  | `types`   |             | `string` | `''`                   |
-| `value`  | `value`   |             | `string` | `undefined`            |
+| Property     | Attribute | Description | Type         | Default                    |
+| ------------ | --------- | ----------- | ------------ | -------------------------- |
+| `label`      | `label`   |             | `string`     | `null`                     |
+| `name`       | `name`    |             | `string`     | `undefined`                |
+| `renderInfo` | --        |             | `RenderInfo` | `new FallbackRenderInfo()` |
+| `types`      | `types`   |             | `string`     | `''`                       |
+| `value`      | `value`   |             | `string`     | `undefined`                |
 
 
 ## Events
@@ -22,6 +22,19 @@
 | --------------- | ----------- | -------------------------- |
 | `triggerChange` |             | `CustomEvent<ChangeEvent>` |
 
+
+## Dependencies
+
+### Used by
+
+ - [apie-form](../apie-form)
+
+### Graph
+```mermaid
+graph TD;
+  apie-form --> apie-single-input
+  style apie-single-input fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 

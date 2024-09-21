@@ -1,6 +1,7 @@
 import { Component, Event, EventEmitter, Host, Prop, State, VNode, h } from '@stencil/core';
-import { renderTemplates } from '../../utils/renderTemplates';
-import { APIE_FORM_CONTROLLER, ChangeEvent } from '../../utils/utils';
+import { ChangeEvent } from '../../utils/utils';
+import { RenderInfo } from '../../utils/RenderInfo';
+import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
 
 @Component({
   tag: 'apie-form-map',
@@ -18,7 +19,7 @@ export class ApieFormMap {
 
   @Prop({reflect: true, mutable: true}) types: string = '';
 
-  @Prop({reflect: true}) apie: Symbol = APIE_FORM_CONTROLLER;
+  @Prop({reflect: true}) renderInfo: RenderInfo = new FallbackRenderInfo();
 
   @State() enteredKey: string = '';
 
@@ -61,15 +62,28 @@ export class ApieFormMap {
     return (
       <Host>
         <div>{this.subElements.map((subElement, index) => {
-          return [subElement, <button key={'__remove__' + index} type="button" onClick={() => this.removeFromList(subElement)}>X</button>]
+          return this.renderInfo.renderListOrMapRow(
+            {
+              mappingKey: index,
+              isMap: true,
+              onRowRemove: () => this.removeFromList(subElement),
+            },
+            subElement
+          );
         })}</div>
-        { renderTemplates.renderInput({
+        { this.renderInfo.renderSingleInput(['map_key_field', 'text'], {
           name: '_internal' + this.name,
           label: 'Key',
           value: this.enteredKey,
           valueChanged: (newValue?: string) => this.enteredKey = newValue ?? '',
         }) }
-        <button disabled={this.canNotAdd()} type="button" onClick={() => this.onAddItemMap() }>Add</button>
+        { this.renderInfo.renderAddItemToList({
+          mappingKey: '__add' + this.enteredKey,
+          disabled: this.canNotAdd(),
+          isMap: true,
+          label: 'Add',
+          onRowAdd: () => this.onAddItemMap()
+        }) }
       </Host>
     );
   }

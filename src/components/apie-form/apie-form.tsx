@@ -1,7 +1,9 @@
 import { Component, Host, Prop, Watch, h } from '@stencil/core';
 import { changeForm, createFormFieldState, FormDefinition, FormField, FormFieldState, FormStateDefinition, NestedRecord, Primitive, SubmitField, toChildState } from '../../utils/FormDefinition';
 import { clone, toArray } from '../../utils/utils';
-import { renderTemplates } from '../../utils/renderTemplates';
+import { RenderInfo } from '../../utils/RenderInfo';
+import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
+
 @Component({
   tag: 'apie-form',
   styleUrl: 'apie-form.css',
@@ -23,6 +25,8 @@ export class ApieForm {
   @Prop({ reflect: true }) supportsMultipart: boolean = false;
 
   @Prop({ reflect: true }) debugMode: boolean = false;
+
+  @Prop({reflect: true}) renderInfo: RenderInfo = new FallbackRenderInfo();
 
   instantiated: boolean = false;
 
@@ -139,6 +143,7 @@ export class ApieForm {
         types={state.form.types.join(',')}
         label={state.form.label}
         value={state.value as any}
+        renderInfo={this.renderInfo}
         onTriggerChange={(ev) => { this.onFieldUpdate(newPrefix.slice(0), ev.detail.value as any)}}
       ></apie-single-input>
     }
@@ -150,7 +155,15 @@ export class ApieForm {
         subElements.push(this.renderField(newState, newPrefix, index));
         index++;
       }
-      return <div key={key ?? state.form.name}>{subElements}</div>
+      return this.renderInfo.renderFormGroup(
+        {
+          name: state.form.name,
+          label: state.form.label,
+          value: state.value,
+        },
+        subElements,
+        key
+      );
     }
     if (state.form.fieldType === 'map') {
       const subElements = [];
@@ -169,6 +182,7 @@ export class ApieForm {
         types={state.form.types.join(',')}
         label={state.form.label}
         value={state.value}
+        renderInfo={this.renderInfo}
         onTriggerChange={(ev) => { ev.detail.name === formName && this.onFieldUpdate(newPrefix, ev.detail.value as any)}}
         ></apie-form-map>
     }
@@ -179,16 +193,35 @@ export class ApieForm {
         const subFormField: FormField = clone(state.form.subField);
         subFormField.name = String(index);
         let newState = toChildState(subFormField, state);
-        subElements.push(this.renderField(newState, newPrefix, index));
+        subElements.push(
+          this.renderInfo.renderListOrMapRow(
+            {
+              mappingKey: index,
+              isMap:false,
+              onRowRemove: () => this.removeFromList(newPrefix.slice(0), index),
+            },
+            this.renderField(newState, newPrefix, index)
+          )
+        );
       }
-      return <div>
-        <div key={key ?? state.form.name}>{subElements.map((subElement, index) => {
-          return [subElement, <button type="button" onClick={() => this.removeFromList(newPrefix.slice(0), index)}>X</button>]
-        })}</div>
-        <button type="button" onClick={() => this.onAddItemList(newPrefix.slice(0)) }>Add</button>
-      </div>
+      subElements.push(this.renderInfo.renderAddItemToList({
+        mappingKey: '__add' + (key ?? 'unknown'),
+        isMap: true,
+        label: 'Add',
+        disabled: false,
+         onRowAdd: () => this.onAddItemList(newPrefix.slice(0))
+      }));
+      return this.renderInfo.renderFormGroup(
+        {
+          name: state.form.name,
+          label: state.form.label,
+          value: state.value,
+        },
+        subElements,
+        key ?? state.form.name
+      );
     }
-    // TODO split
+
     if (state.form.fieldType = 'split') {
       const formName = this.formName(newPrefix);
       const selected = state.internalState?._split ?? null;
@@ -207,6 +240,7 @@ export class ApieForm {
           label={state.form.label}
           value={state.value}
           options={state.form.subFields}
+          renderInfo={this.renderInfo}
           internalState={state.internalState ?? {}}
           onTriggerChange={(ev) => { ev.detail.name === formName && this.onFieldUpdate(newPrefix, ev.detail.value as any)}}
           onTriggerInternalState={(ev) => { ev.detail.name === formName && this.onInternalStateUpdate(newPrefix, ev.detail.value as any)}}
@@ -220,7 +254,7 @@ export class ApieForm {
   }
 
   private renderSubmitButton() {
-    return renderTemplates.renderSubmitButton({
+    return this.renderInfo.renderSubmitButton({
       label: this.submitLabel,
       disabled: false
     })

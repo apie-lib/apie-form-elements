@@ -6,11 +6,13 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
+import { Option, RenderInfo } from "./utils/RenderInfo";
 import { VNode } from "@stencil/core";
-import { ChangeEvent, Option } from "./utils/utils";
+import { ChangeEvent } from "./utils/utils";
 export { FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
+export { Option, RenderInfo } from "./utils/RenderInfo";
 export { VNode } from "@stencil/core";
-export { ChangeEvent, Option } from "./utils/utils";
+export { ChangeEvent } from "./utils/utils";
 export namespace Components {
     interface ApieForm {
         "action": string;
@@ -20,6 +22,7 @@ export namespace Components {
         "formDefinition": FormDefinition;
         "internalState": NestedRecord<Primitive>;
         "method": string;
+        "renderInfo": RenderInfo;
         "submitLabel": string;
         "supportsMultipart": boolean;
         "validationErrors": NestedRecord<string>;
@@ -47,9 +50,9 @@ export namespace Components {
         "name": string;
     }
     interface ApieFormMap {
-        "apie": Symbol;
         "label": string | null;
         "name": string;
+        "renderInfo": RenderInfo;
         "subElements": VNode[];
         "types": string;
         "value": Record<string, any>;
@@ -65,6 +68,7 @@ export namespace Components {
         "label": string | null;
         "name": string;
         "options": Array<Option>;
+        "renderInfo": RenderInfo;
         "subElements": VNode[];
         "value": Record<string, any>;
     }
@@ -84,9 +88,9 @@ export namespace Components {
         "type": string;
     }
     interface ApieSingleInput {
-        "apie": Symbol;
         "label": string | null;
         "name": string;
+        "renderInfo": RenderInfo;
         "types": string;
         "value": string;
     }
@@ -234,6 +238,7 @@ declare namespace LocalJSX {
         "formDefinition"?: FormDefinition;
         "internalState"?: NestedRecord<Primitive>;
         "method"?: string;
+        "renderInfo"?: RenderInfo;
         "submitLabel"?: string;
         "supportsMultipart"?: boolean;
         "validationErrors"?: NestedRecord<string>;
@@ -257,10 +262,10 @@ declare namespace LocalJSX {
         "name"?: string;
     }
     interface ApieFormMap {
-        "apie"?: Symbol;
         "label"?: string | null;
         "name"?: string;
         "onTriggerChange"?: (event: ApieFormMapCustomEvent<ChangeEvent>) => void;
+        "renderInfo"?: RenderInfo;
         "subElements"?: VNode[];
         "types"?: string;
         "value"?: Record<string, any>;
@@ -277,6 +282,7 @@ declare namespace LocalJSX {
         "onTriggerChange"?: (event: ApieFormSelectCustomEvent<ChangeEvent>) => void;
         "onTriggerInternalState"?: (event: ApieFormSelectCustomEvent<ChangeEvent>) => void;
         "options"?: Array<Option>;
+        "renderInfo"?: RenderInfo;
         "subElements"?: VNode[];
         "value"?: Record<string, any>;
     }
@@ -295,10 +301,10 @@ declare namespace LocalJSX {
         "type": string;
     }
     interface ApieSingleInput {
-        "apie"?: Symbol;
         "label"?: string | null;
         "name"?: string;
         "onTriggerChange"?: (event: ApieSingleInputCustomEvent<ChangeEvent>) => void;
+        "renderInfo"?: RenderInfo;
         "types"?: string;
         "value"?: string;
     }

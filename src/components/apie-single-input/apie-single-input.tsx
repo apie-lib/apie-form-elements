@@ -1,6 +1,7 @@
 import { Component, Event, EventEmitter, Host, Prop, h } from '@stencil/core';
-import { renderTemplates } from '../../utils/renderTemplates';
-import { APIE_FORM_CONTROLLER, ChangeEvent } from '../../utils/utils';
+import type { ChangeEvent } from '../../utils/utils';
+import { RenderInfo } from '../../utils/RenderInfo';
+import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
 
 @Component({
   tag: 'apie-single-input',
@@ -16,15 +17,14 @@ export class ApieSingleInput {
 
   @Prop({reflect: true, mutable: true}) types: string = '';
 
-  @Prop({reflect: true}) apie: Symbol = APIE_FORM_CONTROLLER;
+  @Prop({reflect: true }) renderInfo: RenderInfo = new FallbackRenderInfo();
 
   @Event() triggerChange: EventEmitter<ChangeEvent>;
   private renderInput()  {
-    return renderTemplates.renderSingleInput({
+    return this.renderInfo.renderSingleInput(this.types.split(','), {
       name: this.name,
       label: this.label,
       value: this.value,
-      types: this.types.split(','),
       valueChanged: (newValue: string) => {
         if (newValue !== this.value) {
           this.value = newValue;

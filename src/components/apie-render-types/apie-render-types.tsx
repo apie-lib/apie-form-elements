@@ -1,8 +1,6 @@
 import { Component, Host, h, Prop, State } from '@stencil/core';
 import { FileData, toFileList } from '../../utils/utils';
 
-
-
 function renderHiddenField(data: {name:string, value: string|File}) {
   if (data.value instanceof File) {
     return <input name={data.name} type="file" class="hidden-field" files={toFileList(data.value)} />

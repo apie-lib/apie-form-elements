@@ -1,6 +1,7 @@
 import { Component, Event, EventEmitter, Host, Prop, VNode, h } from '@stencil/core';
-import { ChangeEvent, Option } from '../../utils/utils';
-import { renderSingleTemplates } from '../../utils/renderTemplates';
+import { ChangeEvent } from '../../utils/utils';
+import { RenderInfo, Option } from '../../utils/RenderInfo';
+import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
 
 @Component({
   tag: 'apie-form-select',
@@ -20,13 +21,15 @@ export class ApieFormSelect {
 
   @Prop({reflect: true, mutable: true}) options: Array<Option> = []
 
+  @Prop({reflect: true}) renderInfo: RenderInfo = new FallbackRenderInfo();
+
   @Event() triggerChange: EventEmitter<ChangeEvent>;
 
   @Event() triggerInternalState: EventEmitter<ChangeEvent>;
 
   private renderSelect()
   {
-    return renderSingleTemplates.select({
+    return this.renderInfo.renderSingleInput(['select'], {
       name: this.name,
       label: this.label ?? undefined,
       value: this.internalState?._split ?? null,

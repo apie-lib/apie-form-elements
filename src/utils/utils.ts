@@ -1,12 +1,8 @@
 export * from './validation-errors';
+import { Option } from './RenderInfo';
 
 export const APIE_FORM_CONTROLLER = Symbol('APIE_FORM_CONTROLLER');
 export const APIE_CONSTRAINT = Symbol('APIE_CONSTRAINT');
-
-export interface Option {
-  name: string;
-  value: string|Record<string, any>|File;
-}
 
 export interface ChangeEvent extends Option {
   force?: boolean;
