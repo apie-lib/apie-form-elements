@@ -73,12 +73,12 @@ export class RenderInfo {
     }
 
     public renderFormGroup(state: FormGroupState, subElements: VNode[], key: number | string | null = null): VNode|VNode[] {
-        return <div key={key ?? state.name}>{subElements}</div>
+        return <div style={ { width : '100%' } } key={key ?? state.name}>{subElements}</div>
     }
 
     public renderListOrMapRow(state: FormListRowState, subElement: VNode): VNode|VNode[]
     {
-        return <div key={state.mappingKey}>
+        return <div style={ { width : '100%' } } key={state.mappingKey}>
             { subElement }
             { state.onRowRemove && <button type="button" onClick={() => state.onRowRemove()}>X</button> }
         </div>
