@@ -1,4 +1,4 @@
-import { Component, Event, EventEmitter, Host, Prop, VNode, h } from '@stencil/core';
+import { Component, Event, EventEmitter, Host, Prop, VNode, Watch, h } from '@stencil/core';
 import { ChangeEvent } from '../../utils/utils';
 import { RenderInfo, Option } from '../../utils/RenderInfo';
 import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
@@ -58,6 +58,30 @@ export class ApieFormSelect {
         options: this.options,
       }
     })
+  }
+
+  componentWillLoad()
+  {
+    this.sanitizeInternalState();
+  }
+
+  @Watch('internalState')
+  @Watch('value')
+  private sanitizeInternalState()
+  {
+    const curValue = this.internalState._split;
+    for (let option of this.options) {
+      if (option.value === curValue) {
+        return;
+      }
+    }
+    this.internalState._split = this.options[0]?.value as any;
+    this.internalState = { ...this.internalState };
+    this.triggerInternalState.emit({
+      name: this.name,
+      value: this.internalState,
+      force: true
+    });
   }
 
   render() {

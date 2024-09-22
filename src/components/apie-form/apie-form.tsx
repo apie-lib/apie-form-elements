@@ -106,7 +106,13 @@ export class ApieForm {
 
   private renderRootField(formField: FormField, formDefinition: FormStateDefinition) {
     const formFieldState = createFormFieldState(formField, formDefinition);
-    return this.renderField(formFieldState, []);
+    return this.renderInfo.renderListOrMapRow(
+      {
+        mappingKey: formField.name,
+        isMap: true,
+      },
+      this.renderField(formFieldState, [])
+    );
   }
 
   @Watch('definitionId') async onDefinitionIdChange(newValue): Promise<void> {
@@ -303,7 +309,14 @@ export class ApieForm {
           4
         ) }</pre>}
         <slot></slot>
-        { formDefinition.fields.map((formField: FormField) => this.renderRootField(formField, state))}
+        { this.renderInfo.renderFormGroup(
+          {
+            name: '',
+            value: this.value,
+          },
+          formDefinition.fields.map((formField: FormField) => this.renderRootField(formField, state)) as any,
+          null)
+        }
         <form action={this.getCalculatedAction()} method={this.method} enctype={this.supportsMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded'}>
          <apie-render-types
          value={this.value}

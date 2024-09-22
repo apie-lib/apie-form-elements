@@ -26,7 +26,7 @@ export interface FormGroupState {
 export interface FormListRowState {
     mappingKey: string|number;
     isMap: boolean;
-    onRowRemove: () => void;
+    onRowRemove?: () => void;
 }
 
 export interface FormListRowAddState {
@@ -80,7 +80,7 @@ export class RenderInfo {
     {
         return <div key={state.mappingKey}>
             { subElement }
-            <button type="button" onClick={() => state.onRowRemove()}>X</button>
+            { state.onRowRemove && <button type="button" onClick={() => state.onRowRemove()}>X</button> }
         </div>
     }
 
