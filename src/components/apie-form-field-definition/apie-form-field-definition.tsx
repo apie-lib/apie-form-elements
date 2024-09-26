@@ -10,7 +10,7 @@ export class ApieFormFieldDefinition {
   @Prop() name: string;
   @Prop() label: string;
   @Prop() types: string = 'text';
-  @Prop() additionalSettings?: SingleFieldSettings = {};
+  @Prop({reflect: true}) additionalSettings?: SingleFieldSettings = {};
 
   @Method()
   async getDefinition(): Promise<SingleField> {

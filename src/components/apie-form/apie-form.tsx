@@ -150,6 +150,7 @@ export class ApieForm {
         label={state.form.label}
         value={state.value as any}
         renderInfo={this.renderInfo}
+        additionalSettings={state.form.additionalSettings}
         onTriggerChange={(ev) => { this.onFieldUpdate(newPrefix.slice(0), ev.detail.value as any)}}
       ></apie-single-input>
     }

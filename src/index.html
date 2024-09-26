@@ -21,6 +21,16 @@
           { name: 'null', value: 'null' }
         ]
       </script>
+      <apie-form-field-definition id="select" name="select" types="select" label="Select test"></apie-form-field-definition>
+      <script>
+        document.querySelector('#select').additionalSettings = {
+          options: [
+            { name: 'string', value: 'list-item'},
+            { name: 'file upload', value: 'fileUpload'},
+            { name: 'null', value: 'null' }
+          ]
+        };
+      </script>
       <apie-form-field-definition name="test" types="text" label="test"></apie-form-field-definition>
       <apie-form-field-definition name="test2" types="text" label="test2"></apie-form-field-definition>
       <apie-form-field-definition id="fileUpload" name="fileUpload" types="file" label="file upload"></apie-form-field-definition>

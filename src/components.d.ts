@@ -9,10 +9,12 @@ import { FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupFi
 import { Option, RenderInfo } from "./utils/RenderInfo";
 import { VNode } from "@stencil/core";
 import { ChangeEvent } from "./utils/utils";
+import { SingleFieldSettings as SingleFieldSettings1 } from "./components";
 export { FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
 export { Option, RenderInfo } from "./utils/RenderInfo";
 export { VNode } from "@stencil/core";
 export { ChangeEvent } from "./utils/utils";
+export { SingleFieldSettings as SingleFieldSettings1 } from "./components";
 export namespace Components {
     interface ApieForm {
         "action": string;
@@ -88,6 +90,7 @@ export namespace Components {
         "type": string;
     }
     interface ApieSingleInput {
+        "additionalSettings"?: SingleFieldSettings1;
         "label": string | null;
         "name": string;
         "renderInfo": RenderInfo;
@@ -301,6 +304,7 @@ declare namespace LocalJSX {
         "type": string;
     }
     interface ApieSingleInput {
+        "additionalSettings"?: SingleFieldSettings1;
         "label"?: string | null;
         "name"?: string;
         "onTriggerChange"?: (event: ApieSingleInputCustomEvent<ChangeEvent>) => void;
