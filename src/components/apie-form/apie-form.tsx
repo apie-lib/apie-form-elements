@@ -241,7 +241,7 @@ export class ApieForm {
       }
 
       return [
-        <apie-form-select 
+        <apie-form-select
           key={key ?? state.form.name}
           name={formName}
           label={state.form.label}
@@ -254,7 +254,7 @@ export class ApieForm {
           ></apie-form-select>,
           selectedField && this.renderField(changeForm(selectedField.definition, state), prefixes, key + '_subform')
         ]
-       
+
     }
     console.log(state);
     return <div></div>

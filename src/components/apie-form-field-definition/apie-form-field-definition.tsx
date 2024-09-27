@@ -11,6 +11,7 @@ export class ApieFormFieldDefinition {
   @Prop() label: string;
   @Prop() types: string = 'text';
   @Prop({reflect: true}) additionalSettings?: SingleFieldSettings = {};
+  @Prop({ reflect: true }) prototyped: boolean = false;
 
   @Method()
   async getDefinition(): Promise<SingleField> {

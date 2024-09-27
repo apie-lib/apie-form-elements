@@ -32,24 +32,28 @@ export namespace Components {
     }
     interface ApieFormDefinition {
         "getDefinition": () => Promise<FormDefinition>;
+        "prototyped": boolean;
     }
     interface ApieFormFieldDefinition {
         "additionalSettings"?: SingleFieldSettings;
         "getDefinition": () => Promise<SingleField>;
         "label": string;
         "name": string;
+        "prototyped": boolean;
         "types": string;
     }
     interface ApieFormGroupDefinition {
         "getDefinition": () => Promise<FormGroupField>;
         "label": string|null;
         "name": string;
+        "prototyped": boolean;
     }
     interface ApieFormListDefinition {
         "definitionId": string;
         "getDefinition": () => Promise<FieldList>;
         "label": string|null;
         "name": string;
+        "prototyped": boolean;
     }
     interface ApieFormMap {
         "label": string | null;
@@ -64,6 +68,7 @@ export namespace Components {
         "getDefinition": () => Promise<FieldMap>;
         "label": string|null;
         "name": string;
+        "prototyped": boolean;
     }
     interface ApieFormSelect {
         "internalState": Record<string, any>;
@@ -79,6 +84,7 @@ export namespace Components {
         "getDefinition": () => Promise<FieldSplit>;
         "label": string|null;
         "name": string;
+        "prototyped": boolean;
     }
     interface ApieRenderTypes {
         "csrfToken": string|null;
@@ -248,21 +254,25 @@ declare namespace LocalJSX {
         "value"?: NestedRecord<SubmitField>;
     }
     interface ApieFormDefinition {
+        "prototyped"?: boolean;
     }
     interface ApieFormFieldDefinition {
         "additionalSettings"?: SingleFieldSettings;
         "label"?: string;
         "name"?: string;
+        "prototyped"?: boolean;
         "types"?: string;
     }
     interface ApieFormGroupDefinition {
         "label"?: string|null;
         "name"?: string;
+        "prototyped"?: boolean;
     }
     interface ApieFormListDefinition {
         "definitionId"?: string;
         "label"?: string|null;
         "name"?: string;
+        "prototyped"?: boolean;
     }
     interface ApieFormMap {
         "label"?: string | null;
@@ -277,6 +287,7 @@ declare namespace LocalJSX {
         "definitionId"?: string;
         "label"?: string|null;
         "name"?: string;
+        "prototyped"?: boolean;
     }
     interface ApieFormSelect {
         "internalState"?: Record<string, any>;
@@ -293,6 +304,7 @@ declare namespace LocalJSX {
         "definitionIdList"?: Array<FormSelectOption>;
         "label"?: string|null;
         "name"?: string;
+        "prototyped"?: boolean;
     }
     interface ApieRenderTypes {
         "csrfToken"?: string|null;

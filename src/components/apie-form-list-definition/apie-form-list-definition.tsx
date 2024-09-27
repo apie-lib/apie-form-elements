@@ -13,6 +13,8 @@ export class ApieFormListDefinition {
 
   @Prop() definitionId: string;
 
+  @Prop({ reflect: true }) prototyped: boolean = false;
+
   @Element() el: HTMLElement;
 
   instantiated: boolean = false;

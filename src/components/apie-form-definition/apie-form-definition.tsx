@@ -1,4 +1,4 @@
-import { Component, Element, Host, Method, h } from '@stencil/core';
+import { Component, Element, Host, Method, h, Prop } from '@stencil/core';
 import { FormDefinition, FormField, toFormField } from '../../utils/FormDefinition';
 
 @Component({
@@ -8,6 +8,8 @@ import { FormDefinition, FormField, toFormField } from '../../utils/FormDefiniti
 })
 export class ApieFormDefinition {
   @Element() el: HTMLElement;
+
+  @Prop({ reflect: true }) prototyped: boolean = false;
 
   @Method()
   async getDefinition(): Promise<FormDefinition> {

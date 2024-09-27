@@ -122,7 +122,7 @@ export async function toFormField(list: NodeListOf<ChildNode>): Promise<FormFiel
     await Promise.all(
       Array.from(list).map(
         async (childNode) => {
-          if (FORM_FIELDS.indexOf(String(childNode.nodeName).toLowerCase()) > -1) {
+          if (FORM_FIELDS.indexOf(String(childNode.nodeName).toLowerCase()) > -1 && !(childNode as any).prototyped) {
             fields.push(await (childNode as any).getDefinition());
             return childNode;
           }

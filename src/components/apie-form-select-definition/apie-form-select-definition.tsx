@@ -14,6 +14,8 @@ export class ApieFormSelectDefinition {
 
   @Prop() definitionIdList: Array<FormSelectOption>;
 
+  @Prop({ reflect: true }) prototyped: boolean = false;
+
   instantiated: boolean = false;
 
   connectedCallback() {

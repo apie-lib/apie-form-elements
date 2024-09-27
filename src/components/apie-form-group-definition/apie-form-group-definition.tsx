@@ -11,6 +11,8 @@ export class ApieFormGroupDefinition {
 
   @Prop() label: string|null = null;
 
+  @Prop({ reflect: true }) prototyped: boolean = false;
+
   @Element() el: HTMLElement;
 
   @Method()

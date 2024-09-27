@@ -15,6 +15,8 @@ export class ApieFormMapDefinition {
 
   @Element() el: HTMLElement;
 
+  @Prop({ reflect: true }) prototyped: boolean = false;
+
   instantiated: boolean = false;
 
   connectedCallback() {

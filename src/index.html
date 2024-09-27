@@ -10,9 +10,10 @@
     <link rel="stylesheet" href="/build/apie-form-elements.css" />
   </head>
   <body>
-    <apie-form-field-definition id="null" name="test" types="null" label="test"></apie-form-field-definition>
-    <apie-form-field-definition id="list-item" name="test" types="text" label="test"></apie-form-field-definition>
     <apie-form-definition id="definition">
+      <apie-form-field-definition id="null" name="test" types="null" label="test" prototyped></apie-form-field-definition>
+      <apie-form-field-definition id="list-item" name="test" types="text" label="test" prototyped></apie-form-field-definition>
+
       <apie-form-select-definition name="different"></apie-form-select-definition>
       <script>
         document.querySelector('apie-form-select-definition').definitionIdList = [
@@ -41,8 +42,8 @@
       <apie-form-list-definition name="list" definition-id="list-item"></apie-form-list-definition>
       <apie-form-list-definition name="files" definition-id="fileUpload"></apie-form-list-definition>
       <apie-form-map-definition name="fileMap" definition-id="fileUpload"></apie-form-map-definition>
-    </apie-form-definition>  
-    <apie-form definition-id="definition" method="get" debug-mode></apie-form>    
+    </apie-form-definition>
+    <apie-form definition-id="definition" method="get" debug-mode></apie-form>
     <script src="/pages/hydrateFromLocation.js">
     </script>
   </body>
