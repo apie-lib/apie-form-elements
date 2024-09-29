@@ -1,4 +1,6 @@
 import { h, VNode } from '@stencil/core';
+import { Constraint, NestedRecord } from './FormDefinition';
+import { createErrorMessage } from './utils';
 
 export interface Option {
     name: string;
@@ -74,6 +76,51 @@ export class RenderInfo {
 
     public renderFormGroup(state: FormGroupState, subElements: VNode[], key: number | string | null = null): VNode|VNode[] {
         return <div style={ { width : '100%' } } key={key ?? state.name}>{subElements}</div>
+    }
+
+    public renderValidationError(state: Constraint, value: any): VNode|VNode[]
+    {
+        const errorMessage: string | null = createErrorMessage(state, value);
+        
+        if (errorMessage) {
+            return <div>{errorMessage}</div>
+        }
+        return [];
+    }
+
+    public renderUmappedErrors(unmapped: Set<string>, validationErrors: NestedRecord<string>|string): VNode|VNode[]
+    {
+        if (typeof validationErrors === 'string') {
+            return this.renderValidationError(
+                {
+                    fieldType: 'constraint',
+                    name: '',
+                    inverseCheck: false,
+                    exactMatch: undefined,
+                    message: validationErrors
+                },
+                undefined
+            );
+        }
+        const errors = []
+        for (let error of unmapped) {
+            const res = this.renderValidationError(
+                {
+                    fieldType: 'constraint',
+                    name: error,
+                    inverseCheck: false,
+                    exactMatch: undefined,
+                    message: validationErrors[error] as string
+                },
+                undefined
+            );
+            if (Array.isArray(res)) {
+                errors.push(...res);
+            } else {
+                errors.push(res);
+            }
+        }
+        return errors;
     }
 
     public renderListOrMapRow(state: FormListRowState, subElement: VNode): VNode|VNode[]

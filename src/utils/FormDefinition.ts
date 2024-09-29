@@ -1,4 +1,4 @@
-import { clone } from './utils';
+import { clone, ConstraintCheck } from './utils';
 import { Option } from './RenderInfo';
 
 export type NestedRecord<T> = { [key: string]: NestedRecordField<T> }
@@ -58,7 +58,16 @@ export interface FieldSplit {
   subFields: Array<FormSelectOption>;
 }
 
-export type FormField = FormGroupField | SingleField | FieldMap | FieldList | FieldSplit;
+export interface Constraint extends ConstraintCheck {
+  fieldType: 'constraint',
+  name: string;
+}
+
+export type FormField = FormGroupField | SingleField | FieldMap | FieldList | FieldSplit | Constraint;
+
+export function handlesValidationForField(input: FormField): input is FormGroupField | FieldMap | FieldList | Constraint {
+  return ['group', 'map', 'list', 'constraint'].includes(input.fieldType);
+}
 
 export interface FormDefinition {
     fields: Array<FormField>
@@ -114,6 +123,7 @@ const FORM_FIELDS = [
   'apie-form-list-definition',
   'apie-form-map-definition',
   'apie-form-select-definition',
+  'apie-constraint-check-definition',
 ];
 
 export async function toFormField(list: NodeListOf<ChildNode>): Promise<FormField[]>

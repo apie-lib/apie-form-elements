@@ -186,3 +186,28 @@ export function clone(value: any): any{
   });
   return newObject;
 }
+
+export interface ConstraintCheck {
+  inverseCheck: boolean;
+  exactMatch: any;
+  message: string;
+  pattern?: string;
+}
+
+export function createErrorMessage(constraint: ConstraintCheck, value: any): string|null {
+  const $testFn = constraint.inverseCheck ? (r) => !r : (r) => Boolean(r);
+  const isSingleMessage = typeof constraint.message === 'string';
+  const messages = isSingleMessage ? [constraint.message] : [];
+  if (!isSingleMessage) {
+    Object.entries(constraint.message).forEach(([_key, value]) => {
+      messages.push(value);
+    });
+  }
+  if ($testFn(constraint.exactMatch === value)) {
+    return messages.length > 0 ? messages.join("\n") : null;
+  }
+  if (constraint.pattern && $testFn(new RegExp(constraint.pattern).test(toString(value)))) {
+    return messages.length > 0 ? messages.join("\n") : null;
+  }
+  return null;
+}

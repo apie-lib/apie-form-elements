@@ -5,17 +5,26 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
+import { Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
 import { Option, RenderInfo } from "./utils/RenderInfo";
 import { VNode } from "@stencil/core";
 import { ChangeEvent } from "./utils/utils";
 import { SingleFieldSettings as SingleFieldSettings1 } from "./components";
-export { FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
+export { Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
 export { Option, RenderInfo } from "./utils/RenderInfo";
 export { VNode } from "@stencil/core";
 export { ChangeEvent } from "./utils/utils";
 export { SingleFieldSettings as SingleFieldSettings1 } from "./components";
 export namespace Components {
+    interface ApieConstraintCheckDefinition {
+        "exactMatch": string|number|null|undefined;
+        "getDefinition": () => Promise<Constraint>;
+        "inverseCheck": boolean;
+        "message": string;
+        "name": string;
+        "pattern": string;
+        "value": string;
+    }
     interface ApieForm {
         "action": string;
         "csrfToken": string|null;
@@ -117,6 +126,12 @@ export interface ApieSingleInputCustomEvent<T> extends CustomEvent<T> {
     target: HTMLApieSingleInputElement;
 }
 declare global {
+    interface HTMLApieConstraintCheckDefinitionElement extends Components.ApieConstraintCheckDefinition, HTMLStencilElement {
+    }
+    var HTMLApieConstraintCheckDefinitionElement: {
+        prototype: HTMLApieConstraintCheckDefinitionElement;
+        new (): HTMLApieConstraintCheckDefinitionElement;
+    };
     interface HTMLApieFormElement extends Components.ApieForm, HTMLStencilElement {
     }
     var HTMLApieFormElement: {
@@ -224,6 +239,7 @@ declare global {
         new (): HTMLApieSingleInputElement;
     };
     interface HTMLElementTagNameMap {
+        "apie-constraint-check-definition": HTMLApieConstraintCheckDefinitionElement;
         "apie-form": HTMLApieFormElement;
         "apie-form-definition": HTMLApieFormDefinitionElement;
         "apie-form-field-definition": HTMLApieFormFieldDefinitionElement;
@@ -239,6 +255,14 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface ApieConstraintCheckDefinition {
+        "exactMatch"?: string|number|null|undefined;
+        "inverseCheck"?: boolean;
+        "message"?: string;
+        "name"?: string;
+        "pattern": string;
+        "value"?: string;
+    }
     interface ApieForm {
         "action"?: string;
         "csrfToken"?: string|null;
@@ -325,6 +349,7 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     interface IntrinsicElements {
+        "apie-constraint-check-definition": ApieConstraintCheckDefinition;
         "apie-form": ApieForm;
         "apie-form-definition": ApieFormDefinition;
         "apie-form-field-definition": ApieFormFieldDefinition;
@@ -343,6 +368,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "apie-constraint-check-definition": LocalJSX.ApieConstraintCheckDefinition & JSXBase.HTMLAttributes<HTMLApieConstraintCheckDefinitionElement>;
             "apie-form": LocalJSX.ApieForm & JSXBase.HTMLAttributes<HTMLApieFormElement>;
             "apie-form-definition": LocalJSX.ApieFormDefinition & JSXBase.HTMLAttributes<HTMLApieFormDefinitionElement>;
             "apie-form-field-definition": LocalJSX.ApieFormFieldDefinition & JSXBase.HTMLAttributes<HTMLApieFormFieldDefinitionElement>;

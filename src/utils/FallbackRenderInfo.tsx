@@ -13,6 +13,12 @@ export class FallbackRenderInfo extends RenderInfo
                 (state.label && <label htmlFor={state.name}>{state.label}</label>)
             ];
           },
+          password(state: InputState) {
+            return [
+                <input type="password" disabled={state.disabled} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
+                (state.label && <label htmlFor={state.name}>{state.label}</label>)
+            ];
+          },
           datetime_internal(state: InputState) {
             return [
               <input type="text" readonly={state.disabled} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,

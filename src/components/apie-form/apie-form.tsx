@@ -1,5 +1,5 @@
 import { Component, Host, Prop, Watch, h } from '@stencil/core';
-import { changeForm, createFormFieldState, FormDefinition, FormField, FormFieldState, FormStateDefinition, NestedRecord, Primitive, SubmitField, toChildState } from '../../utils/FormDefinition';
+import { changeForm, createFormFieldState, FormDefinition, FormField, FormFieldState, FormStateDefinition, handlesValidationForField, NestedRecord, Primitive, SubmitField, toChildState } from '../../utils/FormDefinition';
 import { clone, toArray } from '../../utils/utils';
 import { RenderInfo } from '../../utils/RenderInfo';
 import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
@@ -157,11 +157,18 @@ export class ApieForm {
     if (state.form.fieldType === 'group') {
       const subElements = [];
       let index = 0;
+      const unmappedValidationErrors = new Set(Object.keys(state.validationErrors ?? {}));
       for (let formField of state.form.fields) {
         let newState = toChildState(formField, state);
+        if (handlesValidationForField(formField)) {
+          unmappedValidationErrors.delete(formField.name);
+        }
         subElements.push(this.renderField(newState, newPrefix, index));
         index++;
       }
+      subElements.push(
+        this.renderInfo.renderUmappedErrors(unmappedValidationErrors, state.validationErrors)
+      );
       return this.renderInfo.renderFormGroup(
         {
           name: state.form.name,
@@ -176,12 +183,19 @@ export class ApieForm {
       const subElements = [];
       const formName = this.formName(newPrefix);
       const list = Array.from(Object.entries(state.value as any ?? {}));
+      const unmappedValidationErrors = new Set(Object.keys(state.validationErrors ?? {}));
       for (let index = 0; index < list.length; index++) {
         const subFormField: FormField = clone(state.form.subField);
         subFormField.name = String(list[index][0]);
+        if (handlesValidationForField(subFormField)) {
+          unmappedValidationErrors.delete(subFormField.name);
+        }
         let newState = toChildState(subFormField, state);
         subElements.push(this.renderField(newState, newPrefix, index));
       }
+      subElements.push(
+        this.renderInfo.renderUmappedErrors(unmappedValidationErrors, state.validationErrors)
+      );
       return <apie-form-map
         key={key ?? state.form.name}
         subElements={subElements}
@@ -196,9 +210,13 @@ export class ApieForm {
     if (state.form.fieldType === 'list') {
       const subElements = [];
       const list = toArray(state.value).slice(0);
+      const unmappedValidationErrors = new Set(Object.keys(state.validationErrors ?? {}));
       for (let index = 0; index < list.length; index++) {
         const subFormField: FormField = clone(state.form.subField);
         subFormField.name = String(index);
+        if (handlesValidationForField(subFormField)) {
+          unmappedValidationErrors.delete(subFormField.name);
+        }
         let newState = toChildState(subFormField, state);
         subElements.push(
           this.renderInfo.renderListOrMapRow(
@@ -218,6 +236,9 @@ export class ApieForm {
         disabled: false,
          onRowAdd: () => this.onAddItemList(newPrefix.slice(0))
       }));
+      subElements.push(
+        this.renderInfo.renderUmappedErrors(unmappedValidationErrors, state.validationErrors)
+      );
       return this.renderInfo.renderFormGroup(
         {
           name: state.form.name,
@@ -229,7 +250,7 @@ export class ApieForm {
       );
     }
 
-    if (state.form.fieldType = 'split') {
+    if (state.form.fieldType === 'split') {
       const formName = this.formName(newPrefix);
       const selected = state.internalState?._split ?? null;
       let selectedField = null;
@@ -254,7 +275,12 @@ export class ApieForm {
           ></apie-form-select>,
           selectedField && this.renderField(changeForm(selectedField.definition, state), prefixes, key + '_subform')
         ]
-
+    }
+    if (state.form.fieldType === 'constraint') {
+      return this.renderInfo.renderValidationError(
+        state.form,
+        state.value
+      )
     }
     console.log(state);
     return <div></div>
@@ -299,6 +325,18 @@ export class ApieForm {
       internalState: this.internalState,
       validationErrors: this.validationErrors,
     }
+    const fields = [];
+    const unmappedValidationErrors = new Set(Object.keys(state.validationErrors ?? {}));
+    formDefinition.fields.forEach((formField: FormField) => {
+      fields.push(this.renderRootField(formField, state));
+      if (handlesValidationForField(formField)) {
+        unmappedValidationErrors.delete(formField.name);
+      }
+    });
+    fields.push(
+      this.renderInfo.renderUmappedErrors(unmappedValidationErrors, state.validationErrors)
+    );
+
     return (
       <Host>
         { this.debugMode && <pre>{ JSON.stringify(
@@ -315,9 +353,9 @@ export class ApieForm {
             name: '',
             value: this.value,
           },
-          formDefinition.fields.map((formField: FormField) => this.renderRootField(formField, state)) as any,
-          null)
-        }
+          fields,
+          null
+        ) }
         <form action={this.getCalculatedAction()} method={this.method} enctype={this.supportsMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded'}>
          <apie-render-types
          value={this.value}
