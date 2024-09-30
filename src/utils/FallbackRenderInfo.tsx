@@ -45,11 +45,53 @@ export class FallbackRenderInfo extends RenderInfo
             );
           },
           html(state: InputState) {
-            const id = 'a' + state.name.replace(/\[\]/g, '--');
-            return [
-              <div contenteditable={state.disabled} id={id} onInput={(ev: any) => state.valueChanged(ev.target?.innerHTML)} innerHTML={toString(state.value)}></div>,
-              (state.label && <label htmlFor={id}>{state.label}</label>)
-            ]
+            const style = `
+            .html-field {
+              padding: 10px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              min-height: 200px;
+              font-family: Arial, sans-serif;
+              font-size: 14px;
+              line-height: 1.5;
+          }
+            
+          .html-field:empty:before {
+              content: attr(placeholder);
+              color: #999;
+          }
+            
+          .html-field:focus {
+              border-color: #007bff;
+              outline: none;
+              box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+          }
+            
+          .html-field::selection {
+              background-color: #007bff;
+              color: #fff;
+          }
+            
+          .html-field::-webkit-scrollbar {
+              width: 8px;
+          }
+            
+          .html-field::-webkit-scrollbar-thumb {
+              background-color: #ccc;
+              border-radius: 4px;
+          }
+            
+          .html-field::-webkit-scrollbar-thumb:hover {
+              background-color: #aaa;
+          }
+`;
+
+            return <div style={ { margin: "5px", padding: "5px" }}>
+              <style>{style}</style>
+              <label htmlFor={state.label}>{ state.label }</label>
+              <article contenteditable="true" class="html-field unhandled"  onInput={(ev: any) => state.valueChanged(ev.target?.innerHTML)} innerHTML={ toString(state.value) }></article>
+              <textarea style={ { display: 'none' } } name={ state.name } class="unhandled-editor">{ state.value }</textarea>
+            </div>
           },
           select(state: InputState) {
             if (!Array.isArray(state.additionalSettings?.options)) {

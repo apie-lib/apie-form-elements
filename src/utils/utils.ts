@@ -211,3 +211,28 @@ export function createErrorMessage(constraint: ConstraintCheck, value: any): str
   }
   return null;
 }
+
+export function findInShadowDoms(selector: string, element: HTMLElement|ShadowRoot|Element = document.body) {
+  const found = element?.querySelector(selector);
+  if (found) {
+    return found;
+  }
+  
+  if ('shadowRoot' in element) {
+    const shadow = element.shadowRoot;
+    if (shadow) {
+      const found = findInShadowDoms(selector, shadow);
+      if (found) {
+        return found;
+      }
+    }
+  }
+  for (let i = 0; i < (element?.children?.length ?? 0); i++) {
+    const child = element.children[i];
+    const found = findInShadowDoms(selector, child);
+    if (found) {
+      return found;
+    }
+  }
+  return null;
+}
