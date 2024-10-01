@@ -24,6 +24,11 @@ export class ApieSingleInput {
 
   @Event() triggerChange: EventEmitter<ChangeEvent>;
   private renderInput()  {
+    if (this.value === undefined) {
+      Promise.resolve().then(() => {
+        this.triggerChange.emit({ name: this.name, value: null })
+      });
+    }
     return this.renderInfo.renderSingleInput(this.types.split(','), {
       name: this.name,
       label: this.label,
