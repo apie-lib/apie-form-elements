@@ -23,6 +23,7 @@ export class ApieConstraintCheckDefinition {
       inverseCheck: this.inverseCheck,
       exactMatch: this.exactMatch === undefined ? this.value : this.exactMatch,
       pattern: this.pattern,
+      serverSide: this.exactMatch !== undefined,
     }
   }
 

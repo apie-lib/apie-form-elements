@@ -61,6 +61,7 @@ export interface FieldSplit {
 export interface Constraint extends ConstraintCheck {
   fieldType: 'constraint',
   name: string;
+  serverSide: boolean;
 }
 
 export type FormField = FormGroupField | SingleField | FieldMap | FieldList | FieldSplit | Constraint;

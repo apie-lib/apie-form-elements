@@ -97,7 +97,8 @@ export class RenderInfo {
                     name: '',
                     inverseCheck: false,
                     exactMatch: undefined,
-                    message: validationErrors
+                    message: validationErrors,
+                    serverSide: true,
                 },
                 undefined
             );
@@ -110,7 +111,8 @@ export class RenderInfo {
                     name: error,
                     inverseCheck: false,
                     exactMatch: undefined,
-                    message: validationErrors[error] as string
+                    message: validationErrors[error] as string,
+                    serverSide: true,
                 },
                 undefined
             );
