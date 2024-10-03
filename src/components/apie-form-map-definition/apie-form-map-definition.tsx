@@ -17,6 +17,8 @@ export class ApieFormMapDefinition {
 
   @Prop({ reflect: true }) prototyped: boolean = false;
 
+  @Prop({ reflect: true, mutable: true}) status: string = 'idle';
+
   instantiated: boolean = false;
 
   connectedCallback() {
@@ -31,6 +33,7 @@ export class ApieFormMapDefinition {
   @Method()
   async getDefinition(): Promise<FieldMap> {
     const newValue = this.definitionId;
+    this.status = 'retrieving child metadata';
     const definition = await new Promise((resolve, reject) => {
       const id = setInterval(() => {
         if (!this.instantiated || this.definitionId !== newValue) {
@@ -44,7 +47,9 @@ export class ApieFormMapDefinition {
         }
       })
     });
+    this.status = 'building';
     const subformDefinition = await (definition as any).getDefinition();
+    this.status = 'built';
     return Promise.resolve({
       fieldType: 'map',
       name: this.name,

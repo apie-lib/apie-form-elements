@@ -16,6 +16,8 @@ export class ApieFormSelectDefinition {
 
   @Prop({ reflect: true }) prototyped: boolean = false;
 
+  @Prop({ reflect: true, mutable: true}) status: string = 'idle';
+
   instantiated: boolean = false;
 
   connectedCallback() {
@@ -29,6 +31,7 @@ export class ApieFormSelectDefinition {
   @Method()
   async getDefinition(): Promise<FieldSplit> {
     const newValue = this.definitionIdList;
+    this.status = 'retrieving child metadata';
     await new Promise((resolve, reject) => {
       const id = setInterval(async () => {
         if (!this.instantiated || this.definitionIdList !== newValue) {
@@ -42,6 +45,7 @@ export class ApieFormSelectDefinition {
             if (definitionId.definition) {
               continue;
             }
+            this.status = 'retrieving child metadata ' + definitionId.value;
             return;
           }
           definitionId.definition = clone(await (definition as any).getDefinition());
@@ -52,6 +56,7 @@ export class ApieFormSelectDefinition {
         resolve(this.definitionIdList);
       })
     });
+    this.status = 'built';
     return Promise.resolve({
       fieldType: 'split',
       name: this.name,

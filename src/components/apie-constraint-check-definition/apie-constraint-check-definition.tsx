@@ -13,6 +13,9 @@ export class ApieConstraintCheckDefinition {
   @Prop() inverseCheck: boolean = false;
   @Prop() exactMatch: string|number|null|undefined = undefined;
   @Prop() pattern!: string;
+  @Prop() minLength!: number;
+  @Prop() maxLength!: number;
+  @Prop({ reflect: true, mutable: true}) status: string = 'idle';
 
   private get constraint(): Constraint
   {
@@ -24,11 +27,14 @@ export class ApieConstraintCheckDefinition {
       exactMatch: this.exactMatch === undefined ? this.value : this.exactMatch,
       pattern: this.pattern,
       serverSide: this.exactMatch !== undefined,
+      minLength: this.minLength,
+      maxLength: this.maxLength,
     }
   }
 
   @Method()
   async getDefinition(): Promise<Constraint> {
+    this.status = 'built';
     return Promise.resolve(this.constraint)
   }
 

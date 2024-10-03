@@ -13,11 +13,15 @@ export class ApieFormGroupDefinition {
 
   @Prop({ reflect: true }) prototyped: boolean = false;
 
+  @Prop({ reflect: true, mutable: true}) status: string = 'idle';
+
   @Element() el: HTMLElement;
 
   @Method()
   async getDefinition(): Promise<FormGroupField> {
+    this.status = 'building';
     const fields: FormField[] = await toFormField(this.el.childNodes);
+    this.status = 'built';
     return Promise.resolve({
       fieldType: 'group',
       name: this.name,

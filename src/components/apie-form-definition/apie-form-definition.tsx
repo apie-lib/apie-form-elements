@@ -11,9 +11,13 @@ export class ApieFormDefinition {
 
   @Prop({ reflect: true }) prototyped: boolean = false;
 
+  @Prop({ reflect: true, mutable: true}) status: string = 'idle';
+
   @Method()
   async getDefinition(): Promise<FormDefinition> {
+    this.status = 'building';
     const fields: FormField[] = await toFormField(this.el.childNodes);
+    this.status = 'built';
     return Promise.resolve({ fields })
   }
 

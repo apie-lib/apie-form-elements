@@ -192,6 +192,8 @@ export interface ConstraintCheck {
   exactMatch: any;
   message: string;
   pattern?: string;
+  minLength?: number;
+  maxLength?: number;
 }
 
 export function createErrorMessage(constraint: ConstraintCheck, value: any): string|null {

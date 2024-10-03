@@ -11,10 +11,12 @@ export class ApieFormFieldDefinition {
   @Prop() label: string;
   @Prop() types: string = 'text';
   @Prop({reflect: true}) additionalSettings?: SingleFieldSettings = {};
+  @Prop({ reflect: true, mutable: true}) status: string = 'idle';
   @Prop({ reflect: true }) prototyped: boolean = false;
 
   @Method()
   async getDefinition(): Promise<SingleField> {
+    this.status = 'built';
     return Promise.resolve({
       fieldType: 'single',
       name: this.name,

@@ -20,9 +20,12 @@ export namespace Components {
         "exactMatch": string|number|null|undefined;
         "getDefinition": () => Promise<Constraint>;
         "inverseCheck": boolean;
+        "maxLength": number;
         "message": string;
+        "minLength": number;
         "name": string;
         "pattern": string;
+        "status": string;
         "value": string;
     }
     interface ApieForm {
@@ -42,6 +45,7 @@ export namespace Components {
     interface ApieFormDefinition {
         "getDefinition": () => Promise<FormDefinition>;
         "prototyped": boolean;
+        "status": string;
     }
     interface ApieFormFieldDefinition {
         "additionalSettings"?: SingleFieldSettings;
@@ -49,6 +53,7 @@ export namespace Components {
         "label": string;
         "name": string;
         "prototyped": boolean;
+        "status": string;
         "types": string;
     }
     interface ApieFormGroupDefinition {
@@ -56,6 +61,7 @@ export namespace Components {
         "label": string|null;
         "name": string;
         "prototyped": boolean;
+        "status": string;
     }
     interface ApieFormListDefinition {
         "definitionId": string;
@@ -63,6 +69,7 @@ export namespace Components {
         "label": string|null;
         "name": string;
         "prototyped": boolean;
+        "status": string;
     }
     interface ApieFormMap {
         "label": string | null;
@@ -78,6 +85,7 @@ export namespace Components {
         "label": string|null;
         "name": string;
         "prototyped": boolean;
+        "status": string;
     }
     interface ApieFormSelect {
         "internalState": Record<string, any>;
@@ -94,6 +102,7 @@ export namespace Components {
         "label": string|null;
         "name": string;
         "prototyped": boolean;
+        "status": string;
     }
     interface ApieRenderTypes {
         "csrfToken": string|null;
@@ -258,9 +267,12 @@ declare namespace LocalJSX {
     interface ApieConstraintCheckDefinition {
         "exactMatch"?: string|number|null|undefined;
         "inverseCheck"?: boolean;
+        "maxLength": number;
         "message"?: string;
+        "minLength": number;
         "name"?: string;
         "pattern": string;
+        "status"?: string;
         "value"?: string;
     }
     interface ApieForm {
@@ -279,24 +291,28 @@ declare namespace LocalJSX {
     }
     interface ApieFormDefinition {
         "prototyped"?: boolean;
+        "status"?: string;
     }
     interface ApieFormFieldDefinition {
         "additionalSettings"?: SingleFieldSettings;
         "label"?: string;
         "name"?: string;
         "prototyped"?: boolean;
+        "status"?: string;
         "types"?: string;
     }
     interface ApieFormGroupDefinition {
         "label"?: string|null;
         "name"?: string;
         "prototyped"?: boolean;
+        "status"?: string;
     }
     interface ApieFormListDefinition {
         "definitionId"?: string;
         "label"?: string|null;
         "name"?: string;
         "prototyped"?: boolean;
+        "status"?: string;
     }
     interface ApieFormMap {
         "label"?: string | null;
@@ -312,6 +328,7 @@ declare namespace LocalJSX {
         "label"?: string|null;
         "name"?: string;
         "prototyped"?: boolean;
+        "status"?: string;
     }
     interface ApieFormSelect {
         "internalState"?: Record<string, any>;
@@ -329,6 +346,7 @@ declare namespace LocalJSX {
         "label"?: string|null;
         "name"?: string;
         "prototyped"?: boolean;
+        "status"?: string;
     }
     interface ApieRenderTypes {
         "csrfToken"?: string|null;

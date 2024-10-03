@@ -15,6 +15,8 @@ export class ApieFormListDefinition {
 
   @Prop({ reflect: true }) prototyped: boolean = false;
 
+  @Prop({ reflect: true, mutable: true}) status: string = 'idle';
+
   @Element() el: HTMLElement;
 
   instantiated: boolean = false;
@@ -30,6 +32,7 @@ export class ApieFormListDefinition {
   @Method()
   async getDefinition(): Promise<FieldList> {
     const newValue = this.definitionId;
+    this.status = 'retrieving child metadata';
     const definition = await new Promise((resolve, reject) => {
       const id = setInterval(() => {
         if (!this.instantiated || this.definitionId !== newValue) {
@@ -43,7 +46,9 @@ export class ApieFormListDefinition {
         }
       })
     });
+    this.status = 'building';
     const subformDefinition = await (definition as any).getDefinition();
+    this.status = 'built';
     return Promise.resolve({
       fieldType: 'list',
       name: this.name,
