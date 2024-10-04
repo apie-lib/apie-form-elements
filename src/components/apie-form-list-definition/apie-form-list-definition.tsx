@@ -17,6 +17,8 @@ export class ApieFormListDefinition {
 
   @Prop({ reflect: true, mutable: true}) status: string = 'idle';
 
+  @Prop({ reflect: true }) valueWhenMissing: any = [];
+
   @Element() el: HTMLElement;
 
   instantiated: boolean = false;
@@ -55,6 +57,7 @@ export class ApieFormListDefinition {
       label: this.label,
       subField: subformDefinition,
       unique: false,
+      valueWhenMissing: this.valueWhenMissing,
       types: ['group'],
     })
   }

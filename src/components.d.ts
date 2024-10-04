@@ -55,6 +55,7 @@ export namespace Components {
         "prototyped": boolean;
         "status": string;
         "types": string;
+        "valueWhenMissing": any;
     }
     interface ApieFormGroupDefinition {
         "getDefinition": () => Promise<FormGroupField>;
@@ -62,6 +63,7 @@ export namespace Components {
         "name": string;
         "prototyped": boolean;
         "status": string;
+        "valueWhenMissing": any;
     }
     interface ApieFormListDefinition {
         "definitionId": string;
@@ -70,6 +72,7 @@ export namespace Components {
         "name": string;
         "prototyped": boolean;
         "status": string;
+        "valueWhenMissing": any;
     }
     interface ApieFormMap {
         "label": string | null;
@@ -86,6 +89,7 @@ export namespace Components {
         "name": string;
         "prototyped": boolean;
         "status": string;
+        "valueWhenMissing": any;
     }
     interface ApieFormSelect {
         "internalState": Record<string, any>;
@@ -300,12 +304,14 @@ declare namespace LocalJSX {
         "prototyped"?: boolean;
         "status"?: string;
         "types"?: string;
+        "valueWhenMissing"?: any;
     }
     interface ApieFormGroupDefinition {
         "label"?: string|null;
         "name"?: string;
         "prototyped"?: boolean;
         "status"?: string;
+        "valueWhenMissing"?: any;
     }
     interface ApieFormListDefinition {
         "definitionId"?: string;
@@ -313,6 +319,7 @@ declare namespace LocalJSX {
         "name"?: string;
         "prototyped"?: boolean;
         "status"?: string;
+        "valueWhenMissing"?: any;
     }
     interface ApieFormMap {
         "label"?: string | null;
@@ -329,6 +336,7 @@ declare namespace LocalJSX {
         "name"?: string;
         "prototyped"?: boolean;
         "status"?: string;
+        "valueWhenMissing"?: any;
     }
     interface ApieFormSelect {
         "internalState"?: Record<string, any>;

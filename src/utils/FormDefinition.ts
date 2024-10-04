@@ -23,6 +23,7 @@ export interface SingleField {
     name: string;
     label: string;
     types: string[];
+    valueWhenMissing: any;
     additionalSettings?: SingleFieldSettings
 }
 
@@ -31,6 +32,7 @@ export interface FormGroupField {
     name: string;
     label: string|null;
     types: string[];
+    valueWhenMissing: any;
     fields: Array<FormField>;
 }
 
@@ -40,6 +42,7 @@ export interface FieldList {
     label: string|null;
     types: string[];
     unique: boolean;
+    valueWhenMissing: any;
     subField: FormField;
 }
 
@@ -48,6 +51,7 @@ export interface FieldMap {
     name: string;
     label: string|null;
     types: string[];
+    valueWhenMissing: any;
     subField: FormField;
 }
 
@@ -92,6 +96,9 @@ export interface FormFieldState {
 export function createFormFieldState(formField: FormField, definition: FormStateDefinition): FormFieldState
 {
   const key = formField.name;
+  if (definition.value[key] === undefined && formField.fieldType !== 'constraint' && formField.fieldType !== 'split') {
+    definition.value[key] = formField.valueWhenMissing;
+  }
   return {
     form: formField,
     value: definition.value[key],
@@ -103,9 +110,16 @@ export function createFormFieldState(formField: FormField, definition: FormState
 export function toChildState(formField: FormField, state: FormFieldState): FormFieldState
 {
   const key = formField.name;
+  let value: any = state?.value[key];
+  if (value === undefined) {
+    value = null;
+    if (formField.fieldType !== 'constraint' && formField.fieldType !== 'split') {
+      value = formField.valueWhenMissing;
+    }
+  }
   return {
     form: formField,
-    value: state.value ? state.value[key] as any : null,
+    value,
     internalState: state.internalState ? state.internalState[key] as any : null,
     validationErrors: state.validationErrors ? state.validationErrors[key] : null,
   }

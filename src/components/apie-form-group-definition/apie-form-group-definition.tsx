@@ -15,18 +15,34 @@ export class ApieFormGroupDefinition {
 
   @Prop({ reflect: true, mutable: true}) status: string = 'idle';
 
+  @Prop({ reflect: true }) valueWhenMissing: any = null;
+
   @Element() el: HTMLElement;
+
+  private getEffectiveValueWhenMissing(fields: FormField[]): any
+  {
+    if (this.valueWhenMissing) {
+      return this.valueWhenMissing
+    }
+    const result: Record<string, any> = {};
+    for (let field of fields) {
+      result[field.name] = (field as any).valueWhenMissing;
+    }
+    return result;
+  }
 
   @Method()
   async getDefinition(): Promise<FormGroupField> {
     this.status = 'building';
     const fields: FormField[] = await toFormField(this.el.childNodes);
     this.status = 'built';
+    
     return Promise.resolve({
       fieldType: 'group',
       name: this.name,
       label: this.label,
       fields,
+      valueWhenMissing: this.getEffectiveValueWhenMissing(fields),
       types: ['group'],
     })
   }

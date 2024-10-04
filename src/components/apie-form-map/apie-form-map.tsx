@@ -74,7 +74,9 @@ export class ApieFormMap {
     });
     return (
       <Host>
-        <div>{this.subElements.map((subElement, index) => {
+        <div>{this.subElements.filter((subElement) => {
+          return !Array.isArray(subElement) || subElement.length > 0;
+        }).map((subElement, index) => {
           return this.renderInfo.renderListOrMapRow(
             {
               mappingKey: index,

@@ -19,6 +19,8 @@ export class ApieFormMapDefinition {
 
   @Prop({ reflect: true, mutable: true}) status: string = 'idle';
 
+  @Prop({ reflect: true }) valueWhenMissing: any = {};
+
   instantiated: boolean = false;
 
   connectedCallback() {
@@ -55,6 +57,7 @@ export class ApieFormMapDefinition {
       name: this.name,
       label: this.label,
       subField: subformDefinition,
+      valueWhenMissing: this.valueWhenMissing,
       types: ['group'],
     })
   }

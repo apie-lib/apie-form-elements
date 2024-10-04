@@ -10,9 +10,10 @@ export class ApieFormFieldDefinition {
   @Prop() name: string;
   @Prop() label: string;
   @Prop() types: string = 'text';
-  @Prop({reflect: true}) additionalSettings?: SingleFieldSettings = {};
+  @Prop({ reflect: true}) additionalSettings?: SingleFieldSettings = {};
   @Prop({ reflect: true, mutable: true}) status: string = 'idle';
   @Prop({ reflect: true }) prototyped: boolean = false;
+  @Prop({ reflect: true }) valueWhenMissing: any = null;
 
   @Method()
   async getDefinition(): Promise<SingleField> {
@@ -22,6 +23,7 @@ export class ApieFormFieldDefinition {
       name: this.name,
       label: this.label,
       types: this.types.split(','),
+      valueWhenMissing: this.valueWhenMissing,
       additionalSettings: this.additionalSettings
     })
   }
