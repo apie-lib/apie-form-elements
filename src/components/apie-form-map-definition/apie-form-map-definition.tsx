@@ -4,7 +4,7 @@ import { FieldMap } from '../../utils/FormDefinition';
 @Component({
   tag: 'apie-form-map-definition',
   styleUrl: 'apie-form-map-definition.css',
-  shadow: true,
+  shadow: false,
 })
 export class ApieFormMapDefinition {
   @Prop() name: string;

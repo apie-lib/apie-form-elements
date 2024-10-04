@@ -4,7 +4,7 @@ import { FieldList } from '../../utils/FormDefinition';
 @Component({
   tag: 'apie-form-list-definition',
   styleUrl: 'apie-form-list-definition.css',
-  shadow: true,
+  shadow: false,
 })
 export class ApieFormListDefinition {
   @Prop() name: string;

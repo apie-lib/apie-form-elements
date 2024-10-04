@@ -5,7 +5,7 @@ import { FormSelectOption, FieldSplit } from '../../utils/FormDefinition';
 @Component({
   tag: 'apie-form-select-definition',
   styleUrl: 'apie-form-select-definition.css',
-  shadow: true,
+  shadow: false,
 })
 export class ApieFormSelectDefinition {
   @Prop() name: string;

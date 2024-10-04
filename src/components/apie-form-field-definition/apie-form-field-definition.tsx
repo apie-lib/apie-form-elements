@@ -4,7 +4,7 @@ import { SingleField, SingleFieldSettings } from '../../utils/FormDefinition';
 @Component({
   tag: 'apie-form-field-definition',
   styleUrl: 'apie-form-field-definition.css',
-  shadow: true,
+  shadow: false,
 })
 export class ApieFormFieldDefinition {
   @Prop() name: string;

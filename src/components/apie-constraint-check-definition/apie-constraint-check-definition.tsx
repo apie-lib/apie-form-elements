@@ -4,7 +4,7 @@ import { Constraint } from '../../utils/FormDefinition';
 @Component({
   tag: 'apie-constraint-check-definition',
   styleUrl: 'apie-constraint-check-definition.css',
-  shadow: true,
+  shadow: false,
 })
 export class ApieConstraintCheckDefinition {
   @Prop() name: string;

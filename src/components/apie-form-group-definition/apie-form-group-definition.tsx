@@ -4,7 +4,7 @@ import { FormField, FormGroupField, toFormField } from '../../utils/FormDefiniti
 @Component({
   tag: 'apie-form-group-definition',
   styleUrl: 'apie-form-group-definition.css',
-  shadow: true,
+  shadow: false,
 })
 export class ApieFormGroupDefinition {
   @Prop() name: string;
