@@ -83,9 +83,9 @@ export class RenderInfo {
         const errorMessage: string | null = createErrorMessage(state, value);
         
         if (errorMessage) {
-            return <div>{errorMessage}</div>
+            return <div style={ { color: state.serverSide ? 'red' : 'black' }}>𐄂 {errorMessage}</div>
         }
-        return [];
+        return state.serverSide ? [] : <div style={ { color: 'green' }}>✅ {errorMessage}</div>;
     }
 
     public renderUmappedErrors(unmapped: Set<string>, validationErrors: NestedRecord<string>|string): VNode|VNode[]

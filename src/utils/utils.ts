@@ -208,7 +208,7 @@ export function createErrorMessage(constraint: ConstraintCheck, value: any): str
   if ($testFn(constraint.exactMatch === value)) {
     return messages.length > 0 ? messages.join("\n") : null;
   }
-  if (constraint.pattern && $testFn(new RegExp(constraint.pattern).test(toString(value)))) {
+  if (constraint.pattern && $testFn(!new RegExp(constraint.pattern).test(toString(value)))) {
     return messages.length > 0 ? messages.join("\n") : null;
   }
   return null;
