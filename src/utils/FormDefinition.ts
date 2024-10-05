@@ -110,7 +110,7 @@ export function createFormFieldState(formField: FormField, definition: FormState
 export function toChildState(formField: FormField, state: FormFieldState): FormFieldState
 {
   const key = formField.name;
-  let value: any = state?.value[key];
+  let value: any = state?.value ? state?.value[key] : undefined;
   if (value === undefined) {
     value = null;
     if (formField.fieldType !== 'constraint' && formField.fieldType !== 'split') {
