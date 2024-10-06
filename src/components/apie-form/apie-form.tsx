@@ -1,6 +1,6 @@
-import { Component, Host, Prop, Watch, h } from '@stencil/core';
+import { Component, Host, Prop, Watch, VNode, h } from '@stencil/core';
 import { changeForm, createFormFieldState, FormDefinition, FormField, FormFieldState, FormStateDefinition, handlesValidationForField, NestedRecord, Primitive, SubmitField, toChildState } from '../../utils/FormDefinition';
-import { clone, toArray } from '../../utils/utils';
+import { clone, toArray, toString } from '../../utils/utils';
 import { RenderInfo } from '../../utils/RenderInfo';
 import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
 
@@ -20,13 +20,17 @@ export class ApieForm {
   @Prop({reflect: true, mutable: true}) internalState: NestedRecord<Primitive> = {};
   @Prop({reflect: true, mutable: true}) validationErrors: NestedRecord<string> = {};
 
-  @Prop() definitionId: string;
+  @Prop({reflect: true, mutable: true}) definitionId: string;
 
   @Prop({ reflect: true }) supportsMultipart: boolean = false;
 
   @Prop({ reflect: true }) debugMode: boolean = false;
 
   @Prop({reflect: true}) renderInfo: RenderInfo = new FallbackRenderInfo();
+
+  @Prop({reflect: true}) polymorphicColumnName?: string = undefined;
+
+  @Prop({reflect: true}) polymorphicFormDefinition?: Record<string, string> = undefined;
 
   instantiated: boolean = false;
 
@@ -130,6 +134,41 @@ export class ApieForm {
       })
     });
     this.formDefinition = await (definition as any).getDefinition();
+  }
+
+  @Watch('polymorphicFormDefinition')
+  @Watch('polymorphicColumnName')
+  updateDefinitionIdOnPolymorphicDefinition(): void
+  {
+    if (!this.polymorphicColumnName) {
+      return;
+    }
+    this.definitionId = this.value[this.polymorphicColumnName] ? toString(this.value[this.polymorphicColumnName] as any) : undefined;
+  }
+
+  public renderPolymorphicSelection(): VNode|VNode[]
+  {
+    if (!this.polymorphicFormDefinition) {
+      return [];
+    }
+    return this.renderInfo.renderSingleInput(
+      ['polymorphic_select', 'select'],
+      {
+        name: this.polymorphicColumnName,
+        label: 'type',
+        value: this.value[this.polymorphicColumnName] as any,
+        disabled: !this.polymorphicColumnName || Object.entries(this.polymorphicFormDefinition).length === 0,
+        valueChanged: (newValue?: string) => {
+          this.value[this.polymorphicColumnName] = newValue as any;
+          this.updateDefinitionIdOnPolymorphicDefinition();
+          this.value = { ...this.value }
+        },
+        additionalSettings: {
+          options: Object.entries(this.polymorphicFormDefinition)
+            .map(([value, name]) => { return { name, value }}),
+        }
+      }
+    )
   }
 
   private formName(prefixes: string[]): string
@@ -304,6 +343,9 @@ export class ApieForm {
 
   connectedCallback() {
     this.instantiated = true;
+    if (this.polymorphicFormDefinition) {
+      this.updateDefinitionIdOnPolymorphicDefinition();
+    }
     if (this.definitionId) {
       this.onDefinitionIdChange(this.definitionId);
     }
@@ -314,9 +356,9 @@ export class ApieForm {
   }
 
   render() {
-    const formDefinition = this.formDefinition;
+    const formDefinition = this.formDefinition ?? null;
     if (!formDefinition) {
-      return <Host></Host>
+      return <Host>{this.renderPolymorphicSelection()}</Host>
     }
     const state: FormStateDefinition = {
       form: formDefinition,
@@ -347,6 +389,7 @@ export class ApieForm {
           },
           4
         ) }</pre>}
+        { this.renderPolymorphicSelection() }
         <slot></slot>
         { this.renderInfo.renderFormGroup(
           {

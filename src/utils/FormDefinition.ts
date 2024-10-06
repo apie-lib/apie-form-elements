@@ -1,5 +1,5 @@
 import { clone, ConstraintCheck } from './utils';
-import { Option } from './RenderInfo';
+import { InputState, Option } from './RenderInfo';
 
 export type NestedRecord<T> = { [key: string]: NestedRecordField<T> }
 export type NestedRecordField<T> = T | NestedRecord<T>
@@ -123,6 +123,18 @@ export function toChildState(formField: FormField, state: FormFieldState): FormF
     internalState: state.internalState ? state.internalState[key] as any : null,
     validationErrors: state.validationErrors ? state.validationErrors[key] : null,
   }
+}
+
+export function hasInputOptionValue(state: InputState, value: any): boolean
+{
+  if (Array.isArray(state.additionalSettings.options)) {
+    for (let option of state.additionalSettings.options) {
+      if (option.value === value) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 export function changeForm(formField: FormField, state: FormFieldState): FormFieldState

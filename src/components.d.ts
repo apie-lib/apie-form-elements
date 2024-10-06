@@ -36,6 +36,8 @@ export namespace Components {
         "formDefinition": FormDefinition;
         "internalState": NestedRecord<Primitive>;
         "method": string;
+        "polymorphicColumnName"?: string;
+        "polymorphicFormDefinition"?: Record<string, string>;
         "renderInfo": RenderInfo;
         "submitLabel": string;
         "supportsMultipart": boolean;
@@ -287,6 +289,8 @@ declare namespace LocalJSX {
         "formDefinition"?: FormDefinition;
         "internalState"?: NestedRecord<Primitive>;
         "method"?: string;
+        "polymorphicColumnName"?: string;
+        "polymorphicFormDefinition"?: Record<string, string>;
         "renderInfo"?: RenderInfo;
         "submitLabel"?: string;
         "supportsMultipart"?: boolean;

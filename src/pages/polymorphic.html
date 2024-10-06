@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="/build/apie-form-elements.esm.js"></script>
+    <script nomodule src="/build/apie-form-elements.js"></script>
+    <link rel="stylesheet" href="/build/apie-form-elements.css" />
+  </head>
+  <body>
+    <apie-form-group-definition id="group1" name="group">
+      <apie-form-field-definition name="test" types="text" label="test"></apie-form-field-definition>
+      <apie-form-field-definition name="test2" types="text" label="test 2"></apie-form-field-definition>
+    </apie-form-group-definition>
+    <apie-form-group-definition id="group2" name="group2">
+      <apie-form-field-definition name="test" types="text" label="test"></apie-form-field-definition>
+      <apie-form-field-definition name="test3" types="text" label="test 3"></apie-form-field-definition>
+    </apie-form-group-definition>
+    
+    <apie-form id="polymorphic" polymorphic-column-name="type" method="get" debug-mode></apie-form>
+    <script>
+        document.querySelector('apie-form').polymorphicFormDefinition = {
+            'group1': 'Group 1',
+            'group2': 'Group 2',
+        }
+      </script>
+    <script src="/pages/hydrateFromLocation.js">
+    </script>
+  </body>
+</html>

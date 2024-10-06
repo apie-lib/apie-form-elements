@@ -7,11 +7,14 @@
 
 ## Properties
 
-| Property       | Attribute       | Description | Type     | Default     |
-| -------------- | --------------- | ----------- | -------- | ----------- |
-| `definitionId` | `definition-id` |             | `string` | `undefined` |
-| `label`        | `label`         |             | `string` | `null`      |
-| `name`         | `name`          |             | `string` | `undefined` |
+| Property           | Attribute            | Description | Type      | Default     |
+| ------------------ | -------------------- | ----------- | --------- | ----------- |
+| `definitionId`     | `definition-id`      |             | `string`  | `undefined` |
+| `label`            | `label`              |             | `string`  | `null`      |
+| `name`             | `name`               |             | `string`  | `undefined` |
+| `prototyped`       | `prototyped`         |             | `boolean` | `false`     |
+| `status`           | `status`             |             | `string`  | `'idle'`    |
+| `valueWhenMissing` | `value-when-missing` |             | `any`     | `[]`        |
 
 
 ## Methods

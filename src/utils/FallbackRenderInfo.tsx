@@ -1,6 +1,7 @@
 import { h } from '@stencil/core';
 import { InputState, RenderInfo } from "./RenderInfo";
 import { toEmptyFileList, toFileList, toString } from './utils';
+import { hasInputOptionValue } from './FormDefinition';
 
 export class FallbackRenderInfo extends RenderInfo
 {
@@ -97,9 +98,10 @@ export class FallbackRenderInfo extends RenderInfo
             if (!Array.isArray(state.additionalSettings?.options)) {
               return <select disabled><option selected>{state.value}</option></select>
             }
-          
+            
             return <select disabled={state.disabled} onChange={(ev: any) => state.valueChanged(ev.target.value)}>
-              {state.additionalSettings.options.map((opt) => <option value={toString(opt.value as any)} selected={state.value === opt.value}>{opt.name}</option>)}
+              { !hasInputOptionValue(state, state.value) && <option value={toString(state.value)} selected>{ state.value }</option> }
+              { state.additionalSettings.options.map((opt) => <option value={toString(opt.value as any)} selected={state.value === opt.value}>{opt.name}</option>)}
               </select>
           },
           "null"(state: InputState) {

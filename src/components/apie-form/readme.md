@@ -7,20 +7,22 @@
 
 ## Properties
 
-| Property            | Attribute            | Description | Type                                                 | Default                    |
-| ------------------- | -------------------- | ----------- | ---------------------------------------------------- | -------------------------- |
-| `action`            | `action`             |             | `string`                                             | `window.location.href`     |
-| `csrfToken`         | `csrf-token`         |             | `string`                                             | `null`                     |
-| `debugMode`         | `debug-mode`         |             | `boolean`                                            | `false`                    |
-| `definitionId`      | `definition-id`      |             | `string`                                             | `undefined`                |
-| `formDefinition`    | --                   |             | `FormDefinition`                                     | `undefined`                |
-| `internalState`     | --                   |             | `{ [key: string]: NestedRecordField<Primitive>; }`   | `{}`                       |
-| `method`            | `method`             |             | `string`                                             | `'post'`                   |
-| `renderInfo`        | --                   |             | `RenderInfo`                                         | `new FallbackRenderInfo()` |
-| `submitLabel`       | `submit-label`       |             | `string`                                             | `'Submit'`                 |
-| `supportsMultipart` | `supports-multipart` |             | `boolean`                                            | `false`                    |
-| `validationErrors`  | --                   |             | `{ [key: string]: NestedRecordField<string>; }`      | `{}`                       |
-| `value`             | --                   |             | `{ [key: string]: NestedRecordField<SubmitField>; }` | `{}`                       |
+| Property                    | Attribute                 | Description | Type                                                 | Default                    |
+| --------------------------- | ------------------------- | ----------- | ---------------------------------------------------- | -------------------------- |
+| `action`                    | `action`                  |             | `string`                                             | `window.location.href`     |
+| `csrfToken`                 | `csrf-token`              |             | `string`                                             | `null`                     |
+| `debugMode`                 | `debug-mode`              |             | `boolean`                                            | `false`                    |
+| `definitionId`              | `definition-id`           |             | `string`                                             | `undefined`                |
+| `formDefinition`            | --                        |             | `FormDefinition`                                     | `undefined`                |
+| `internalState`             | --                        |             | `{ [key: string]: NestedRecordField<Primitive>; }`   | `{}`                       |
+| `method`                    | `method`                  |             | `string`                                             | `'post'`                   |
+| `polymorphicColumnName`     | `polymorphic-column-name` |             | `string`                                             | `undefined`                |
+| `polymorphicFormDefinition` | --                        |             | `{ [x: string]: string; }`                           | `undefined`                |
+| `renderInfo`                | --                        |             | `RenderInfo`                                         | `new FallbackRenderInfo()` |
+| `submitLabel`               | `submit-label`            |             | `string`                                             | `'Submit'`                 |
+| `supportsMultipart`         | `supports-multipart`      |             | `boolean`                                            | `false`                    |
+| `validationErrors`          | --                        |             | `{ [key: string]: NestedRecordField<string>; }`      | `{}`                       |
+| `value`                     | --                        |             | `{ [key: string]: NestedRecordField<SubmitField>; }` | `{}`                       |
 
 
 ## Dependencies

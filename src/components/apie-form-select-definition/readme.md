@@ -7,11 +7,13 @@
 
 ## Properties
 
-| Property           | Attribute | Description | Type                 | Default     |
-| ------------------ | --------- | ----------- | -------------------- | ----------- |
-| `definitionIdList` | --        |             | `FormSelectOption[]` | `undefined` |
-| `label`            | `label`   |             | `string`             | `null`      |
-| `name`             | `name`    |             | `string`             | `undefined` |
+| Property           | Attribute    | Description | Type                 | Default     |
+| ------------------ | ------------ | ----------- | -------------------- | ----------- |
+| `definitionIdList` | --           |             | `FormSelectOption[]` | `undefined` |
+| `label`            | `label`      |             | `string`             | `null`      |
+| `name`             | `name`       |             | `string`             | `undefined` |
+| `prototyped`       | `prototyped` |             | `boolean`            | `false`     |
+| `status`           | `status`     |             | `string`             | `'idle'`    |
 
 
 ## Methods
