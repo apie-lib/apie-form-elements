@@ -34,7 +34,10 @@ export class FallbackRenderInfo extends RenderInfo
             ];
           },
           hidden(state: InputState) {
-            return <input type="hidden" onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>
+            if (state.additionalSettings.forcedValue !== undefined && state.value !== state.additionalSettings.forcedValue) {
+              Promise.resolve().then(() => state.valueChanged(state.additionalSettings.forcedValue))
+            }
+            return []
           },
           file(state: InputState) {
             return (

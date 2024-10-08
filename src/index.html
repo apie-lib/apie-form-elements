@@ -41,6 +41,12 @@
         <apie-form-field-definition name="test" types="text" label="test"></apie-form-field-definition>
         <apie-form-field-definition name="test2" types="text" label="test 2"></apie-form-field-definition>
       </apie-form-group-definition>
+      <apie-form-field-definition id="forced" name="forced" types="hidden" label="hidden forced field"></apie-form-field-definition>
+      <script>
+        document.querySelector('#forced').additionalSettings = {
+          forcedValue: 42
+        }
+      </script>
       <apie-form-list-definition name="list" definition-id="list-item"></apie-form-list-definition>
       <apie-form-list-definition name="files" definition-id="fileUpload"></apie-form-list-definition>
       <apie-form-map-definition name="fileMap" definition-id="fileUpload"></apie-form-map-definition>

@@ -14,8 +14,12 @@ export interface InputState {
     disabled?: boolean;
     valueChanged: (newValue?: string) => void|any;
     additionalSettings?: {
+      streamType?: 'readAsArrayBuffer'|'readAsBinaryString'|'readAsDataURL'|'readAsText'
       options?: Option[],
       dateFormat?: string,
+      autocompleteUrl?: string,
+      imageUrl?: string
+      forcedValue?: any
     }
 }
 
