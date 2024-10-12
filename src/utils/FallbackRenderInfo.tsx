@@ -14,6 +14,12 @@ export class FallbackRenderInfo extends RenderInfo
                 (state.label && <label htmlFor={state.name}>{state.label}</label>)
             ];
           },
+          "datetime-local"(state: InputState) {
+            return [
+              <apie-php-date-input disabled={state.disabled} onChange={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)} dateFormat={state.additionalSettings.dateFormat ?? 'Y-m-d\\TH:i'}/>,
+              (state.label && <label htmlFor={state.name}>{state.label}</label>)
+            ];
+          },
           password(state: InputState) {
             return [
                 <input type="password" disabled={state.disabled} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,

@@ -9,11 +9,15 @@ import { Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField,
 import { Option, RenderInfo } from "./utils/RenderInfo";
 import { VNode } from "@stencil/core";
 import { ChangeEvent } from "./utils/utils";
+import { PhpDate } from "./utils/dates/PhpDate";
+import { DateFormatString } from "./utils/dates/DateFormatString";
 import { SingleFieldSettings as SingleFieldSettings1 } from "./components";
 export { Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
 export { Option, RenderInfo } from "./utils/RenderInfo";
 export { VNode } from "@stencil/core";
 export { ChangeEvent } from "./utils/utils";
+export { PhpDate } from "./utils/dates/PhpDate";
+export { DateFormatString } from "./utils/dates/DateFormatString";
 export { SingleFieldSettings as SingleFieldSettings1 } from "./components";
 export namespace Components {
     interface ApieConstraintCheckDefinition {
@@ -110,6 +114,14 @@ export namespace Components {
         "prototyped": boolean;
         "status": string;
     }
+    interface ApiePhpDateInput {
+        "compiledDateformat": DateFormatString;
+        "dateFormat": string;
+        "disabled": boolean;
+        "internalDate": PhpDate;
+        "name": string;
+        "value": string;
+    }
     interface ApieRenderTypes {
         "csrfToken": string|null;
         "internalState": Record<string, any>;
@@ -135,6 +147,10 @@ export interface ApieFormMapCustomEvent<T> extends CustomEvent<T> {
 export interface ApieFormSelectCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLApieFormSelectElement;
+}
+export interface ApiePhpDateInputCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLApiePhpDateInputElement;
 }
 export interface ApieSingleInputCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -224,6 +240,23 @@ declare global {
         prototype: HTMLApieFormSelectDefinitionElement;
         new (): HTMLApieFormSelectDefinitionElement;
     };
+    interface HTMLApiePhpDateInputElementEventMap {
+        "change": string;
+    }
+    interface HTMLApiePhpDateInputElement extends Components.ApiePhpDateInput, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLApiePhpDateInputElementEventMap>(type: K, listener: (this: HTMLApiePhpDateInputElement, ev: ApiePhpDateInputCustomEvent<HTMLApiePhpDateInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLApiePhpDateInputElementEventMap>(type: K, listener: (this: HTMLApiePhpDateInputElement, ev: ApiePhpDateInputCustomEvent<HTMLApiePhpDateInputElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLApiePhpDateInputElement: {
+        prototype: HTMLApiePhpDateInputElement;
+        new (): HTMLApiePhpDateInputElement;
+    };
     interface HTMLApieRenderTypesElement extends Components.ApieRenderTypes, HTMLStencilElement {
     }
     var HTMLApieRenderTypesElement: {
@@ -264,6 +297,7 @@ declare global {
         "apie-form-map-definition": HTMLApieFormMapDefinitionElement;
         "apie-form-select": HTMLApieFormSelectElement;
         "apie-form-select-definition": HTMLApieFormSelectDefinitionElement;
+        "apie-php-date-input": HTMLApiePhpDateInputElement;
         "apie-render-types": HTMLApieRenderTypesElement;
         "apie-script": HTMLApieScriptElement;
         "apie-single-input": HTMLApieSingleInputElement;
@@ -360,6 +394,15 @@ declare namespace LocalJSX {
         "prototyped"?: boolean;
         "status"?: string;
     }
+    interface ApiePhpDateInput {
+        "compiledDateformat"?: DateFormatString;
+        "dateFormat"?: string;
+        "disabled"?: boolean;
+        "internalDate"?: PhpDate;
+        "name"?: string;
+        "onChange"?: (event: ApiePhpDateInputCustomEvent<string>) => void;
+        "value"?: string;
+    }
     interface ApieRenderTypes {
         "csrfToken"?: string|null;
         "internalState"?: Record<string, any>;
@@ -389,6 +432,7 @@ declare namespace LocalJSX {
         "apie-form-map-definition": ApieFormMapDefinition;
         "apie-form-select": ApieFormSelect;
         "apie-form-select-definition": ApieFormSelectDefinition;
+        "apie-php-date-input": ApiePhpDateInput;
         "apie-render-types": ApieRenderTypes;
         "apie-script": ApieScript;
         "apie-single-input": ApieSingleInput;
@@ -408,6 +452,7 @@ declare module "@stencil/core" {
             "apie-form-map-definition": LocalJSX.ApieFormMapDefinition & JSXBase.HTMLAttributes<HTMLApieFormMapDefinitionElement>;
             "apie-form-select": LocalJSX.ApieFormSelect & JSXBase.HTMLAttributes<HTMLApieFormSelectElement>;
             "apie-form-select-definition": LocalJSX.ApieFormSelectDefinition & JSXBase.HTMLAttributes<HTMLApieFormSelectDefinitionElement>;
+            "apie-php-date-input": LocalJSX.ApiePhpDateInput & JSXBase.HTMLAttributes<HTMLApiePhpDateInputElement>;
             "apie-render-types": LocalJSX.ApieRenderTypes & JSXBase.HTMLAttributes<HTMLApieRenderTypesElement>;
             "apie-script": LocalJSX.ApieScript & JSXBase.HTMLAttributes<HTMLApieScriptElement>;
             "apie-single-input": LocalJSX.ApieSingleInput & JSXBase.HTMLAttributes<HTMLApieSingleInputElement>;

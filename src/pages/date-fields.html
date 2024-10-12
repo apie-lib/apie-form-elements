@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="/build/apie-form-elements.esm.js"></script>
+    <script nomodule src="/build/apie-form-elements.js"></script>
+    <link rel="stylesheet" href="/build/apie-form-elements.css" />
+  </head>
+  <body>
+    <apie-form-definition id="definition">
+      <apie-form-field-definition name="default" types="datetime-local" label="default"></apie-form-field-definition>
+      <apie-form-field-definition name="a" types="datetime-local" label="a"></apie-form-field-definition>
+      <apie-form-field-definition name="b" types="datetime-local" label="b"></apie-form-field-definition>
+      <apie-form-field-definition name="c" types="datetime-local" label="c"></apie-form-field-definition>
+      <apie-form-field-definition name="d" types="datetime-local" label="d"></apie-form-field-definition>
+      <apie-form-field-definition name="e" types="datetime-local" label="e"></apie-form-field-definition>
+      <apie-form-field-definition name="f" types="datetime-local" label="f"></apie-form-field-definition>
+      <apie-form-field-definition name="g" types="datetime-local" label="g"></apie-form-field-definition>
+      <apie-form-field-definition name="h" types="datetime-local" label="h"></apie-form-field-definition>
+      <apie-form-field-definition name="i" types="datetime-local" label="i"></apie-form-field-definition>
+      <apie-form-field-definition name="j" types="datetime-local" label="j"></apie-form-field-definition>
+      <apie-form-field-definition name="k" types="datetime-local" label="k"></apie-form-field-definition>
+      <apie-form-field-definition name="l" types="datetime-local" label="l"></apie-form-field-definition>
+      <apie-form-field-definition name="m" types="datetime-local" label="m"></apie-form-field-definition>
+      <apie-form-field-definition name="n" types="datetime-local" label="n"></apie-form-field-definition>
+      <apie-form-field-definition name="o" types="datetime-local" label="o"></apie-form-field-definition>
+      <apie-form-field-definition name="p" types="datetime-local" label="p"></apie-form-field-definition>
+      <apie-form-field-definition name="q" types="datetime-local" label="q"></apie-form-field-definition>
+      <apie-form-field-definition name="r" types="datetime-local" label="r"></apie-form-field-definition>
+      <apie-form-field-definition name="s" types="datetime-local" label="s"></apie-form-field-definition>
+      <apie-form-field-definition name="t" types="datetime-local" label="t"></apie-form-field-definition>
+      <apie-form-field-definition name="u" types="datetime-local" label="u"></apie-form-field-definition>
+      <apie-form-field-definition name="v" types="datetime-local" label="v"></apie-form-field-definition>
+      <apie-form-field-definition name="w" types="datetime-local" label="w"></apie-form-field-definition>
+      <apie-form-field-definition name="x" types="datetime-local" label="x"></apie-form-field-definition>
+      <apie-form-field-definition name="y" types="datetime-local" label="y"></apie-form-field-definition>
+      <apie-form-field-definition name="z" types="datetime-local" label="z"></apie-form-field-definition>
+    </apie-form-definition>
+    <script>
+      for (let elm of document.querySelectorAll('apie-form-field-definition')) {
+        if (elm.name.length === 1) {
+          elm.additionalSettings.dateFormat = elm.name;
+        }
+      }
+    </script>
+    <apie-form definition-id="definition" method="get" debug-mode></apie-form>
+    <script src="/pages/hydrateFromLocation.js">
+    </script>
+</body>

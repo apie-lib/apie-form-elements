@@ -7,8 +7,6 @@ interface ParseState {
     timezone: string|null;
 }
 
-
-
 function parseString(
     parseState: ParseState,
     options: Array<string>,

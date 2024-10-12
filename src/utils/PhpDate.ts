@@ -33,8 +33,7 @@ export function maxDay(year: number|null, month: number|null): number
     return 30;
 }
 
-export function getUserTimezone(): Timezone|null
-{
+export function getUserTimezone(): Timezone|null {
     const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase();
     return timezones.find((value: Timezone) => value.timezone_id.toLowerCase() === browserTimezone);
 }
