@@ -287,10 +287,9 @@ export class DateFormatString implements DateFieldSelection {
             (state: ParseState) => {
                 const hours = state.date.resolvedHours ?? 0;
                 const amOrPm = hours - hours % 12;
-                return parseNumber(
+                return parsePrefixedNumber(
                     state,
-                    1,
-                    12,
+                    2,
                     (v: string) => state.date.hours = String(amOrPm + Number(v)),
                     defaultParseError(state)
                 )

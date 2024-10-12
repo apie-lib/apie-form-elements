@@ -41,8 +41,8 @@
     </apie-form-definition>
     <script>
       for (let elm of document.querySelectorAll('apie-form-field-definition')) {
-        if (elm.name.length === 1) {
-          elm.additionalSettings.dateFormat = elm.name;
+        if (elm.attributes.name.value.length === 1) {
+          elm.additionalSettings = { dateFormat: elm.attributes.name.value };
         }
       }
     </script>

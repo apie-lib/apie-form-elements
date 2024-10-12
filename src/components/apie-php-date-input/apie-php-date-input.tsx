@@ -44,7 +44,7 @@ export class ApiePhpDateInput {
   }
 
   @Watch('dateFormat')
-  private updateDateFormat() {
+  public updateDateFormat() {
     this.compiledDateformat = new DateFormatString(this.dateFormat);
     this.updateInternalDate();
   }
@@ -68,6 +68,22 @@ export class ApiePhpDateInput {
     this.checkValue();
   }
 
+  public get displayHourFields(): boolean
+  {
+    return this.compiledDateformat.displayHours
+     || this.compiledDateformat.displayMinutes
+     || this.compiledDateformat.displaySeconds
+     || this.compiledDateformat.displayMilliseconds
+     || this.compiledDateformat.displayMicroseconds
+  }
+
+  public get displayDateFields(): boolean
+  {
+    return this.compiledDateformat.displayDate
+     || this.compiledDateformat.displayMonth
+     || this.compiledDateformat.displayYear;
+  }
+
   render() {
     return (
       <Host>
@@ -76,22 +92,26 @@ export class ApiePhpDateInput {
             <slot name="input"><input disabled={this.disabled} name={this.name} value={this.value} readonly/></slot>
           </div>
           { this.showDatePicker && <div>
-              <slot name="hours"><input value={this.internalDate.hours} onChange={(ev) => this.update('hours', (ev.target as HTMLInputElement).value)}/></slot>
-              <slot name="minutes"><input value={this.internalDate.minutes} onChange={(ev) => this.update('minutes', (ev.target as HTMLInputElement).value)}/></slot>
-              <slot name="seconds"><input value={this.internalDate.seconds} onChange={(ev) => this.update('seconds', (ev.target as HTMLInputElement).value)}/></slot>
-              <slot name="milliseconds"><input value={this.internalDate.milliseconds} onChange={(ev) => this.update('milliseconds', (ev.target as HTMLInputElement).value)}/></slot>
-              <slot name="microseconds"><input value={this.internalDate.microseconds} onChange={(ev) => this.update('microseconds', (ev.target as HTMLInputElement).value)}/></slot>
-              <slot name="date"><input value={this.internalDate.date} onChange={(ev) => this.update('date', (ev.target as HTMLInputElement).value)}/></slot>
-              <slot name="month"><input value={this.internalDate.month} onChange={(ev) => this.update('month', (ev.target as HTMLInputElement).value)}/></slot>
-              <slot name="year"><input value={this.internalDate.year} onChange={(ev) => this.update('year', (ev.target as HTMLInputElement).value)}/></slot>
-              <slot name="timezone"><select onChange={(ev) => this.update('timezone', (ev.target as HTMLInputElement).value)}>
+              { this.displayHourFields && <slot name="hourfields"><div>
+                { this.compiledDateformat.displayHours && <slot name="hours"><input placeholder="HH" value={this.internalDate.hours} onChange={(ev) => this.update('hours', (ev.target as HTMLInputElement).value)}/></slot> }
+                { this.compiledDateformat.displayMinutes && <slot name="minutes"><input placeholder="MM" value={this.internalDate.minutes} onChange={(ev) => this.update('minutes', (ev.target as HTMLInputElement).value)}/></slot> }
+                { this.compiledDateformat.displaySeconds && <slot name="seconds"><input placeholder="SS" value={this.internalDate.seconds} onChange={(ev) => this.update('seconds', (ev.target as HTMLInputElement).value)}/></slot> }
+                { this.compiledDateformat.displayMilliseconds && !this.compiledDateformat.displayMicroseconds && <slot name="milliseconds"><input placeholder="ms" value={this.internalDate.milliseconds} onChange={(ev) => this.update('milliseconds', (ev.target as HTMLInputElement).value)}/></slot> }
+                { this.compiledDateformat.displayMicroseconds && <slot name="microseconds"><input placeholder="microseconds" value={this.internalDate.microseconds} onChange={(ev) => this.update('microseconds', (ev.target as HTMLInputElement).value)}/></slot> }
+              </div></slot> }
+              { this.displayDateFields && <slot name="datefields"><div>
+              { this.compiledDateformat.displayDate && <slot name="date"><input placeholder="DD" value={this.internalDate.date} onChange={(ev) => this.update('date', (ev.target as HTMLInputElement).value)}/></slot> }
+              { this.compiledDateformat.displayMonth && <slot name="month"><input placeholder="MM" value={this.internalDate.month} onChange={(ev) => this.update('month', (ev.target as HTMLInputElement).value)}/></slot> }
+              { this.compiledDateformat.displayYear && <slot name="year"><input placeholder="YY" value={this.internalDate.year} onChange={(ev) => this.update('year', (ev.target as HTMLInputElement).value)}/></slot> }
+              </div></slot> }
+              { this.compiledDateformat.displayTimezone && <slot name="timezone"><select onChange={(ev) => this.update('timezone', (ev.target as HTMLInputElement).value)}>
                 <option selected={this.internalDate.timezone === null}>--</option>
                 { timezones.map(
                   (timezone: Timezone) => {
                     return <option selected={timezone.timezone_id === this.internalDate.timezone}>{timezone.timezone_id}</option>
                   })
                 }
-                </select></slot>
+                </select></slot> }
               <slot name="now"><button type="button" onClick={() => this.updateToCurrentTime()}>NOW</button></slot>
             </div>}
         </div>
