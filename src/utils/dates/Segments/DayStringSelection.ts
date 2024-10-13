@@ -2,7 +2,7 @@ import { DateFieldSelection } from "../DateFieldSelection";
 import { DateFormatSection } from "../DateFormatSection";
 import { ParseState } from "../ParseState";
 import { PhpDate } from "../PhpDate";
-import { defaultParseError, parseString } from "../utils";
+import { defaultParseError, parseString, sortLength } from "../utils";
 
 export class DayStringSelection implements DateFormatSection, DateFieldSelection {
     constructor(
@@ -25,7 +25,7 @@ export class DayStringSelection implements DateFormatSection, DateFieldSelection
     {
         return parseString(
             state,
-            this.names,
+            sortLength(this.names),
             null,
             defaultParseError(state),
         )
