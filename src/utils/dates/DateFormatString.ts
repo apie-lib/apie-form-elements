@@ -30,9 +30,9 @@ export class DateFormatString implements DateFieldSelection {
         // Swatch beat time (split day in exact 1000 beats), 000-999
         B: () => new DaySelection(
             'resolvedSwatchTime',
-            false,
+            true,
             null,
-            { displayHours: true },
+            { displayHours: true, displayMinutes: true, displaySeconds: true },
             (state: ParseState) => {
                 return parsePrefixedNumber(
                     state,
@@ -136,6 +136,39 @@ export class DateFormatString implements DateFieldSelection {
             '1234567'.split(''),
             { displayDate: true, displayYear: true, displayMonth: true }
         ),
+        // Timezone offset '+2000'
+        O: () => new TimezoneField(
+            'offset',
+            (offset) => {
+                offset /= 60;
+                const absOffsetHours = Math.floor(Math.abs(offset) / 60);
+                const absOffsetMinutes = Math.abs(offset) % 60;
+                const sign = offset < 0 ? '-' : '+';
+
+                const formattedOffset = sign +
+                                        String(absOffsetHours).padStart(2, '0') +
+                                        String(absOffsetMinutes).padStart(2, '0');
+
+                return formattedOffset;
+            }
+        ),
+        // Timezone offset '+20:00'
+        P: () => new TimezoneField(
+            'offset',
+            (offset) => {
+                offset /= 60;
+                const absOffsetHours = Math.floor(Math.abs(offset) / 60);
+                const absOffsetMinutes = Math.abs(offset) % 60;
+                const sign = offset < 0 ? '-' : '+';
+
+                const formattedOffset = sign +
+                                        String(absOffsetHours).padStart(2, '0') +
+                                        ':' + 
+                                        String(absOffsetMinutes).padStart(2, '0');
+
+                return formattedOffset;
+            }
+        ),
         // day suffix: th, rd, nd (always English)
         S: () => new DaySelection(
             'resolvedDaySuffix',
@@ -211,6 +244,10 @@ export class DateFormatString implements DateFieldSelection {
                 )
             },
             9999
+        ),
+        // timezone offset in minutes
+        Z: () => new TimezoneField(
+            'offset'
         ),
         // am or pm
         a: () => new DaySelection(
@@ -365,6 +402,26 @@ export class DateFormatString implements DateFieldSelection {
         ),
         // year matches to the week of the date according ISO
         o: () => new WeekYear(),
+        // Timezone offset '+20:00' | 'Z'
+        p: () => new TimezoneField(
+            'offset',
+            (offset) => {
+                if (offset === 0) {
+                    return 'Z';
+                }
+                offset /= 60;
+                const absOffsetHours = Math.floor(Math.abs(offset) / 60);
+                const absOffsetMinutes = Math.abs(offset) % 60;
+                const sign = offset < 0 ? '-' : '+';
+
+                const formattedOffset = sign +
+                                        String(absOffsetHours).padStart(2, '0') +
+                                        ':' + 
+                                        String(absOffsetMinutes).padStart(2, '0');
+
+                return formattedOffset;
+            }
+        ),
         // seconds 00-59
         s: () => new DaySelection(
             'resolvedSeconds',
@@ -416,7 +473,7 @@ export class DateFormatString implements DateFieldSelection {
         v: () => new DaySelection(
             'resolvedMilliseconds',
             false,
-            (input) => String(input).padStart(3, '0'),
+            (input) => input ? String(input).padStart(3, '0') : null,
             {
                 displayMilliseconds: true
             },
@@ -469,81 +526,6 @@ export class DateFormatString implements DateFieldSelection {
             },
             365
         )
-        /*  
-        
-        // Timezone offset '+2000'
-        O: () => new DaySelection(
-            'timezoneOffset',
-            false,
-            (offset) => {
-                const absOffsetHours = Math.floor(Math.abs(offset) / 60);
-                const absOffsetMinutes = Math.abs(offset) % 60;
-                const sign = offset <= 0 ? '+' : '-';
-
-                const formattedOffset = sign +
-                                        String(absOffsetHours).padStart(2, '0') +
-                                        String(absOffsetMinutes).padStart(2, '0');
-
-                return formattedOffset;
-            },
-            {
-                displayTimezone: true
-            }
-        ),
-        // Timezone offset '+20:00'
-        P: () => new DaySelection(
-            'timezoneOffset',
-            false,
-            (offset) => {
-                const absOffsetHours = Math.floor(Math.abs(offset) / 60);
-                const absOffsetMinutes = Math.abs(offset) % 60;
-                const sign = offset <= 0 ? '+' : '-';
-
-                const formattedOffset = sign +
-                                        String(absOffsetHours).padStart(2, '0') +
-                                        ':' + 
-                                        String(absOffsetMinutes).padStart(2, '0');
-
-                return formattedOffset;
-            },
-            {
-                displayTimezone: true
-            }
-        ),
-        // Timezone offset '+20:00' | 'Z'
-        p: () => new DaySelection(
-            'timezoneOffset',
-            false,
-            (offset) => {
-                if (offset === 0) {
-                    return 'Z';
-                }
-                const absOffsetHours = Math.floor(Math.abs(offset) / 60);
-                const absOffsetMinutes = Math.abs(offset) % 60;
-                const sign = offset <= 0 ? '+' : '-';
-
-                const formattedOffset = sign +
-                                        String(absOffsetHours).padStart(2, '0') +
-                                        ':' + 
-                                        String(absOffsetMinutes).padStart(2, '0');
-
-                return formattedOffset;
-            },
-            {
-                displayTimezone: true
-            }
-        ),
-        // timezone offset in minutes
-        Z: () => new DaySelection(
-            'timezoneOffset',
-            false,
-            null,
-            {
-                displayTimezone: true
-            }
-        ),
-        
-        ,*/
     };
     constructor(dateFormatString: string)
     {
@@ -577,6 +559,16 @@ export class DateFormatString implements DateFieldSelection {
 
     public convertToString(date: PhpDate): string {
         return this.dateFormat.map((d: DateFormatSection) => d.render(date)).join('');
+    }
+
+    public isValid(date: PhpDate): boolean {
+        const fields = ['Date', 'Month', 'Year', 'Microseconds', 'Milliseconds', 'Seconds', 'Minutes', 'Hours', 'Timezone'];
+        for (let field of fields) {
+            if (this['display' + field] && !date['resolved' + field]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public createFromString(input: string, date: PhpDate = PhpDate.createFromLocalDate()): PhpDate {
@@ -613,7 +605,7 @@ export class DateFormatString implements DateFieldSelection {
     }
     get displayMilliseconds(): boolean
     {
-        return this.dateFormat.some((v: any) => v.displayMiliseconds);
+        return this.dateFormat.some((v: any) => v.displayMilliseconds);
     }
     get displayMicroseconds(): boolean
     {

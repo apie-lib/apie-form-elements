@@ -32,14 +32,18 @@ export class ApiePhpDateInput {
 
   componentWillLoad() {
     this.compiledDateformat = new DateFormatString(this.dateFormat);
-    this.internalDate = this.compiledDateformat.createFromString(this.value, this.internalDate);
+    if (this.value) {
+      this.internalDate = this.compiledDateformat.createFromString(this.value, this.internalDate);
+    }
     this.checkValue();
   }
 
   @Watch('value')
   @Watch('compiledDateformat')
   private updateInternalDate() {
-    this.internalDate = this.compiledDateformat.createFromString(this.value, this.internalDate);
+    if (this.value) {
+      this.internalDate = this.compiledDateformat.createFromString(this.value, this.internalDate);
+    }
     this.checkValue();
   }
 
@@ -50,7 +54,9 @@ export class ApiePhpDateInput {
   }
 
   private checkValue(): void {
-    const _value = this.compiledDateformat.convertToString(this.internalDate);
+    const _value = this.compiledDateformat.isValid(this.internalDate)
+      ? this.compiledDateformat.convertToString(this.internalDate)
+      : null;
     if (_value !== this.value) {
       this.value = _value;
       this.change.emit(this.value);
@@ -89,7 +95,7 @@ export class ApiePhpDateInput {
       <Host>
         <div>
           <div onClick={() => !this.disabled && this.toggleDatePicker()}>
-            <slot name="input"><input disabled={this.disabled} name={this.name} value={this.value} readonly/></slot>
+            <slot name="input"><input disabled={this.disabled} name={this.name} value={this.compiledDateformat.convertToString(this.internalDate)} readonly/></slot>
           </div>
           { this.showDatePicker && <div>
               { this.displayHourFields && <slot name="hourfields"><div>

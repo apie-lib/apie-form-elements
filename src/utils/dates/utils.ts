@@ -28,6 +28,19 @@ export function parseString(
     return parseState;
 }
 
+/**
+ * Helper method for sorting strings for parseString to avoid overlaps (larger strings first)
+ * 
+ * It also removes duplicate values
+ */
+export function sortLength(list: Array<string>): Array<string> {
+    const copy = Array.from(new Set(list));
+    copy.sort((a: string, b: string) => {
+        return Math.sign(b.length - a.length);
+    });
+    return copy;
+}
+
 export function toString(value: boolean|string|File|null|number|undefined): string {
     if (value === true) {
       return 'on';

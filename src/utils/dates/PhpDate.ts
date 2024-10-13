@@ -295,7 +295,7 @@ export class PhpDate {
 
     public set milliseconds(val: string)
     {
-        this.microseconds = val + '000';
+        this.microseconds = val.length ? (val + '000') : '';
     }
 
     public get resolvedMilliseconds(): number | null
