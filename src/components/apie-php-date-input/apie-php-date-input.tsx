@@ -149,27 +149,88 @@ export class ApiePhpDateInput {
     return res;
   }
 
+  private renderTimeFields(): VNode|VNode[]
+  {
+    // Format date and time separately with Intl.DateTimeFormat
+    const dateFormat = new Intl.DateTimeFormat(navigator.language, {
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+    }).formatToParts(new Date);
+    // Extract order from date parts
+    const dateParts = [];
+    dateFormat.forEach(part => {
+        if (part.type === 'hour' && this.compiledDateformat.displayHours) {
+          dateParts.push(this.renderField('hours'));
+        }
+        if (part.type === 'minute' && this.compiledDateformat.displayMinutes) {
+          dateParts.push(this.renderField('minutes'));
+        }
+        if (part.type === 'second') {
+          if (this.compiledDateformat.displaySeconds) {
+            dateParts.push(this.renderField('seconds'));
+          }
+          if (this.compiledDateformat.displayMicroseconds) {
+            dateParts.push(this.renderField('microseconds'));
+          } else if (this.compiledDateformat.displayMilliseconds) {
+            dateParts.push(this.renderField('milliseconds'));
+          }
+        }
+    });
+    return <div style={{display: 'flex'}}>
+    { dateParts }
+  </div>
+  }
+
+  private renderDateFields(): VNode|VNode[]
+  {
+    // Format date and time separately with Intl.DateTimeFormat
+    const dateFormat = new Intl.DateTimeFormat(navigator.language, {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+    }).formatToParts(new Date);
+    // Extract order from date parts
+    const dateParts = [];
+    dateFormat.forEach(part => {
+        if (part.type === 'day' && this.compiledDateformat.displayDate) {
+          dateParts.push(this.renderField('date'));
+        }
+        if (part.type === 'month' && this.compiledDateformat.displayMonth) {
+          dateParts.push(this.renderField('month'));
+        }
+        if (part.type === 'year' && this.compiledDateformat.displayYear) {
+          dateParts.push(this.renderField('year'));
+        }
+    });
+    console.log(dateParts);
+    return <div style={{display: 'flex'}}>
+    { dateParts }
+    </div>
+  }
+
   render() {
-    return (
-      <Host>
+    const displayHours = this.displayHourFields;
+    const displayDays = this.displayDateFields;
+    const displayTimezone = this.compiledDateformat.displayTimezone;
+    if (displayHours && !displayDays && !displayTimezone) {
+      return <Host><div><slot name="hourfields">{this.renderTimeFields()}</slot></div></Host>
+    }
+    if (displayDays && !displayHours && !displayTimezone) {
+      return <Host><div><slot name="datefields">{this.renderDateFields()}</slot></div></Host>
+    }
+    if (displayTimezone && !displayDays && !displayHours) {
+      return <Host><slot name="timezone"><div style={{display: 'flex'}}>{ this.renderField('timezone') }</div></slot></Host>
+    }
+    return <Host>
         <div>
           <div onClick={() => !this.disabled && this.toggleDatePicker()}>
             <slot name="input">{this.renderDateValue()}</slot>
           </div>
           { this.showDatePicker && <div style={{display: 'flex'}}>
-              { this.displayHourFields && <slot name="hourfields"><div>
-                { this.compiledDateformat.displayHours && this.renderField('hours') }
-                { this.compiledDateformat.displayMinutes && this.renderField('minutes') }
-                { this.compiledDateformat.displaySeconds && this.renderField('seconds') }
-                { this.compiledDateformat.displayMilliseconds && !this.compiledDateformat.displayMicroseconds && this.renderField('seconds') }
-                { this.compiledDateformat.displaySeconds && this.renderField('microseconds') }
-              </div></slot>}
-              { this.displayDateFields && <slot name="datefields"><div style={{display: 'flex'}}>
-              { this.compiledDateformat.displayDate && this.renderField('date') }
-              { this.compiledDateformat.displayMonth && this.renderField('month') }
-              { this.compiledDateformat.displayYear && this.renderField('year') }
-              </div></slot> }
-              { this.compiledDateformat.displayTimezone && <slot name="timezone"><div style={{display: 'flex'}}>
+              { displayHours && <slot name="hourfields">{this.renderTimeFields()}</slot>}
+              { displayDays && <slot name="datefields">{ this.renderDateFields()}</slot> }
+              { displayTimezone && <slot name="timezone"><div style={{display: 'flex'}}>
                 { this.renderField('timezone') }
                 </div></slot> }
               <slot name="now"><button type="button" onClick={() => this.updateToCurrentTime()}>NOW</button></slot>
@@ -177,6 +238,6 @@ export class ApiePhpDateInput {
           }
         </div>
       </Host>
-    );
+    ;
   }
 }
