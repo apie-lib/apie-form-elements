@@ -1,7 +1,28 @@
-import { Component, Event, EventEmitter, Host, Prop, State, Watch, h } from '@stencil/core';
+import { Component, Event, EventEmitter, Host, Method, Prop, State, VNode, Watch, h } from '@stencil/core';
 import { PhpDate } from '../../utils/dates/PhpDate';
 import { DateFormatString } from '../../utils/dates/DateFormatString';
 import { Timezone, timezones } from '../../utils/timezones';
+import { InputState, RenderInfo } from '../../utils/RenderInfo';
+import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
+
+export type TimeField = 'hours'|'minutes'|'seconds'|'milliseconds'|'microseconds'|'date'|'month'|'year'|'timezone';
+
+export type RenderInputFn = (
+  input: InputState,
+  field: TimeField | 'display'
+) => VNode | VNode[]
+
+function renderInput(input: InputState, field: TimeField): VNode | VNode[] {
+  if (field === 'timezone') {
+    input = { additionalSettings: {}, ...input };
+    input.additionalSettings.options = timezones.map((t: Timezone) => {
+      return { name: t.timezone_id, value: t.timezone_id };
+    })
+    return input.renderInfo.renderSingleInput(['date-timezone', 'select'], input);    
+  }
+
+  return input.renderInfo.renderSingleInput(['date-' + field, 'integer', 'number', 'text'], input);
+}
 
 @Component({
   tag: 'apie-php-date-input',
@@ -9,7 +30,6 @@ import { Timezone, timezones } from '../../utils/timezones';
   shadow: true,
 })
 export class ApiePhpDateInput {
-
   @Prop() name: string;
 
   @Prop({ mutable: true, reflect: true }) value: string;
@@ -23,6 +43,10 @@ export class ApiePhpDateInput {
   @Prop({ mutable: true, reflect: true }) internalDate: PhpDate = new PhpDate('', '', '', '', '', '', '', Intl.DateTimeFormat().resolvedOptions().timeZone)
 
   @Prop({ mutable: true, reflect: true }) compiledDateformat: DateFormatString;
+
+  @Prop() renderInputFn: RenderInputFn = renderInput;
+
+  @Prop() renderInfo: RenderInfo = new FallbackRenderInfo();
 
   @Event() change: EventEmitter<string>;
 
@@ -63,15 +87,16 @@ export class ApiePhpDateInput {
     }
   }
 
-  private update(key: 'hours'|'minutes'|'seconds'|'milliseconds'|'microseconds'|'date'|'month'|'year'|'timezone', value: any) {
+  private update(key: TimeField, value: any) {
     this.internalDate[key] = value;
     this.internalDate = this.internalDate.clone();
     this.checkValue();
   }
 
-  public updateToCurrentTime(): void {
+  @Method() public async updateToCurrentTime(): Promise<void> {
     this.internalDate = PhpDate.createFromLocalDate(); // todo correct timezone?
     this.checkValue();
+    await Promise.resolve();
   }
 
   public get displayHourFields(): boolean
@@ -90,36 +115,66 @@ export class ApiePhpDateInput {
      || this.compiledDateformat.displayYear;
   }
 
+  private renderField(fieldName: TimeField): VNode|VNode[]
+  {
+    const input: InputState = {
+      name: fieldName,
+      value: this.internalDate[fieldName],
+      disabled: this.disabled,
+      valueChanged: (newValue?: string) => this.update(fieldName, newValue),
+      renderInfo: this.renderInfo
+    }
+    return this.renderInputFn(input, fieldName);
+  }
+
+  private renderDateValue(): VNode|VNode[]
+  {
+    const input: InputState = {
+      name: this.name,
+      value: this.compiledDateformat.convertToString(this.internalDate),
+      disabled: this.disabled,
+      valueChanged: (_newValue?: string) => {},
+      renderInfo: this.renderInfo
+    }
+    const res = this.renderInputFn(input, 'display');
+    if (Array.isArray(res)) {
+      res.forEach((r: VNode) => {
+        if (r?.$attrs$) {
+          r.$attrs$.readonly = true;
+        }
+      });
+    } else if (res?.$attrs$) {
+      res.$attrs$.readonly = true;
+    }
+    return res;
+  }
+
   render() {
     return (
       <Host>
         <div>
           <div onClick={() => !this.disabled && this.toggleDatePicker()}>
-            <slot name="input"><input disabled={this.disabled} name={this.name} value={this.compiledDateformat.convertToString(this.internalDate)} readonly/></slot>
+            <slot name="input">{this.renderDateValue()}</slot>
           </div>
           { this.showDatePicker && <div>
               { this.displayHourFields && <slot name="hourfields"><div>
-                { this.compiledDateformat.displayHours && <slot name="hours"><input placeholder="HH" value={this.internalDate.hours} onChange={(ev) => this.update('hours', (ev.target as HTMLInputElement).value)}/></slot> }
-                { this.compiledDateformat.displayMinutes && <slot name="minutes"><input placeholder="MM" value={this.internalDate.minutes} onChange={(ev) => this.update('minutes', (ev.target as HTMLInputElement).value)}/></slot> }
-                { this.compiledDateformat.displaySeconds && <slot name="seconds"><input placeholder="SS" value={this.internalDate.seconds} onChange={(ev) => this.update('seconds', (ev.target as HTMLInputElement).value)}/></slot> }
-                { this.compiledDateformat.displayMilliseconds && !this.compiledDateformat.displayMicroseconds && <slot name="milliseconds"><input placeholder="ms" value={this.internalDate.milliseconds} onChange={(ev) => this.update('milliseconds', (ev.target as HTMLInputElement).value)}/></slot> }
-                { this.compiledDateformat.displayMicroseconds && <slot name="microseconds"><input placeholder="microseconds" value={this.internalDate.microseconds} onChange={(ev) => this.update('microseconds', (ev.target as HTMLInputElement).value)}/></slot> }
-              </div></slot> }
+                { this.compiledDateformat.displayHours && this.renderField('hours') }
+                { this.compiledDateformat.displayMinutes && this.renderField('minutes') }
+                { this.compiledDateformat.displaySeconds && this.renderField('seconds') }
+                { this.compiledDateformat.displayMilliseconds && !this.compiledDateformat.displayMicroseconds && this.renderField('seconds') }
+                { this.compiledDateformat.displaySeconds && this.renderField('microseconds') }
+              </div></slot>}
               { this.displayDateFields && <slot name="datefields"><div>
-              { this.compiledDateformat.displayDate && <slot name="date"><input placeholder="DD" value={this.internalDate.date} onChange={(ev) => this.update('date', (ev.target as HTMLInputElement).value)}/></slot> }
-              { this.compiledDateformat.displayMonth && <slot name="month"><input placeholder="MM" value={this.internalDate.month} onChange={(ev) => this.update('month', (ev.target as HTMLInputElement).value)}/></slot> }
-              { this.compiledDateformat.displayYear && <slot name="year"><input placeholder="YY" value={this.internalDate.year} onChange={(ev) => this.update('year', (ev.target as HTMLInputElement).value)}/></slot> }
+              { this.compiledDateformat.displayDate && this.renderField('date') }
+              { this.compiledDateformat.displayMonth && this.renderField('month') }
+              { this.compiledDateformat.displayYear && this.renderField('year') }
               </div></slot> }
-              { this.compiledDateformat.displayTimezone && <slot name="timezone"><select onChange={(ev) => this.update('timezone', (ev.target as HTMLInputElement).value)}>
-                <option selected={this.internalDate.timezone === null}>--</option>
-                { timezones.map(
-                  (timezone: Timezone) => {
-                    return <option selected={timezone.timezone_id === this.internalDate.timezone}>{timezone.timezone_id}</option>
-                  })
-                }
-                </select></slot> }
+              { this.compiledDateformat.displayTimezone && <slot name="timezone">
+                { this.renderField('timezone') }
+              </slot> }
               <slot name="now"><button type="button" onClick={() => this.updateToCurrentTime()}>NOW</button></slot>
-            </div>}
+            </div>
+          }
         </div>
       </Host>
     );

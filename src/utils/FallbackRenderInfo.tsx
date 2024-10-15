@@ -16,7 +16,7 @@ export class FallbackRenderInfo extends RenderInfo
           },
           datetime(state: InputState) {
             return [
-              <apie-php-date-input disabled={state.disabled} onChange={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)} dateFormat={state.additionalSettings.dateFormat ?? 'Y-m-d\\TH:i'}/>,
+              <apie-php-date-input renderInfo={state.renderInfo} disabled={state.disabled} onChange={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)} dateFormat={state.additionalSettings.dateFormat ?? 'Y-m-d\\TH:i'}/>,
               (state.label && <label htmlFor={state.name}>{state.label}</label>)
             ];
           },

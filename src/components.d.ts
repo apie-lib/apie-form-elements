@@ -11,6 +11,7 @@ import { VNode } from "@stencil/core";
 import { ChangeEvent } from "./utils/utils";
 import { PhpDate } from "./utils/dates/PhpDate";
 import { DateFormatString } from "./utils/dates/DateFormatString";
+import { RenderInputFn } from "./components/apie-php-date-input/apie-php-date-input";
 import { SingleFieldSettings as SingleFieldSettings1 } from "./components";
 export { Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
 export { Option, RenderInfo } from "./utils/RenderInfo";
@@ -18,6 +19,7 @@ export { VNode } from "@stencil/core";
 export { ChangeEvent } from "./utils/utils";
 export { PhpDate } from "./utils/dates/PhpDate";
 export { DateFormatString } from "./utils/dates/DateFormatString";
+export { RenderInputFn } from "./components/apie-php-date-input/apie-php-date-input";
 export { SingleFieldSettings as SingleFieldSettings1 } from "./components";
 export namespace Components {
     interface ApieConstraintCheckDefinition {
@@ -120,6 +122,9 @@ export namespace Components {
         "disabled": boolean;
         "internalDate": PhpDate;
         "name": string;
+        "renderInfo": RenderInfo;
+        "renderInputFn": RenderInputFn;
+        "updateToCurrentTime": () => Promise<void>;
         "value": string;
     }
     interface ApieRenderTypes {
@@ -401,6 +406,8 @@ declare namespace LocalJSX {
         "internalDate"?: PhpDate;
         "name"?: string;
         "onChange"?: (event: ApiePhpDateInputCustomEvent<string>) => void;
+        "renderInfo"?: RenderInfo;
+        "renderInputFn"?: RenderInputFn;
         "value"?: string;
     }
     interface ApieRenderTypes {

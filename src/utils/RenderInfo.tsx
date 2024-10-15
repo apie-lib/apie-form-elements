@@ -20,7 +20,8 @@ export interface InputState {
       autocompleteUrl?: string,
       imageUrl?: string
       forcedValue?: any
-    }
+    },
+    renderInfo: RenderInfo
 }
 
 export interface FormGroupState {

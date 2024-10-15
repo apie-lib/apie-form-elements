@@ -56,7 +56,8 @@ export class ApieFormSelect {
       },
       additionalSettings: {
         options: this.options,
-      }
+      },
+      renderInfo: this.renderInfo
     })
   }
 

@@ -166,7 +166,8 @@ export class ApieForm {
         additionalSettings: {
           options: Object.entries(this.polymorphicFormDefinition)
             .map(([value, name]) => { return { name, value }}),
-        }
+        },
+        renderInfo: this.renderInfo
       }
     )
   }

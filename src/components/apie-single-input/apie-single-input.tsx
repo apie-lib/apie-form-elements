@@ -39,7 +39,8 @@ export class ApieSingleInput {
           this.value = newValue;
           this.triggerChange.emit({ name: this.name, value: newValue })
         }
-      }
+      },
+      renderInfo: this.renderInfo
     })
   }
 

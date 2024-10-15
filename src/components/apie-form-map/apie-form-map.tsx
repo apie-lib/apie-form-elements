@@ -64,6 +64,7 @@ export class ApieFormMap {
       label: 'Key',
       value: this.enteredKey,
       valueChanged: (newValue?: string) => this.enteredKey = newValue ?? '',
+      renderInfo: this.renderInfo
     });
     const addButton = this.renderInfo.renderAddItemToList({
       mappingKey: '__add' + this.enteredKey,
