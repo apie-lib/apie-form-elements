@@ -12,7 +12,7 @@ export type RenderInputFn = (
   field: TimeField | 'display'
 ) => VNode | VNode[]
 
-function renderInput(input: InputState, field: TimeField): VNode | VNode[] {
+function renderInput(input: InputState, field: TimeField | 'display'): VNode | VNode[] {
   if (field === 'timezone') {
     input = { additionalSettings: {}, ...input };
     input.additionalSettings.options = timezones.map((t: Timezone) => {
@@ -156,7 +156,7 @@ export class ApiePhpDateInput {
           <div onClick={() => !this.disabled && this.toggleDatePicker()}>
             <slot name="input">{this.renderDateValue()}</slot>
           </div>
-          { this.showDatePicker && <div>
+          { this.showDatePicker && <div style={{display: 'flex'}}>
               { this.displayHourFields && <slot name="hourfields"><div>
                 { this.compiledDateformat.displayHours && this.renderField('hours') }
                 { this.compiledDateformat.displayMinutes && this.renderField('minutes') }
@@ -164,14 +164,14 @@ export class ApiePhpDateInput {
                 { this.compiledDateformat.displayMilliseconds && !this.compiledDateformat.displayMicroseconds && this.renderField('seconds') }
                 { this.compiledDateformat.displaySeconds && this.renderField('microseconds') }
               </div></slot>}
-              { this.displayDateFields && <slot name="datefields"><div>
+              { this.displayDateFields && <slot name="datefields"><div style={{display: 'flex'}}>
               { this.compiledDateformat.displayDate && this.renderField('date') }
               { this.compiledDateformat.displayMonth && this.renderField('month') }
               { this.compiledDateformat.displayYear && this.renderField('year') }
               </div></slot> }
-              { this.compiledDateformat.displayTimezone && <slot name="timezone">
+              { this.compiledDateformat.displayTimezone && <slot name="timezone"><div style={{display: 'flex'}}>
                 { this.renderField('timezone') }
-              </slot> }
+                </div></slot> }
               <slot name="now"><button type="button" onClick={() => this.updateToCurrentTime()}>NOW</button></slot>
             </div>
           }
