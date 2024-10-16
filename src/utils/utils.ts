@@ -138,7 +138,10 @@ export function toEmptyFileList(): FileList {
   return dataTransfer.files;
 }
 
-export function toString(value: boolean|string|File|null|number|undefined): string {
+export function toString(value: boolean|string|File|null|number|undefined|Set<any>): string {
+  if (value instanceof Set) {
+    return Array.from(value).map((v: any) => toString(v)).join(', ');
+  }
   if (value === true) {
     return 'on';
   }

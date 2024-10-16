@@ -203,7 +203,6 @@ export class ApiePhpDateInput {
           dateParts.push(this.renderField('year'));
         }
     });
-    console.log(dateParts);
     return <div style={{display: 'flex'}}>
     { dateParts }
     </div>

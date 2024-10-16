@@ -32,6 +32,16 @@
           ]
         };
       </script>
+      <apie-form-field-definition id="multi" name="multi" types="multi" label="Multi-Select test"></apie-form-field-definition>
+      <script>
+        document.querySelector('#multi').additionalSettings = {
+          options: [
+            { name: 'string', value: 'list-item'},
+            { name: 'file upload', value: 'fileUpload'},
+            { name: 'null', value: 'null' }
+          ]
+        };
+      </script>
       <apie-form-field-definition name="htmlinput" types="html,textarea" label="html input"></apie-form-field-definition>
       <apie-form-field-definition name="test" types="text" label="test"></apie-form-field-definition>
       <apie-constraint-check-definition name="test" message="Do not add the value poop" value="poop"></apie-constraint-check-definition>

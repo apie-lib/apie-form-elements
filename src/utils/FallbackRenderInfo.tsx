@@ -1,6 +1,6 @@
 import { h } from '@stencil/core';
 import { InputState, RenderInfo } from "./RenderInfo";
-import { toEmptyFileList, toFileList, toString } from './utils';
+import { toEmptyFileList, toFileList, toString, toArray } from './utils';
 import { hasInputOptionValue } from './FormDefinition';
 
 export class FallbackRenderInfo extends RenderInfo
@@ -111,6 +111,17 @@ export class FallbackRenderInfo extends RenderInfo
             return <select disabled={state.disabled} onChange={(ev: any) => state.valueChanged(ev.target.value)}>
               { !hasInputOptionValue(state, state.value) && <option value={toString(state.value)} selected>{ state.value }</option> }
               { state.additionalSettings.options.map((opt) => <option value={toString(opt.value as any)} selected={state.value === opt.value}>{opt.name}</option>)}
+              </select>
+          },
+          multi(state: InputState) {
+            const value = new Set(toArray(state.value));
+            
+            if (!Array.isArray(state.additionalSettings?.options)) {
+              return <select multiple disabled><option selected>{toString(value)}</option></select>
+            }
+            
+            return <select multiple disabled={state.disabled} onChange={(ev: any) => state.valueChanged(Array.from(ev.target.selectedOptions).map((option: any) => option.value) as any)}>
+              { state.additionalSettings.options.map((opt) => <option value={toString(opt.value as any)} selected={value.has(opt.value)}>{opt.name}</option>)}
               </select>
           },
           "null"(state: InputState) {
