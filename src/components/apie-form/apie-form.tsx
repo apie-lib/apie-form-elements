@@ -1,5 +1,5 @@
 import { Component, Host, Prop, Watch, VNode, h } from '@stencil/core';
-import { changeForm, createFormFieldState, FormDefinition, FormField, FormFieldState, FormStateDefinition, handlesValidationForField, NestedRecord, Primitive, SubmitField, toChildState } from '../../utils/FormDefinition';
+import { changeForm, createFormFieldState, FormDefinition, FormField, FormFieldState, FormStateDefinition, handlesValidationForField, NestedRecord, Primitive, SubmitField, toChildState, validate } from '../../utils/FormDefinition';
 import { clone, toArray, toString } from '../../utils/utils';
 import { RenderInfo } from '../../utils/RenderInfo';
 import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
@@ -167,6 +167,10 @@ export class ApieForm {
           options: Object.entries(this.polymorphicFormDefinition)
             .map(([value, name]) => { return { name, value }}),
         },
+        validationResult: {
+          valid: true,
+          messages: []
+        },
         renderInfo: this.renderInfo
       }
     )
@@ -182,6 +186,7 @@ export class ApieForm {
 
   private renderField(state: FormFieldState, prefixes: string[], key: number | string | null = null) {
     const newPrefix = [...prefixes, state.form.name];
+    const validationResult = validate(state.value, state.form.constraints);
     if (state.form.fieldType === 'single') {
       return <apie-single-input
         key={key ?? state.form.name}
@@ -192,6 +197,7 @@ export class ApieForm {
         renderInfo={this.renderInfo}
         additionalSettings={state.form.additionalSettings}
         onTriggerChange={(ev) => { this.onFieldUpdate(newPrefix.slice(0), ev.detail.value as any)}}
+        validationResult={validationResult}
       ></apie-single-input>
     }
     if (state.form.fieldType === 'group') {
@@ -315,12 +321,6 @@ export class ApieForm {
           ></apie-form-select>,
           selectedField && this.renderField(changeForm(selectedField.definition, state), prefixes, key + '_subform')
         ]
-    }
-    if (state.form.fieldType === 'constraint') {
-      return this.renderInfo.renderValidationError(
-        state.form,
-        state.value
-      )
     }
     console.log(state);
     return <div></div>

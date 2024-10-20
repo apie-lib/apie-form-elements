@@ -1,5 +1,5 @@
 import { Component, Element, Host, Method, Prop, h } from '@stencil/core';
-import { FormField, FormGroupField, toFormField } from '../../utils/FormDefinition';
+import { FormField, FormGroupField, getFormConstraints, toFormField } from '../../utils/FormDefinition';
 
 @Component({
   tag: 'apie-form-group-definition',
@@ -34,6 +34,7 @@ export class ApieFormGroupDefinition {
   @Method()
   async getDefinition(): Promise<FormGroupField> {
     this.status = 'building';
+    const constraints = await getFormConstraints(this.el);
     const fields: FormField[] = await toFormField(this.el.childNodes);
     this.status = 'built';
     
@@ -44,6 +45,7 @@ export class ApieFormGroupDefinition {
       fields,
       valueWhenMissing: this.getEffectiveValueWhenMissing(fields),
       types: ['group'],
+      constraints,
     })
   }
 

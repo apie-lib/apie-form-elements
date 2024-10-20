@@ -1,5 +1,5 @@
 import { Component, Element, Host, Method, Prop, h } from '@stencil/core';
-import { FieldList } from '../../utils/FormDefinition';
+import { FieldList, getFormConstraints } from '../../utils/FormDefinition';
 
 @Component({
   tag: 'apie-form-list-definition',
@@ -7,6 +7,8 @@ import { FieldList } from '../../utils/FormDefinition';
   shadow: false,
 })
 export class ApieFormListDefinition {
+  @Element() el: HTMLElement;
+
   @Prop() name: string;
 
   @Prop() label: string|null = null;
@@ -18,8 +20,6 @@ export class ApieFormListDefinition {
   @Prop({ reflect: true, mutable: true}) status: string = 'idle';
 
   @Prop({ reflect: true }) valueWhenMissing: any = [];
-
-  @Element() el: HTMLElement;
 
   instantiated: boolean = false;
 
@@ -49,6 +49,7 @@ export class ApieFormListDefinition {
       })
     });
     this.status = 'building';
+    const constraints = await getFormConstraints(this.el);
     const subformDefinition = await (definition as any).getDefinition();
     this.status = 'built';
     return Promise.resolve({
@@ -59,6 +60,7 @@ export class ApieFormListDefinition {
       unique: false,
       valueWhenMissing: this.valueWhenMissing,
       types: ['group'],
+      constraints,
     })
   }
 

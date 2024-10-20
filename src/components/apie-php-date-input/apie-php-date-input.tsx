@@ -122,7 +122,11 @@ export class ApiePhpDateInput {
       value: this.internalDate[fieldName],
       disabled: this.disabled,
       valueChanged: (newValue?: string) => this.update(fieldName, newValue),
-      renderInfo: this.renderInfo
+      renderInfo: this.renderInfo,
+      validationResult: {
+        valid: this.compiledDateformat.isValid(this.internalDate),
+        messages: []
+      }
     }
     return this.renderInputFn(input, fieldName);
   }
@@ -134,7 +138,11 @@ export class ApiePhpDateInput {
       value: this.compiledDateformat.convertToString(this.internalDate),
       disabled: this.disabled,
       valueChanged: (_newValue?: string) => {},
-      renderInfo: this.renderInfo
+      renderInfo: this.renderInfo,
+      validationResult: {
+        valid: true,
+        messages: []
+      }
     }
     const res = this.renderInputFn(input, 'display');
     if (Array.isArray(res)) {

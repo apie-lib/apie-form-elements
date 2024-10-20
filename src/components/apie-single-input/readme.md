@@ -7,14 +7,15 @@
 
 ## Properties
 
-| Property             | Attribute | Description | Type                  | Default                    |
-| -------------------- | --------- | ----------- | --------------------- | -------------------------- |
-| `additionalSettings` | --        |             | `SingleFieldSettings` | `{}`                       |
-| `label`              | `label`   |             | `string`              | `null`                     |
-| `name`               | `name`    |             | `string`              | `undefined`                |
-| `renderInfo`         | --        |             | `RenderInfo`          | `new FallbackRenderInfo()` |
-| `types`              | `types`   |             | `string`              | `''`                       |
-| `value`              | `value`   |             | `string`              | `undefined`                |
+| Property             | Attribute | Description | Type                  | Default                                   |
+| -------------------- | --------- | ----------- | --------------------- | ----------------------------------------- |
+| `additionalSettings` | --        |             | `SingleFieldSettings` | `{}`                                      |
+| `label`              | `label`   |             | `string`              | `null`                                    |
+| `name`               | `name`    |             | `string`              | `undefined`                               |
+| `renderInfo`         | --        |             | `RenderInfo`          | `new FallbackRenderInfo()`                |
+| `types`              | `types`   |             | `string`              | `''`                                      |
+| `validationResult`   | --        |             | `ValidationResult`    | `{     valid: true,     messages: []   }` |
+| `value`              | `value`   |             | `string`              | `undefined`                               |
 
 
 ## Events

@@ -3,6 +3,7 @@ import type { ChangeEvent } from '../../utils/utils';
 import { RenderInfo } from '../../utils/RenderInfo';
 import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
 import { SingleFieldSettings } from '../../components';
+import { ValidationResult } from '../../utils/FormDefinition';
 
 @Component({
   tag: 'apie-single-input',
@@ -22,6 +23,11 @@ export class ApieSingleInput {
 
   @Prop({reflect: true}) additionalSettings?: SingleFieldSettings = {};
 
+  @Prop({}) validationResult: ValidationResult = {
+    valid: true,
+    messages: []
+  };
+
   @Event() triggerChange: EventEmitter<ChangeEvent>;
   private renderInput()  {
     if (this.value === undefined) {
@@ -40,6 +46,7 @@ export class ApieSingleInput {
           this.triggerChange.emit({ name: this.name, value: newValue })
         }
       },
+      validationResult: this.validationResult,
       renderInfo: this.renderInfo
     })
   }

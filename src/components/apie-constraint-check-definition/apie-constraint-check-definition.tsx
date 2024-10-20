@@ -7,9 +7,8 @@ import { Constraint } from '../../utils/FormDefinition';
   shadow: false,
 })
 export class ApieConstraintCheckDefinition {
-  @Prop() name: string;
   @Prop({reflect: true}) value: string;
-  @Prop() message: string;
+  @Prop() message!: string;
   @Prop() inverseCheck: boolean = false;
   @Prop() exactMatch: string|number|null|undefined = undefined;
   @Prop() pattern!: string;
@@ -21,7 +20,6 @@ export class ApieConstraintCheckDefinition {
   {
     return {
       fieldType: 'constraint',
-      name: this.name,
       message: this.message,
       inverseCheck: this.inverseCheck,
       exactMatch: this.exactMatch === undefined ? this.value : this.exactMatch,

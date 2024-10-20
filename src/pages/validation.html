@@ -10,10 +10,13 @@
     <link rel="stylesheet" href="/build/apie-form-elements.css" />
   </head>
   <body>
-    <apie-form method="get" debug-mode>
-        <apie-single-input types="text" name="form[test]" label="Test" value="2"></apie-single-input>
-        <apie-single-input types="text" name="form[test2]" label="Test" value="3"></apie-single-input>
-    </apie-form>
+    <apie-form-definition id="definition">
+      <apie-form-field-definition name="default" types="text" label="default">
+        <apie-constraint-check-definition min-length="1" max-length="5"></apie-constraint-check-definition>
+        <apie-constraint-check-definition pattern="[0-9]" inverse-check message="0-9 is not allowed"></apie-constraint-check-definition>
+      </apie-form-field-definition>
+    </apie-form-definition>
+    <apie-form definition-id="definition" method="get" debug-mode></apie-form>
     <script src="/pages/hydrateFromLocation.js">
     </script>
 </body>

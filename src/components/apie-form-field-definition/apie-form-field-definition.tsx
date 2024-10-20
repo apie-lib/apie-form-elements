@@ -1,5 +1,5 @@
-import { Component, Host, Method, Prop, h } from '@stencil/core';
-import { SingleField, SingleFieldSettings } from '../../utils/FormDefinition';
+import { Component, Element, Host, Method, Prop, h } from '@stencil/core';
+import { getFormConstraints, SingleField, SingleFieldSettings } from '../../utils/FormDefinition';
 
 @Component({
   tag: 'apie-form-field-definition',
@@ -7,6 +7,7 @@ import { SingleField, SingleFieldSettings } from '../../utils/FormDefinition';
   shadow: false,
 })
 export class ApieFormFieldDefinition {
+  @Element() el: HTMLElement;
   @Prop() name: string;
   @Prop() label: string;
   @Prop() types: string = 'text';
@@ -17,6 +18,8 @@ export class ApieFormFieldDefinition {
 
   @Method()
   async getDefinition(): Promise<SingleField> {
+    this.status = 'building';
+    const constraints = await getFormConstraints(this.el);
     this.status = 'built';
     return Promise.resolve({
       fieldType: 'single',
@@ -24,7 +27,8 @@ export class ApieFormFieldDefinition {
       label: this.label,
       types: this.types.split(','),
       valueWhenMissing: this.valueWhenMissing,
-      additionalSettings: this.additionalSettings
+      additionalSettings: this.additionalSettings,
+      constraints,
     })
   }
 

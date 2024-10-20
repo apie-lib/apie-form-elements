@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
+import { Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField, ValidationResult } from "./utils/FormDefinition";
 import { Option, RenderInfo } from "./utils/RenderInfo";
 import { VNode } from "@stencil/core";
 import { ChangeEvent } from "./utils/utils";
@@ -13,7 +13,7 @@ import { PhpDate } from "./utils/dates/PhpDate";
 import { DateFormatString } from "./utils/dates/DateFormatString";
 import { RenderInputFn } from "./components/apie-php-date-input/apie-php-date-input";
 import { SingleFieldSettings as SingleFieldSettings1 } from "./components";
-export { Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField } from "./utils/FormDefinition";
+export { Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField, ValidationResult } from "./utils/FormDefinition";
 export { Option, RenderInfo } from "./utils/RenderInfo";
 export { VNode } from "@stencil/core";
 export { ChangeEvent } from "./utils/utils";
@@ -29,7 +29,6 @@ export namespace Components {
         "maxLength": number;
         "message": string;
         "minLength": number;
-        "name": string;
         "pattern": string;
         "status": string;
         "value": string;
@@ -142,6 +141,7 @@ export namespace Components {
         "name": string;
         "renderInfo": RenderInfo;
         "types": string;
+        "validationResult": ValidationResult;
         "value": string;
     }
 }
@@ -313,9 +313,8 @@ declare namespace LocalJSX {
         "exactMatch"?: string|number|null|undefined;
         "inverseCheck"?: boolean;
         "maxLength": number;
-        "message"?: string;
+        "message": string;
         "minLength": number;
-        "name"?: string;
         "pattern": string;
         "status"?: string;
         "value"?: string;
@@ -426,6 +425,7 @@ declare namespace LocalJSX {
         "onTriggerChange"?: (event: ApieSingleInputCustomEvent<ChangeEvent>) => void;
         "renderInfo"?: RenderInfo;
         "types"?: string;
+        "validationResult"?: ValidationResult;
         "value"?: string;
     }
     interface IntrinsicElements {

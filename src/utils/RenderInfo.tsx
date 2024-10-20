@@ -1,5 +1,5 @@
 import { h, VNode } from '@stencil/core';
-import { Constraint, NestedRecord } from './FormDefinition';
+import { Constraint, NestedRecord, ValidationResult } from './FormDefinition';
 import { createErrorMessage } from './utils';
 
 export interface Option {
@@ -20,7 +20,8 @@ export interface InputState {
       autocompleteUrl?: string,
       imageUrl?: string
       forcedValue?: any
-    },
+    };
+    validationResult: ValidationResult;
     renderInfo: RenderInfo
 }
 
@@ -99,7 +100,6 @@ export class RenderInfo {
             return this.renderValidationError(
                 {
                     fieldType: 'constraint',
-                    name: '',
                     inverseCheck: false,
                     exactMatch: undefined,
                     message: validationErrors,
@@ -113,7 +113,6 @@ export class RenderInfo {
             const res = this.renderValidationError(
                 {
                     fieldType: 'constraint',
-                    name: error,
                     inverseCheck: false,
                     exactMatch: undefined,
                     message: validationErrors[error] as string,

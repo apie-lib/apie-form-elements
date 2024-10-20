@@ -1,4 +1,4 @@
-import { clone, ConstraintCheck } from './utils';
+import { clone, ConstraintCheck, toString } from './utils';
 import { InputState, Option } from './RenderInfo';
 
 export type NestedRecord<T> = { [key: string]: NestedRecordField<T> }
@@ -25,6 +25,7 @@ export interface SingleField {
     types: string[];
     valueWhenMissing: any;
     additionalSettings?: SingleFieldSettings
+    constraints: Array<Constraint>;
 }
 
 export interface FormGroupField {
@@ -34,6 +35,7 @@ export interface FormGroupField {
     types: string[];
     valueWhenMissing: any;
     fields: Array<FormField>;
+    constraints: Array<Constraint>;
 }
 
 export interface FieldList {
@@ -44,6 +46,7 @@ export interface FieldList {
     unique: boolean;
     valueWhenMissing: any;
     subField: FormField;
+    constraints: Array<Constraint>;
 }
 
 export interface FieldMap {
@@ -53,6 +56,7 @@ export interface FieldMap {
     types: string[];
     valueWhenMissing: any;
     subField: FormField;
+    constraints: Array<Constraint>;
 }
 
 export interface FieldSplit {
@@ -60,18 +64,18 @@ export interface FieldSplit {
   name: string;
   label: string|null;
   subFields: Array<FormSelectOption>;
+  constraints: Array<Constraint>;
 }
 
 export interface Constraint extends ConstraintCheck {
   fieldType: 'constraint',
-  name: string;
   serverSide: boolean;
 }
 
-export type FormField = FormGroupField | SingleField | FieldMap | FieldList | FieldSplit | Constraint;
+export type FormField = FormGroupField | SingleField | FieldMap | FieldList | FieldSplit;
 
-export function handlesValidationForField(input: FormField): input is FormGroupField | FieldMap | FieldList | Constraint {
-  return ['group', 'map', 'list', 'constraint'].includes(input.fieldType);
+export function handlesValidationForField(input: FormField): input is FormGroupField | FieldMap | FieldList {
+  return ['group', 'map', 'list'].includes(input.fieldType);
 }
 
 export interface FormDefinition {
@@ -96,7 +100,7 @@ export interface FormFieldState {
 export function createFormFieldState(formField: FormField, definition: FormStateDefinition): FormFieldState
 {
   const key = formField.name;
-  if (definition.value[key] === undefined && formField.fieldType !== 'constraint' && formField.fieldType !== 'split') {
+  if (definition.value[key] === undefined && formField.fieldType !== 'split') {
     definition.value[key] = formField.valueWhenMissing;
   }
   return {
@@ -113,7 +117,7 @@ export function toChildState(formField: FormField, state: FormFieldState): FormF
   let value: any = state?.value ? state?.value[key] : undefined;
   if (value === undefined) {
     value = null;
-    if (formField.fieldType !== 'constraint' && formField.fieldType !== 'split') {
+    if (formField.fieldType !== 'split') {
       value = formField.valueWhenMissing;
     }
   }
@@ -150,7 +154,6 @@ const FORM_FIELDS = [
   'apie-form-list-definition',
   'apie-form-map-definition',
   'apie-form-select-definition',
-  'apie-constraint-check-definition',
 ];
 
 export async function toFormField(list: NodeListOf<ChildNode>): Promise<FormField[]>
@@ -168,4 +171,71 @@ export async function toFormField(list: NodeListOf<ChildNode>): Promise<FormFiel
       )
     );
     return fields;
+}
+
+export async function getFormConstraints(el: HTMLElement): Promise<Array<Constraint>> {
+  const promises = [];
+  for (let childNode of el.childNodes as any) {
+    if (String(childNode.nodeName).toLowerCase() === 'apie-constraint-check-definition') {
+      promises.push(childNode.getDefinition());
+    }
+  }
+  return Promise.all(promises);
+}
+
+export interface IndividualConstraintResult {
+  message: string;
+  valid: boolean;
+  serverSide: boolean;
+}
+
+export interface ValidationResult {
+  valid: boolean;
+  messages: Array<IndividualConstraintResult>;
+}
+
+export function isValid(value: any, constraint: Constraint): boolean {
+  console.log(value, constraint);
+  const result = constraint.inverseCheck ? true : false;
+  if (constraint.exactMatch !== undefined && constraint.exactMatch === value) {
+    console.log(value, result);
+    return result;
+  } 
+  value = toString(value);
+  if (constraint.maxLength !== undefined && value.length > constraint.maxLength) {
+    console.log(value, result);
+    return result;
+  }
+  if (constraint.minLength !== undefined && value.length < constraint.minLength) {
+    console.log(value, result);
+    return result;
+  }
+  console.log(constraint.pattern !== undefined && (new RegExp(constraint.pattern)).test(value));
+  if (constraint.pattern !== undefined && (new RegExp(constraint.pattern)).test(value)) {
+    console.log(value, result);
+    return result;
+  }
+  console.log(value, !result);
+  return !result;
+}
+
+export function validate(value: any, constraints: Array<Constraint>): ValidationResult {
+  const result = {
+    valid: true,
+    messages: []
+  }
+  for (let constraint of constraints) {
+    let constraintIsValid = isValid(value, constraint);
+    if (!constraintIsValid) {
+      result.valid = false;
+    }
+    if (constraint.message !== undefined) {
+      result.messages.push({
+        valid: constraintIsValid,
+        message: constraint.message,
+        serverSide: constraint.serverSide,
+      });
+    }
+  }
+  return result;
 }

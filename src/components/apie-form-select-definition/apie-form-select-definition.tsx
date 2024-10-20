@@ -1,6 +1,6 @@
-import { Component, Host, Method, Prop, h } from '@stencil/core';
+import { Component, Element, Host, Method, Prop, h } from '@stencil/core';
 import { toString, clone }  from '../../utils/utils';
-import { FormSelectOption, FieldSplit } from '../../utils/FormDefinition';
+import { FormSelectOption, FieldSplit, getFormConstraints } from '../../utils/FormDefinition';
 
 @Component({
   tag: 'apie-form-select-definition',
@@ -8,6 +8,8 @@ import { FormSelectOption, FieldSplit } from '../../utils/FormDefinition';
   shadow: false,
 })
 export class ApieFormSelectDefinition {
+  @Element() el: HTMLElement;
+
   @Prop() name: string;
 
   @Prop() label: string|null = null;
@@ -56,12 +58,15 @@ export class ApieFormSelectDefinition {
         resolve(this.definitionIdList);
       })
     });
+    this.status = 'building';
+    const constraints = await getFormConstraints(this.el);
     this.status = 'built';
     return Promise.resolve({
       fieldType: 'split',
       name: this.name,
       label: this.label,
-      subFields: this.definitionIdList
+      subFields: this.definitionIdList,
+      constraints,
     })
   }
   render() {

@@ -1,5 +1,5 @@
 import { Component, Element, Host, Method, Prop, h } from '@stencil/core';
-import { FieldMap } from '../../utils/FormDefinition';
+import { FieldMap, getFormConstraints } from '../../utils/FormDefinition';
 
 @Component({
   tag: 'apie-form-map-definition',
@@ -50,6 +50,7 @@ export class ApieFormMapDefinition {
       })
     });
     this.status = 'building';
+    const constraints = await getFormConstraints(this.el);
     const subformDefinition = await (definition as any).getDefinition();
     this.status = 'built';
     return Promise.resolve({
@@ -59,6 +60,7 @@ export class ApieFormMapDefinition {
       subField: subformDefinition,
       valueWhenMissing: this.valueWhenMissing,
       types: ['group'],
+      constraints,
     })
   }
 

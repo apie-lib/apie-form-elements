@@ -57,6 +57,10 @@ export class ApieFormSelect {
       additionalSettings: {
         options: this.options,
       },
+      validationResult: {
+        valid: true,
+        messages: []
+      },
       renderInfo: this.renderInfo
     })
   }
