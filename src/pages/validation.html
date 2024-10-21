@@ -12,7 +12,8 @@
   <body>
     <apie-form-definition id="definition">
       <apie-form-field-definition name="default" types="text" label="default">
-        <apie-constraint-check-definition min-length="1" max-length="5"></apie-constraint-check-definition>
+        <apie-constraint-check-definition exact-match="Pizza" message="Pizza is not allowed"></apie-constraint-check-definition>
+        <apie-constraint-check-definition min-length="1" max-length="5" message="should be between 1-5 characters"></apie-constraint-check-definition>
         <apie-constraint-check-definition pattern="[0-9]" inverse-check message="0-9 is not allowed"></apie-constraint-check-definition>
       </apie-form-field-definition>
     </apie-form-definition>

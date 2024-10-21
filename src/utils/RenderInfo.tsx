@@ -89,7 +89,7 @@ export class RenderInfo {
         const errorMessage: string | null = createErrorMessage(state, value);
         
         if (errorMessage) {
-            return <div style={ { color: state.serverSide ? 'red' : 'black' }}>𐄂 {errorMessage}</div>
+            return <div style={ { color: state.serverSide ? 'red' : 'black' }}>❌ {errorMessage}</div>
         }
         return state.serverSide ? [] : <div style={ { color: 'green' }}>✅ {errorMessage}</div>;
     }

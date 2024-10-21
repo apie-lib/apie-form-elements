@@ -195,28 +195,21 @@ export interface ValidationResult {
 }
 
 export function isValid(value: any, constraint: Constraint): boolean {
-  console.log(value, constraint);
-  const result = constraint.inverseCheck ? true : false;
-  if (constraint.exactMatch !== undefined && constraint.exactMatch === value) {
-    console.log(value, result);
-    return result;
+  const result = constraint.inverseCheck ? (r: boolean) => !r : (r: boolean) => r;
+  if (constraint.exactMatch !== undefined && result(constraint.exactMatch === value)) {
+    return false;
   } 
   value = toString(value);
-  if (constraint.maxLength !== undefined && value.length > constraint.maxLength) {
-    console.log(value, result);
-    return result;
+  if (constraint.maxLength !== undefined && result(value.length > constraint.maxLength)) {
+    return false;
   }
-  if (constraint.minLength !== undefined && value.length < constraint.minLength) {
-    console.log(value, result);
-    return result;
+  if (constraint.minLength !== undefined && result(value.length < constraint.minLength)) {
+    return false;
   }
-  console.log(constraint.pattern !== undefined && (new RegExp(constraint.pattern)).test(value));
-  if (constraint.pattern !== undefined && (new RegExp(constraint.pattern)).test(value)) {
-    console.log(value, result);
-    return result;
+  if (constraint.pattern !== undefined && !result((new RegExp(constraint.pattern)).test(value))) {
+    return false;
   }
-  console.log(value, !result);
-  return !result;
+  return true;
 }
 
 export function validate(value: any, constraints: Array<Constraint>): ValidationResult {
