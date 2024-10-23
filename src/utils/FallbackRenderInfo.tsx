@@ -6,7 +6,8 @@ import { hasInputOptionValue, IndividualConstraintResult, ValidationResult } fro
 function renderValidationResult(validationResult: ValidationResult): VNode[] {
   return [
     (validationResult.valid ? <div style={{color: 'green'}}>✅</div> : <div style={{color: 'red'}}>❌</div>),
-    (validationResult.messages.map((r: IndividualConstraintResult) => {
+    (validationResult.messages.filter((r: IndividualConstraintResult) => !r.valid || !r.serverSide)
+      .map((r: IndividualConstraintResult) => {
       return <div>
         <span>{ r.message}</span>
         { r.valid ? <span style={{color: 'green'}}>✅</span> : <span style={{color: 'red'}}>❌</span>}

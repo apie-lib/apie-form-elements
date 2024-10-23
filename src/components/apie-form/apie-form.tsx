@@ -213,7 +213,7 @@ export class ApieForm {
         index++;
       }
       subElements.push(
-        this.renderInfo.renderUmappedErrors(unmappedValidationErrors, state.validationErrors)
+        this.renderInfo.renderUnmappedErrors(unmappedValidationErrors, state.validationErrors)
       );
       return this.renderInfo.renderFormGroup(
         {
@@ -240,7 +240,7 @@ export class ApieForm {
         subElements.push(this.renderField(newState, newPrefix, index));
       }
       subElements.push(
-        this.renderInfo.renderUmappedErrors(unmappedValidationErrors, state.validationErrors)
+        this.renderInfo.renderUnmappedErrors(unmappedValidationErrors, state.validationErrors)
       );
       return <apie-form-map
         key={key ?? state.form.name}
@@ -283,7 +283,7 @@ export class ApieForm {
          onRowAdd: () => this.onAddItemList(newPrefix.slice(0))
       }));
       subElements.push(
-        this.renderInfo.renderUmappedErrors(unmappedValidationErrors, state.validationErrors)
+        this.renderInfo.renderUnmappedErrors(unmappedValidationErrors, state.validationErrors)
       );
       return this.renderInfo.renderFormGroup(
         {
@@ -376,8 +376,9 @@ export class ApieForm {
         unmappedValidationErrors.delete(formField.name);
       }
     });
+    
     fields.push(
-      this.renderInfo.renderUmappedErrors(unmappedValidationErrors, state.validationErrors)
+      this.renderInfo.renderUnmappedErrors(unmappedValidationErrors, state.validationErrors)
     );
 
     return (

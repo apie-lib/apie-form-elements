@@ -94,7 +94,7 @@ export class RenderInfo {
         return state.serverSide ? [] : <div style={ { color: 'green' }}>✅ {errorMessage}</div>;
     }
 
-    public renderUmappedErrors(unmapped: Set<string>, validationErrors: NestedRecord<string>|string): VNode|VNode[]
+    public renderUnmappedErrors(unmapped: Set<string>, validationErrors: NestedRecord<string>|string): VNode|VNode[]
     {
         if (typeof validationErrors === 'string') {
             return this.renderValidationError(

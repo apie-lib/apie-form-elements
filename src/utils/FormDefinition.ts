@@ -196,7 +196,10 @@ export interface ValidationResult {
 
 export function isValid(value: any, constraint: Constraint): boolean {
   const result = constraint.inverseCheck ? (r: boolean) => !r : (r: boolean) => r;
-  if (constraint.exactMatch !== undefined && result(constraint.exactMatch === value)) {
+  let exactMatch = constraint.exactMatch === value
+    || (constraint.exactMatch === '' && value === null)
+    || (constraint.exactMatch === null && value === '');
+  if (constraint.exactMatch !== undefined && result(exactMatch)) {
     return false;
   } 
   value = toString(value);
