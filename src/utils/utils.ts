@@ -1,8 +1,4 @@
-export * from './validation-errors';
 import { Option } from './RenderInfo';
-
-export const APIE_FORM_CONTROLLER = Symbol('APIE_FORM_CONTROLLER');
-export const APIE_CONSTRAINT = Symbol('APIE_CONSTRAINT');
 
 export interface ChangeEvent extends Option {
   force?: boolean;
@@ -13,96 +9,7 @@ export interface FileData {
   originalFilename: string;
 }
 
-
-export interface ApieFormElement extends HTMLElement {
-  name: string;
-  value: any;
-  apie: typeof APIE_FORM_CONTROLLER;
-  onTriggerChange: (ev: ChangeEvent) => void|any;
-  internalState: any;
-}
-
-export interface ApieConstraintElement extends HTMLElement {
-  name: string;
-  value: any;
-  apie: typeof APIE_CONSTRAINT;
-}
-
-export interface ValidationError {
-  '': string;
-  [key: string]: string | ValidationError;
-}
-
-export function isApieFormElement(el: HTMLElement): el is ApieFormElement
-{
-  return (el as any).apie === APIE_FORM_CONTROLLER;
-}
-
-export function isApieConstraint(el: HTMLElement): el is ApieConstraintElement
-{
-  return (el as any).apie === APIE_CONSTRAINT;
-}
-
-export class FormNameSplit
-{
-  [Symbol.split](input: string): string[] {
-    const result = [];
-    while (input.length > 0) {
-      if (input.charAt(0) === '[') {
-        const endIndexOf = input.indexOf(']');
-        if (endIndexOf === -1) {
-          result.push(input.substring(1));
-          input = '';
-        } else {
-          result.push(input.substring(1, endIndexOf));
-          input = input.substring(endIndexOf + 1);
-        }
-      } else {
-        const startIndexOf = input.indexOf('[');
-        if (startIndexOf === -1) {
-          result.push(input);
-          input = '';
-        } else {
-          result.push(input.substring(0, startIndexOf));
-          input = input.substring(startIndexOf);
-        }
-      }
-    }
-    return result;
-  }
-}
-
-export function loadTemplate(templateId: string): string {
-  const templateElm = document.querySelector('#' + templateId);
-  const divElement = document.createElement('div');
-  divElement.appendChild(templateElm.cloneNode(true));
-  var el = document.createElement('div');
-  return String(templateElm.innerHTML).replace(/\&[#0-9a-z]+;/gi, function (enc) {
-    el.innerHTML = enc;
-    return el.innerText
-  });
-}
-
-export function missingValidationErrors(validationErrors: ValidationError, foundIds: string[], prefix: string = ''): ChangeEvent[]{
-  const tmp = new Set(foundIds);
-  const result: ChangeEvent[] = [];
-  Object.keys(validationErrors).filter((key: string) => !tmp.has(key))
-    .map((key: string) => {
-      if (typeof validationErrors[key] === 'string') {
-        result.push({name: prefix + key, value: validationErrors[key]})
-      } else {
-        if (validationErrors[key]['']) {
-          result.push({name: prefix + key, value: validationErrors[key]})
-        }
-        result.push(...missingValidationErrors(validationErrors[key] as ValidationError, [''], prefix + key + '.'));
-      }
-    });
-
-  return result;
-}
-
-export function isFileData(f: any): f is FileData
-{
+export function isFileData(f: any): f is FileData {
   return f !== null && typeof f === 'object' && f.originalFilename && f.base64;
 }
 

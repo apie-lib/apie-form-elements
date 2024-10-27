@@ -134,9 +134,6 @@ export namespace Components {
         "supportsMultipart": boolean;
         "value": Record<string, any>;
     }
-    interface ApieScript {
-        "type": string;
-    }
     interface ApieSingleInput {
         "additionalSettings"?: SingleFieldSettings1;
         "label": string | null;
@@ -271,12 +268,6 @@ declare global {
         prototype: HTMLApieRenderTypesElement;
         new (): HTMLApieRenderTypesElement;
     };
-    interface HTMLApieScriptElement extends Components.ApieScript, HTMLStencilElement {
-    }
-    var HTMLApieScriptElement: {
-        prototype: HTMLApieScriptElement;
-        new (): HTMLApieScriptElement;
-    };
     interface HTMLApieSingleInputElementEventMap {
         "triggerChange": ChangeEvent;
     }
@@ -307,7 +298,6 @@ declare global {
         "apie-form-select-definition": HTMLApieFormSelectDefinitionElement;
         "apie-php-date-input": HTMLApiePhpDateInputElement;
         "apie-render-types": HTMLApieRenderTypesElement;
-        "apie-script": HTMLApieScriptElement;
         "apie-single-input": HTMLApieSingleInputElement;
     }
 }
@@ -420,9 +410,6 @@ declare namespace LocalJSX {
         "supportsMultipart"?: boolean;
         "value"?: Record<string, any>;
     }
-    interface ApieScript {
-        "type": string;
-    }
     interface ApieSingleInput {
         "additionalSettings"?: SingleFieldSettings1;
         "label"?: string | null;
@@ -447,7 +434,6 @@ declare namespace LocalJSX {
         "apie-form-select-definition": ApieFormSelectDefinition;
         "apie-php-date-input": ApiePhpDateInput;
         "apie-render-types": ApieRenderTypes;
-        "apie-script": ApieScript;
         "apie-single-input": ApieSingleInput;
     }
 }
@@ -467,7 +453,6 @@ declare module "@stencil/core" {
             "apie-form-select-definition": LocalJSX.ApieFormSelectDefinition & JSXBase.HTMLAttributes<HTMLApieFormSelectDefinitionElement>;
             "apie-php-date-input": LocalJSX.ApiePhpDateInput & JSXBase.HTMLAttributes<HTMLApiePhpDateInputElement>;
             "apie-render-types": LocalJSX.ApieRenderTypes & JSXBase.HTMLAttributes<HTMLApieRenderTypesElement>;
-            "apie-script": LocalJSX.ApieScript & JSXBase.HTMLAttributes<HTMLApieScriptElement>;
             "apie-single-input": LocalJSX.ApieSingleInput & JSXBase.HTMLAttributes<HTMLApieSingleInputElement>;
         }
     }

@@ -25,7 +25,6 @@ export const config: Config = {
       ],
     }
   ],
-  globalScript: 'src/global.ts',
   globalStyle: 'src/global.scss',
   testing: {
     browserHeadless: "new",
