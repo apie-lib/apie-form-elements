@@ -22,6 +22,7 @@ export interface InputState {
       forcedValue?: any
     };
     validationResult: ValidationResult;
+    serverValidationError: NestedRecord<string>;
     renderInfo: RenderInfo
 }
 
@@ -51,6 +52,27 @@ export interface SubmitButtonState {
 }
 
 export type SingleInputRender = (input: InputState) => VNode|VNode[];
+
+export function toSingleError(
+    error: NestedRecord<string>|string|undefined|null,
+    value: any,
+    initialValue: any
+): NestedRecord<string> {
+    if (error === null || error === undefined) {
+        return {};
+    }
+    if (typeof value === 'object') {
+        if (JSON.stringify(value) !== JSON.stringify(initialValue)) {
+            return {};
+        }
+    } else if (value !== initialValue) {
+        return {};
+    }
+    if (typeof error === 'string') {
+        return { '': error }
+    }
+    return error;
+}
 
 export class RenderInfo {
     protected singleInputRenderers: Record<string, SingleInputRender> = {}

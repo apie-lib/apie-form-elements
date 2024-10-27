@@ -3,7 +3,7 @@ import type { ChangeEvent } from '../../utils/utils';
 import { RenderInfo } from '../../utils/RenderInfo';
 import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
 import { SingleFieldSettings } from '../../components';
-import { ValidationResult } from '../../utils/FormDefinition';
+import { NestedRecord, ValidationResult } from '../../utils/FormDefinition';
 
 @Component({
   tag: 'apie-single-input',
@@ -22,6 +22,8 @@ export class ApieSingleInput {
   @Prop({reflect: true }) renderInfo: RenderInfo = new FallbackRenderInfo();
 
   @Prop({reflect: true}) additionalSettings?: SingleFieldSettings = {};
+
+  @Prop({reflect: true}) serverValidationError: NestedRecord<string> = {};
 
   @Prop({}) validationResult: ValidationResult = {
     valid: true,
@@ -47,6 +49,7 @@ export class ApieSingleInput {
         }
       },
       validationResult: this.validationResult,
+      serverValidationError: this.serverValidationError,
       renderInfo: this.renderInfo
     })
   }

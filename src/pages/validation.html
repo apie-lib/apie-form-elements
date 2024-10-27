@@ -18,6 +18,9 @@
       </apie-form-field-definition>
     </apie-form-definition>
     <apie-form definition-id="definition" method="get" debug-mode></apie-form>
+    <script>
+      document.querySelector('apie-form').validationErrors = { default: 'this is an error' }
+    </script>
     <script src="/pages/hydrateFromLocation.js">
     </script>
 </body>

@@ -14,6 +14,7 @@
 | `debugMode`                 | `debug-mode`              |             | `boolean`                                            | `false`                    |
 | `definitionId`              | `definition-id`           |             | `string`                                             | `undefined`                |
 | `formDefinition`            | --                        |             | `FormDefinition`                                     | `undefined`                |
+| `initialValue` _(required)_ | --                        |             | `{ [key: string]: NestedRecordField<SubmitField>; }` | `undefined`                |
 | `internalState`             | --                        |             | `{ [key: string]: NestedRecordField<Primitive>; }`   | `{}`                       |
 | `method`                    | `method`                  |             | `string`                                             | `'post'`                   |
 | `polymorphicColumnName`     | `polymorphic-column-name` |             | `string`                                             | `undefined`                |

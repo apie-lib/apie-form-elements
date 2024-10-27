@@ -1,7 +1,7 @@
 import { Component, Host, Prop, Watch, VNode, h } from '@stencil/core';
 import { changeForm, createFormFieldState, FormDefinition, FormField, FormFieldState, FormStateDefinition, handlesValidationForField, NestedRecord, Primitive, SubmitField, toChildState, validate } from '../../utils/FormDefinition';
 import { clone, toArray, toString } from '../../utils/utils';
-import { RenderInfo } from '../../utils/RenderInfo';
+import { RenderInfo, toSingleError } from '../../utils/RenderInfo';
 import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
 
 @Component({
@@ -172,6 +172,11 @@ export class ApieForm {
           valid: true,
           messages: []
         },
+        serverValidationError: toSingleError(
+          this.validationErrors[this.polymorphicColumnName],
+          this.value[this.polymorphicColumnName],
+          this.initialValue[this.polymorphicColumnName],
+        ),
         renderInfo: this.renderInfo
       }
     )
@@ -199,6 +204,11 @@ export class ApieForm {
         additionalSettings={state.form.additionalSettings}
         onTriggerChange={(ev) => { this.onFieldUpdate(newPrefix.slice(0), ev.detail.value as any)}}
         validationResult={validationResult}
+        serverValidationError={toSingleError(
+          state.validationErrors,
+          state.value,
+          state.initialValue
+        )}
       ></apie-single-input>
     }
     if (state.form.fieldType === 'group') {
@@ -346,7 +356,7 @@ export class ApieForm {
   connectedCallback() {
     this.instantiated = true;
     if (!this.initialValue) {
-      this.initialValue = this.value;
+      this.initialValue = clone(this.value);
     }
     if (this.polymorphicFormDefinition) {
       this.updateDefinitionIdOnPolymorphicDefinition();
@@ -381,7 +391,6 @@ export class ApieForm {
         unmappedValidationErrors.delete(formField.name);
       }
     });
-    
     fields.push(
       this.renderInfo.renderUnmappedErrors(unmappedValidationErrors, state.validationErrors)
     );

@@ -68,7 +68,8 @@ export class ApieFormMap {
       validationResult: {
         valid: true,
         messages: []
-      }
+      },
+      serverValidationError: {},
     });
     const addButton = this.renderInfo.renderAddItemToList({
       mappingKey: '__add' + this.enteredKey,

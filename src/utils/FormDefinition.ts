@@ -74,8 +74,8 @@ export interface Constraint extends ConstraintCheck {
 
 export type FormField = FormGroupField | SingleField | FieldMap | FieldList | FieldSplit;
 
-export function handlesValidationForField(input: FormField): input is FormGroupField | FieldMap | FieldList {
-  return ['group', 'map', 'list'].includes(input.fieldType);
+export function handlesValidationForField(input: FormField): input is FormGroupField | FieldMap | FieldList | SingleField {
+  return ['group', 'map', 'list', 'single'].includes(input.fieldType);
 }
 
 export interface FormDefinition {

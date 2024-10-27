@@ -1,11 +1,14 @@
 import { h, VNode } from '@stencil/core';
 import { InputState, RenderInfo } from "./RenderInfo";
 import { toEmptyFileList, toFileList, toString, toArray } from './utils';
-import { hasInputOptionValue, IndividualConstraintResult, ValidationResult } from './FormDefinition';
+import { hasInputOptionValue, IndividualConstraintResult, NestedRecord, ValidationResult } from './FormDefinition';
 
-function renderValidationResult(validationResult: ValidationResult): VNode[] {
+function renderValidationResult(validationResult: ValidationResult, serverSideError: NestedRecord<string>): VNode[] {
   return [
-    (validationResult.valid ? <div style={{color: 'green'}}>✅</div> : <div style={{color: 'red'}}>❌</div>),
+    ((validationResult.valid && undefined === serverSideError['']) ? <div style={{color: 'green'}}>✅</div> : <div style={{color: 'red'}}>❌</div>),
+    (Object.keys(serverSideError).length > 0 && <div style={{ color: 'red', fontWeight: 'bold', padding: '10px', backgroundColor: '#fdd' }}>
+      {Object.entries(serverSideError).map((v) => toString(v[1] as any)) }
+    </div>),
     (validationResult.messages.filter((r: IndividualConstraintResult) => !r.valid || !r.serverSide)
       .map((r: IndividualConstraintResult) => {
       return <div>
@@ -25,42 +28,42 @@ export class FallbackRenderInfo extends RenderInfo
             return [
                 <input type="text" disabled={state.disabled} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
-                renderValidationResult(state.validationResult)
+                renderValidationResult(state.validationResult, state.serverValidationError)
             ];
           },
           number(state: InputState) {
             return [
                 <input type="number" disabled={state.disabled} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
-                renderValidationResult(state.validationResult)
+                renderValidationResult(state.validationResult, state.serverValidationError)
             ];
           },
           integer(state: InputState) {
             return [
                 <input type="number" step="1" disabled={state.disabled} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
-                renderValidationResult(state.validationResult)
+                renderValidationResult(state.validationResult, state.serverValidationError)
             ];
           },
           datetime(state: InputState) {
             return [
               <apie-php-date-input renderInfo={state.renderInfo} disabled={state.disabled} onChange={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)} dateFormat={state.additionalSettings.dateFormat ?? 'Y-m-d\\TH:i'}/>,
               (state.label && <label htmlFor={state.name}>{state.label}</label>),
-              renderValidationResult(state.validationResult)
+              renderValidationResult(state.validationResult, state.serverValidationError)
             ];
           },
           password(state: InputState) {
             return [
                 <input type="password" disabled={state.disabled} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
-                renderValidationResult(state.validationResult)
+                renderValidationResult(state.validationResult, state.serverValidationError)
             ];
           },
           datetime_internal(state: InputState) {
             return [
               <input type="text" readonly={state.disabled} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
               (state.label && <label htmlFor={state.name}>{state.label}</label>),
-              renderValidationResult(state.validationResult)
+              renderValidationResult(state.validationResult, state.serverValidationError)
             ];
           },
           textarea(state: InputState) {
@@ -68,7 +71,7 @@ export class FallbackRenderInfo extends RenderInfo
             return [
               <textarea disabled={state.disabled} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} rows={rows}>{toString(state.value)}</textarea>,
               (state.label && <label htmlFor={state.name}>{state.label}</label>),
-              renderValidationResult(state.validationResult)
+              renderValidationResult(state.validationResult, state.serverValidationError)
             ];
           },
           hidden(state: InputState) {
@@ -76,7 +79,7 @@ export class FallbackRenderInfo extends RenderInfo
               Promise.resolve().then(() => state.valueChanged(state.additionalSettings.forcedValue))
             }
             if (!state.validationResult.valid) {
-              return renderValidationResult(state.validationResult) 
+              return renderValidationResult(state.validationResult, state.serverValidationError) 
             }
             return []
           },
@@ -86,7 +89,7 @@ export class FallbackRenderInfo extends RenderInfo
                 <input type="file" disabled={state.disabled} onInput={(ev: any) => state.valueChanged(ev.target?.files[0])} name={state.name} files={state.value ? toFileList(state.value) : toEmptyFileList()}/>
                 {state.value && <input type="button" onClick={() => { state.valueChanged(null) } } value="remove"/>}
                 {state.label && <label htmlFor={state.name}>{state.label}</label>},
-                {renderValidationResult(state.validationResult)}
+                {renderValidationResult(state.validationResult, state.serverValidationError)}
               </div>
             );
           },
@@ -137,14 +140,14 @@ export class FallbackRenderInfo extends RenderInfo
               <article contenteditable="true" class="html-field unhandled"  onInput={(ev: any) => state.valueChanged(ev.target?.innerHTML)} innerHTML={ toString(state.value) }></article>
               <textarea style={ { display: 'none' } } name={ state.name } class="unhandled-editor">{ state.value }</textarea>
               <label htmlFor={state.label}>{ state.label }</label>
-              {renderValidationResult(state.validationResult)}
+              {renderValidationResult(state.validationResult, state.serverValidationError)}
             </div>
           },
           select(state: InputState) {
             if (!Array.isArray(state.additionalSettings?.options)) {
               return [
                 <select disabled><option selected>{state.value}</option></select>,
-                renderValidationResult(state.validationResult)
+                renderValidationResult(state.validationResult, state.serverValidationError)
               ]
             }
             
@@ -153,7 +156,7 @@ export class FallbackRenderInfo extends RenderInfo
                 { !hasInputOptionValue(state, state.value) && <option key={toString(state.value)} value={toString(state.value)} selected>{ state.value }</option> }
                 { state.additionalSettings.options.map((opt) => <option key={toString(opt.value as any)} value={toString(opt.value as any)} selected={state.value === opt.value}>{opt.name}</option>)}
               </select>,
-              renderValidationResult(state.validationResult)
+              renderValidationResult(state.validationResult, state.serverValidationError)
             ];
           },
           multi(state: InputState) {
@@ -162,7 +165,7 @@ export class FallbackRenderInfo extends RenderInfo
             if (!Array.isArray(state.additionalSettings?.options)) {
               return [
                 <select multiple disabled><option selected>{toString(value)}</option></select>,
-                renderValidationResult(state.validationResult)
+                renderValidationResult(state.validationResult, state.serverValidationError)
               ]
             }
             
@@ -170,7 +173,7 @@ export class FallbackRenderInfo extends RenderInfo
               <select multiple disabled={state.disabled} onChange={(ev: any) => state.valueChanged(Array.from(ev.target.selectedOptions).map((option: any) => option.value) as any)}>
                 { state.additionalSettings.options.map((opt) => <option value={toString(opt.value as any)} selected={value.has(opt.value)}>{opt.name}</option>)}
               </select>,
-              renderValidationResult(state.validationResult)
+              renderValidationResult(state.validationResult, state.serverValidationError)
             ]
           },
           "null"(state: InputState) {

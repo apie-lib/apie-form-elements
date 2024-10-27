@@ -2,6 +2,7 @@ import { Component, Event, EventEmitter, Host, Prop, VNode, Watch, h } from '@st
 import { ChangeEvent } from '../../utils/utils';
 import { RenderInfo, Option } from '../../utils/RenderInfo';
 import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
+import { NestedRecord } from '../../components';
 
 @Component({
   tag: 'apie-form-select',
@@ -22,6 +23,8 @@ export class ApieFormSelect {
   @Prop({reflect: true, mutable: true}) options: Array<Option> = []
 
   @Prop({reflect: true}) renderInfo: RenderInfo = new FallbackRenderInfo();
+
+  @Prop({reflect: true}) serverValidationError: NestedRecord<string> = {};
 
   @Event() triggerChange: EventEmitter<ChangeEvent>;
 
@@ -61,6 +64,7 @@ export class ApieFormSelect {
         valid: true,
         messages: []
       },
+      serverValidationError: this.serverValidationError,
       renderInfo: this.renderInfo
     })
   }

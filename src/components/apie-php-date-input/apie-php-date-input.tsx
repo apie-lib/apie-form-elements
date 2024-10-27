@@ -129,7 +129,8 @@ export class ApiePhpDateInput {
       validationResult: {
         valid: this.compiledDateformat.isValid(this.internalDate),
         messages: []
-      }
+      },
+      serverValidationError: {},
     }
     return this.renderInputFn(input, fieldName);
   }
@@ -145,7 +146,8 @@ export class ApiePhpDateInput {
       validationResult: {
         valid: true,
         messages: []
-      }
+      },
+      serverValidationError: {},
     }
     const res = this.renderInputFn(input, 'display');
     if (Array.isArray(res)) {

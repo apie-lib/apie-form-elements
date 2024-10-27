@@ -9,18 +9,18 @@ import { Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField,
 import { Option, RenderInfo } from "./utils/RenderInfo";
 import { VNode } from "@stencil/core";
 import { ChangeEvent } from "./utils/utils";
+import { NestedRecord as NestedRecord1, SingleFieldSettings as SingleFieldSettings1 } from "./components";
 import { PhpDate } from "./utils/dates/PhpDate";
 import { DateFormatString } from "./utils/dates/DateFormatString";
 import { RenderInputFn } from "./components/apie-php-date-input/apie-php-date-input";
-import { SingleFieldSettings as SingleFieldSettings1 } from "./components";
 export { Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField, ValidationResult } from "./utils/FormDefinition";
 export { Option, RenderInfo } from "./utils/RenderInfo";
 export { VNode } from "@stencil/core";
 export { ChangeEvent } from "./utils/utils";
+export { NestedRecord as NestedRecord1, SingleFieldSettings as SingleFieldSettings1 } from "./components";
 export { PhpDate } from "./utils/dates/PhpDate";
 export { DateFormatString } from "./utils/dates/DateFormatString";
 export { RenderInputFn } from "./components/apie-php-date-input/apie-php-date-input";
-export { SingleFieldSettings as SingleFieldSettings1 } from "./components";
 export namespace Components {
     interface ApieConstraintCheckDefinition {
         "exactMatch": string|number|null|undefined;
@@ -105,6 +105,7 @@ export namespace Components {
         "name": string;
         "options": Array<Option>;
         "renderInfo": RenderInfo;
+        "serverValidationError": NestedRecord1<string>;
         "subElements": VNode[];
         "value": Record<string, any>;
     }
@@ -141,6 +142,7 @@ export namespace Components {
         "label": string | null;
         "name": string;
         "renderInfo": RenderInfo;
+        "serverValidationError": NestedRecord<string>;
         "types": string;
         "validationResult": ValidationResult;
         "value": string;
@@ -390,6 +392,7 @@ declare namespace LocalJSX {
         "onTriggerInternalState"?: (event: ApieFormSelectCustomEvent<ChangeEvent>) => void;
         "options"?: Array<Option>;
         "renderInfo"?: RenderInfo;
+        "serverValidationError"?: NestedRecord1<string>;
         "subElements"?: VNode[];
         "value"?: Record<string, any>;
     }
@@ -426,6 +429,7 @@ declare namespace LocalJSX {
         "name"?: string;
         "onTriggerChange"?: (event: ApieSingleInputCustomEvent<ChangeEvent>) => void;
         "renderInfo"?: RenderInfo;
+        "serverValidationError"?: NestedRecord<string>;
         "types"?: string;
         "validationResult"?: ValidationResult;
         "value"?: string;

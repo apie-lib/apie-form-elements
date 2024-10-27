@@ -7,15 +7,16 @@
 
 ## Properties
 
-| Property        | Attribute | Description | Type                    | Default                    |
-| --------------- | --------- | ----------- | ----------------------- | -------------------------- |
-| `internalState` | --        |             | `{ [x: string]: any; }` | `{}`                       |
-| `label`         | `label`   |             | `string`                | `null`                     |
-| `name`          | `name`    |             | `string`                | `undefined`                |
-| `options`       | --        |             | `Option[]`              | `[]`                       |
-| `renderInfo`    | --        |             | `RenderInfo`            | `new FallbackRenderInfo()` |
-| `subElements`   | --        |             | `VNode[]`               | `undefined`                |
-| `value`         | --        |             | `{ [x: string]: any; }` | `undefined`                |
+| Property                | Attribute | Description | Type                                            | Default                    |
+| ----------------------- | --------- | ----------- | ----------------------------------------------- | -------------------------- |
+| `internalState`         | --        |             | `{ [x: string]: any; }`                         | `{}`                       |
+| `label`                 | `label`   |             | `string`                                        | `null`                     |
+| `name`                  | `name`    |             | `string`                                        | `undefined`                |
+| `options`               | --        |             | `Option[]`                                      | `[]`                       |
+| `renderInfo`            | --        |             | `RenderInfo`                                    | `new FallbackRenderInfo()` |
+| `serverValidationError` | --        |             | `{ [key: string]: NestedRecordField<string>; }` | `{}`                       |
+| `subElements`           | --        |             | `VNode[]`                                       | `undefined`                |
+| `value`                 | --        |             | `{ [x: string]: any; }`                         | `undefined`                |
 
 
 ## Events
