@@ -16,6 +16,7 @@ export class ApieForm {
   @Prop({reflect: true}) submitLabel: string = 'Submit';
 
   @Prop() csrfToken: string|null = null;
+  @Prop({reflect: true, mutable: true}) initialValue!: NestedRecord<SubmitField>;
   @Prop({reflect: true, mutable: true}) value: NestedRecord<SubmitField> = {};
   @Prop({reflect: true, mutable: true}) internalState: NestedRecord<Primitive> = {};
   @Prop({reflect: true, mutable: true}) validationErrors: NestedRecord<string> = {};
@@ -344,6 +345,9 @@ export class ApieForm {
 
   connectedCallback() {
     this.instantiated = true;
+    if (!this.initialValue) {
+      this.initialValue = this.value;
+    }
     if (this.polymorphicFormDefinition) {
       this.updateDefinitionIdOnPolymorphicDefinition();
     }
@@ -365,6 +369,7 @@ export class ApieForm {
       form: formDefinition,
       csrfToken: this.csrfToken,
       value: this.value,
+      initialValue: this.initialValue,
       internalState: this.internalState,
       validationErrors: this.validationErrors,
     }

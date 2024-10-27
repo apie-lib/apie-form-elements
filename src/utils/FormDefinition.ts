@@ -86,6 +86,7 @@ export interface FormStateDefinition {
     form: FormDefinition;
     csrfToken: string|null;
     value: NestedRecord<SubmitField>;
+    initialValue: NestedRecord<SubmitField>;
     internalState: NestedRecord<Primitive>;
     validationErrors: NestedRecord<string>;
 }
@@ -93,6 +94,7 @@ export interface FormStateDefinition {
 export interface FormFieldState {
   form: FormField;
   value: NestedRecord<SubmitField>|SubmitField|null;
+  initialValue: NestedRecord<SubmitField>|SubmitField|null;
   internalState: NestedRecord<Primitive>|Primitive|null;
   validationErrors: NestedRecord<string>|string|null;
 }
@@ -103,9 +105,13 @@ export function createFormFieldState(formField: FormField, definition: FormState
   if (definition.value[key] === undefined && formField.fieldType !== 'split') {
     definition.value[key] = formField.valueWhenMissing;
   }
+  const initialValue = (definition.initialValue[key] === undefined && formField.fieldType !== 'split')
+    ? formField.valueWhenMissing
+    : definition.initialValue[key];
   return {
     form: formField,
     value: definition.value[key],
+    initialValue,
     internalState: definition.internalState[key],
     validationErrors: definition.validationErrors[key],
   }
@@ -121,9 +127,17 @@ export function toChildState(formField: FormField, state: FormFieldState): FormF
       value = formField.valueWhenMissing;
     }
   }
+  let initialValue: any = state?.initialValue ? state?.initialValue[key] : undefined;
+  if (initialValue === undefined) {
+    initialValue = null;
+    if (formField.fieldType !== 'split') {
+      initialValue = formField.valueWhenMissing;
+    }
+  }
   return {
     form: formField,
     value,
+    initialValue,
     internalState: state.internalState ? state.internalState[key] as any : null,
     validationErrors: state.validationErrors ? state.validationErrors[key] : null,
   }

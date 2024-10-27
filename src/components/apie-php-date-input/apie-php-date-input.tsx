@@ -20,6 +20,9 @@ function renderInput(input: InputState, field: TimeField | 'display'): VNode | V
     })
     return input.renderInfo.renderSingleInput(['date-timezone', 'select'], input);    
   }
+  if (field === 'display') {
+    return input.renderInfo.renderSingleInput(['date-display', 'text'], input);
+  }
 
   return input.renderInfo.renderSingleInput(['date-' + field, 'integer', 'number', 'text'], input);
 }
@@ -216,15 +219,20 @@ export class ApiePhpDateInput {
     </div>
   }
 
+  private renderNow()
+  {
+    return <slot name="now"><button type="button" onClick={() => this.updateToCurrentTime()}>NOW</button></slot>
+  }
+
   render() {
     const displayHours = this.displayHourFields;
     const displayDays = this.displayDateFields;
     const displayTimezone = this.compiledDateformat.displayTimezone;
     if (displayHours && !displayDays && !displayTimezone) {
-      return <Host><div><slot name="hourfields">{this.renderTimeFields()}</slot></div></Host>
+      return <Host><div><slot name="hourfields">{this.renderTimeFields()}</slot></div>{ this.renderNow() }</Host>
     }
     if (displayDays && !displayHours && !displayTimezone) {
-      return <Host><div><slot name="datefields">{this.renderDateFields()}</slot></div></Host>
+      return <Host><div><slot name="datefields">{this.renderDateFields()}</slot></div>{ this.renderNow() }</Host>
     }
     if (displayTimezone && !displayDays && !displayHours) {
       return <Host><slot name="timezone"><div style={{display: 'flex'}}>{ this.renderField('timezone') }</div></slot></Host>
@@ -234,13 +242,13 @@ export class ApiePhpDateInput {
           <div onClick={() => !this.disabled && this.toggleDatePicker()}>
             <slot name="input">{this.renderDateValue()}</slot>
           </div>
-          { this.showDatePicker && <div style={{display: 'flex'}}>
+          { this.showDatePicker && <div style={{display: 'flex', flexDirection: 'column'}}>
               { displayHours && <slot name="hourfields">{this.renderTimeFields()}</slot>}
               { displayDays && <slot name="datefields">{ this.renderDateFields()}</slot> }
               { displayTimezone && <slot name="timezone"><div style={{display: 'flex'}}>
                 { this.renderField('timezone') }
                 </div></slot> }
-              <slot name="now"><button type="button" onClick={() => this.updateToCurrentTime()}>NOW</button></slot>
+              { this.renderNow() }
             </div>
           }
         </div>

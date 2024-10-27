@@ -39,6 +39,7 @@ export namespace Components {
         "debugMode": boolean;
         "definitionId": string;
         "formDefinition": FormDefinition;
+        "initialValue": NestedRecord<SubmitField>;
         "internalState": NestedRecord<Primitive>;
         "method": string;
         "polymorphicColumnName"?: string;
@@ -325,6 +326,7 @@ declare namespace LocalJSX {
         "debugMode"?: boolean;
         "definitionId"?: string;
         "formDefinition"?: FormDefinition;
+        "initialValue": NestedRecord<SubmitField>;
         "internalState"?: NestedRecord<Primitive>;
         "method"?: string;
         "polymorphicColumnName"?: string;

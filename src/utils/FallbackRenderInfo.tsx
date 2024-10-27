@@ -150,8 +150,8 @@ export class FallbackRenderInfo extends RenderInfo
             
             return [
               <select disabled={state.disabled} onChange={(ev: any) => state.valueChanged(ev.target.value)}>
-                { !hasInputOptionValue(state, state.value) && <option value={toString(state.value)} selected>{ state.value }</option> }
-                { state.additionalSettings.options.map((opt) => <option value={toString(opt.value as any)} selected={state.value === opt.value}>{opt.name}</option>)}
+                { !hasInputOptionValue(state, state.value) && <option key={toString(state.value)} value={toString(state.value)} selected>{ state.value }</option> }
+                { state.additionalSettings.options.map((opt) => <option key={toString(opt.value as any)} value={toString(opt.value as any)} selected={state.value === opt.value}>{opt.name}</option>)}
               </select>,
               renderValidationResult(state.validationResult)
             ];
