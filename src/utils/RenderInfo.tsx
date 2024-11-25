@@ -81,6 +81,15 @@ export class RenderInfo {
     {
     }
 
+    public getAvailabeInputTypes(): Set<string>
+    {
+        const list = Object.keys(this.singleInputRenderers);
+        if (this.parent) {
+            list.push(...this.parent.getAvailabeInputTypes());
+        }
+        return new Set(list);
+    }
+
     private getSingleInputRenderer(types: Array<string>): SingleInputRender
     {
         for (let type of types) {

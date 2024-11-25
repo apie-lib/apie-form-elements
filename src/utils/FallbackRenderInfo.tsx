@@ -177,11 +177,16 @@ export class FallbackRenderInfo extends RenderInfo
             ]
           },
           "null"(state: InputState) {
-            if (state.value === null || state.disabled) {
-              return <div style={ {display: 'none' }}></div>
+            const showValidationError = !state.validationResult.valid && state.validationResult.messages.length > 0;
+            if (state.value !== null && !state.disabled) {
+              Promise.resolve().then(() => {
+                state.valueChanged(null);
+              });
             }
-            return <div style={ {display: 'none' }} onLoad={() => state.valueChanged(null)}></div>
-          },
+            return showValidationError
+              ? renderValidationResult(state.validationResult, state.serverValidationError)
+              : <div style={ {display: 'none' }}></div>;
+          }
         }
     };
 }

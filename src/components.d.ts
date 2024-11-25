@@ -144,6 +144,9 @@ export namespace Components {
         "validationResult": ValidationResult;
         "value": string;
     }
+    interface ApieTestInput {
+        "renderInfo": RenderInfo;
+    }
 }
 export interface ApieFormMapCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -285,6 +288,12 @@ declare global {
         prototype: HTMLApieSingleInputElement;
         new (): HTMLApieSingleInputElement;
     };
+    interface HTMLApieTestInputElement extends Components.ApieTestInput, HTMLStencilElement {
+    }
+    var HTMLApieTestInputElement: {
+        prototype: HTMLApieTestInputElement;
+        new (): HTMLApieTestInputElement;
+    };
     interface HTMLElementTagNameMap {
         "apie-constraint-check-definition": HTMLApieConstraintCheckDefinitionElement;
         "apie-form": HTMLApieFormElement;
@@ -299,6 +308,7 @@ declare global {
         "apie-php-date-input": HTMLApiePhpDateInputElement;
         "apie-render-types": HTMLApieRenderTypesElement;
         "apie-single-input": HTMLApieSingleInputElement;
+        "apie-test-input": HTMLApieTestInputElement;
     }
 }
 declare namespace LocalJSX {
@@ -421,6 +431,9 @@ declare namespace LocalJSX {
         "validationResult"?: ValidationResult;
         "value"?: string;
     }
+    interface ApieTestInput {
+        "renderInfo"?: RenderInfo;
+    }
     interface IntrinsicElements {
         "apie-constraint-check-definition": ApieConstraintCheckDefinition;
         "apie-form": ApieForm;
@@ -435,6 +448,7 @@ declare namespace LocalJSX {
         "apie-php-date-input": ApiePhpDateInput;
         "apie-render-types": ApieRenderTypes;
         "apie-single-input": ApieSingleInput;
+        "apie-test-input": ApieTestInput;
     }
 }
 export { LocalJSX as JSX };
@@ -454,6 +468,7 @@ declare module "@stencil/core" {
             "apie-php-date-input": LocalJSX.ApiePhpDateInput & JSXBase.HTMLAttributes<HTMLApiePhpDateInputElement>;
             "apie-render-types": LocalJSX.ApieRenderTypes & JSXBase.HTMLAttributes<HTMLApieRenderTypesElement>;
             "apie-single-input": LocalJSX.ApieSingleInput & JSXBase.HTMLAttributes<HTMLApieSingleInputElement>;
+            "apie-test-input": LocalJSX.ApieTestInput & JSXBase.HTMLAttributes<HTMLApieTestInputElement>;
         }
     }
 }

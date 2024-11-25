@@ -75,7 +75,7 @@ export class ApieForm {
     }
     while (fieldNamePath.length > 1) {
       fieldName = fieldNamePath.shift();
-      if (!Object.prototype.hasOwnProperty.call(ptr, fieldName)) {
+      if (!Object.prototype.hasOwnProperty.call(ptr, fieldName) || ptr[fieldName] === null || typeof ptr[fieldName] !== 'object') {
         ptr[fieldName] = {};
       }
       ptr = ptr[fieldName];
