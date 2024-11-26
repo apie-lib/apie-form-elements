@@ -250,6 +250,7 @@ declare global {
     };
     interface HTMLApiePhpDateInputElementEventMap {
         "change": string;
+        "touched": void;
     }
     interface HTMLApiePhpDateInputElement extends Components.ApiePhpDateInput, HTMLStencilElement {
         addEventListener<K extends keyof HTMLApiePhpDateInputElementEventMap>(type: K, listener: (this: HTMLApiePhpDateInputElement, ev: ApiePhpDateInputCustomEvent<HTMLApiePhpDateInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -272,6 +273,7 @@ declare global {
         new (): HTMLApieRenderTypesElement;
     };
     interface HTMLApieSingleInputElementEventMap {
+        "touched": ChangeEvent;
         "triggerChange": ChangeEvent;
     }
     interface HTMLApieSingleInputElement extends Components.ApieSingleInput, HTMLStencilElement {
@@ -410,6 +412,7 @@ declare namespace LocalJSX {
         "internalDate"?: PhpDate;
         "name"?: string;
         "onChange"?: (event: ApiePhpDateInputCustomEvent<string>) => void;
+        "onTouched"?: (event: ApiePhpDateInputCustomEvent<void>) => void;
         "renderInfo"?: RenderInfo;
         "renderInputFn"?: RenderInputFn;
         "value"?: string;
@@ -424,6 +427,7 @@ declare namespace LocalJSX {
         "additionalSettings"?: SingleFieldSettings1;
         "label"?: string | null;
         "name"?: string;
+        "onTouched"?: (event: ApieSingleInputCustomEvent<ChangeEvent>) => void;
         "onTriggerChange"?: (event: ApieSingleInputCustomEvent<ChangeEvent>) => void;
         "renderInfo"?: RenderInfo;
         "serverValidationError"?: NestedRecord<string>;

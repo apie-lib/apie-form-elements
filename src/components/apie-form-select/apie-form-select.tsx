@@ -1,4 +1,4 @@
-import { Component, Event, EventEmitter, Host, Prop, VNode, Watch, h } from '@stencil/core';
+import { Component, Event, EventEmitter, Host, State, Prop, VNode, Watch, h } from '@stencil/core';
 import { ChangeEvent } from '../../utils/utils';
 import { RenderInfo, Option } from '../../utils/RenderInfo';
 import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
@@ -25,6 +25,8 @@ export class ApieFormSelect {
   @Prop({reflect: true}) renderInfo: RenderInfo = new FallbackRenderInfo();
 
   @Prop({reflect: true}) serverValidationError: NestedRecord<string> = {};
+
+  @State() touched: boolean = false;
 
   @Event() triggerChange: EventEmitter<ChangeEvent>;
 
@@ -57,6 +59,8 @@ export class ApieFormSelect {
           force: true
         })
       },
+      touched: this.touched,
+      onTouched: () => this.touched = true,
       additionalSettings: {
         options: this.options,
       },

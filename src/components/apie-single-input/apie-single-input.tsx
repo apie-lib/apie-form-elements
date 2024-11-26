@@ -1,4 +1,4 @@
-import { Component, Event, EventEmitter, Host, Prop, h } from '@stencil/core';
+import { Component, Event, EventEmitter, Host, Prop, State, h } from '@stencil/core';
 import type { ChangeEvent } from '../../utils/utils';
 import { RenderInfo } from '../../utils/RenderInfo';
 import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
@@ -25,6 +25,10 @@ export class ApieSingleInput {
 
   @Prop({reflect: true}) serverValidationError: NestedRecord<string> = {};
 
+  @State() isTouched: boolean = false;
+
+  @Event() touched: EventEmitter<ChangeEvent>;
+
   @Prop({}) validationResult: ValidationResult = {
     valid: true,
     messages: []
@@ -50,7 +54,9 @@ export class ApieSingleInput {
       },
       validationResult: this.validationResult,
       serverValidationError: this.serverValidationError,
-      renderInfo: this.renderInfo
+      renderInfo: this.renderInfo,
+      touched: this.isTouched,
+      onTouched: () => { this.isTouched = true; this.touched.emit(); }
     })
   }
 

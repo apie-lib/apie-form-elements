@@ -43,6 +43,8 @@ export class ApiePhpDateInput {
 
   @State() showDatePicker: boolean = false;
 
+  @State() isTouched: boolean = false;
+
   @Prop({ mutable: true, reflect: true }) internalDate: PhpDate = new PhpDate('', '', '', '', '', '', '', Intl.DateTimeFormat().resolvedOptions().timeZone)
 
   @Prop({ mutable: true, reflect: true }) compiledDateformat: DateFormatString;
@@ -52,6 +54,8 @@ export class ApiePhpDateInput {
   @Prop() renderInfo: RenderInfo = new FallbackRenderInfo();
 
   @Event() change: EventEmitter<string>;
+
+  @Event() touched: EventEmitter<void>;
 
   public toggleDatePicker() {
     this.showDatePicker = !this.showDatePicker;
@@ -131,6 +135,8 @@ export class ApiePhpDateInput {
         messages: []
       },
       serverValidationError: {},
+      touched: this.isTouched,
+      onTouched: () => { this.isTouched = true; this.touched.emit(); }
     }
     return this.renderInputFn(input, fieldName);
   }
@@ -148,6 +154,8 @@ export class ApiePhpDateInput {
         messages: []
       },
       serverValidationError: {},
+      touched: this.isTouched,
+      onTouched: () => { this.isTouched = true; this.touched.emit(); }
     }
     const res = this.renderInputFn(input, 'display');
     if (Array.isArray(res)) {

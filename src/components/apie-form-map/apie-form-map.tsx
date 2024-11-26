@@ -23,6 +23,8 @@ export class ApieFormMap {
 
   @State() enteredKey: string = '';
 
+  @State() touched: boolean = false;
+
   @Event() triggerChange: EventEmitter<ChangeEvent>;
 
   onAddItemMap() {
@@ -70,6 +72,8 @@ export class ApieFormMap {
         messages: []
       },
       serverValidationError: {},
+      touched: this.touched,
+      onTouched: () => this.touched = true,
     });
     const addButton = this.renderInfo.renderAddItemToList({
       mappingKey: '__add' + this.enteredKey,

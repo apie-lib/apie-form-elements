@@ -23,6 +23,7 @@
 
 | Event           | Description | Type                       |
 | --------------- | ----------- | -------------------------- |
+| `touched`       |             | `CustomEvent<ChangeEvent>` |
 | `triggerChange` |             | `CustomEvent<ChangeEvent>` |
 
 

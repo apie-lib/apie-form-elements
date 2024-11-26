@@ -164,6 +164,8 @@ export class ApieForm {
           this.updateDefinitionIdOnPolymorphicDefinition();
           this.value = { ...this.value }
         },
+        touched: !this.polymorphicColumnName,
+        onTouched: () => {},
         additionalSettings: {
           options: Object.entries(this.polymorphicFormDefinition)
             .map(([value, name]) => { return { name, value }}),

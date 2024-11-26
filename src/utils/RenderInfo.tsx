@@ -23,7 +23,9 @@ export interface InputState {
     };
     validationResult: ValidationResult;
     serverValidationError: NestedRecord<string>;
-    renderInfo: RenderInfo
+    renderInfo: RenderInfo;
+    touched: boolean;
+    onTouched: () => void;
 }
 
 export interface FormGroupState {

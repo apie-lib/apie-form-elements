@@ -21,9 +21,10 @@
 
 ## Events
 
-| Event    | Description | Type                  |
-| -------- | ----------- | --------------------- |
-| `change` |             | `CustomEvent<string>` |
+| Event     | Description | Type                  |
+| --------- | ----------- | --------------------- |
+| `change`  |             | `CustomEvent<string>` |
+| `touched` |             | `CustomEvent<void>`   |
 
 
 ## Methods

@@ -12,6 +12,8 @@ export class ApieTestInput {
 
   @State() value: any = 'value';
 
+  @State() initialValue: any = 'value';
+
   @State() type: any = 'text';
 
   @State() disabled: boolean = false;
@@ -21,6 +23,8 @@ export class ApieTestInput {
   @State() clientValidationError: boolean = false;
 
   @State() hasServersideError: boolean = false;
+
+  @State() touched: boolean = false;
 
   private renderField(): VNode|VNode[] {
     const input: InputState = {
@@ -47,6 +51,8 @@ export class ApieTestInput {
         dateFormat: 'c',
         imageUrl: 'https://picsum.photos/200/300'
       },
+      touched: this.touched,
+      onTouched: () => this.touched = true,
     };
     return this.renderInfo.renderSingleInput([this.type, 'text'], input);
   }
@@ -102,6 +108,18 @@ export class ApieTestInput {
               <input name="client_validation_error" type="checkbox" checked={this.clientValidationError} onInput={(ev) => this.clientValidationError = (ev.target as any).checked} />,
               'client_validation_error',
               'Has friendly validation error check'
+            )}
+            { this.renderTestField(
+              <textarea name="initial_data" onInput={(ev) => this.initialValue = JSON.parse((ev.target as any).value)}>
+                {JSON.stringify(this.initialValue)}
+              </textarea>,
+              'initial_data',
+              'Initial data'
+            )}
+            { this.renderTestField(
+              <input name="touched" type="checkbox" checked={this.touched} onInput={(ev) => this.touched = (ev.target as any).checked} />,
+              'touched',
+              'Field touched'
             )}
           </div>
 
