@@ -54,7 +54,7 @@ export class ApieTestInput {
       touched: this.touched,
       onTouched: () => this.touched = true,
     };
-    return this.renderInfo.renderSingleInput([this.type, 'text'], input);
+    return this.renderInfo.renderSingleInput([this.type], input);
   }
 
   private renderTestField(field: VNode, name: string, label: string): VNode|VNode[]
