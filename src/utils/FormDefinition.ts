@@ -26,6 +26,9 @@ export interface SingleField {
     valueWhenMissing: any;
     additionalSettings?: SingleFieldSettings
     constraints: Array<Constraint>;
+    allowsNull: boolean;
+    emptyStringAllowed: boolean;
+    required: boolean;
 }
 
 export interface FormGroupField {

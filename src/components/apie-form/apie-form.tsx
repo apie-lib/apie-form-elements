@@ -202,6 +202,9 @@ export class ApieForm {
         types={state.form.types.join(',')}
         label={state.form.label}
         value={state.value as any}
+        allowsNull={state.form.allowsNull}
+        emptyStringAllowed={state.form.emptyStringAllowed}
+        required={state.form.required}
         renderInfo={this.renderInfo}
         additionalSettings={state.form.additionalSettings}
         onTriggerChange={(ev) => { this.onFieldUpdate(newPrefix.slice(0), ev.detail.value as any)}}

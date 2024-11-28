@@ -24,6 +24,12 @@ export class ApieTestInput {
 
   @State() hasServersideError: boolean = false;
 
+  @State() allowsNull: boolean = false;
+
+  @State() emptyStringAllowed: boolean = false;
+
+  @State() required: boolean = false;
+
   @State() touched: boolean = false;
 
   private renderField(): VNode|VNode[] {
@@ -31,7 +37,7 @@ export class ApieTestInput {
       valueChanged: (newValue?: string): void => { this.value = newValue; },
       name: 'test',
       value: this.value,
-      label: 'Label',
+      label: 'Test field label',
       disabled: this.disabled,
       validationResult: {
         valid: !this.hasClientValidationError,
@@ -51,6 +57,9 @@ export class ApieTestInput {
         dateFormat: 'c',
         imageUrl: 'https://picsum.photos/200/300'
       },
+      allowsNull: this.allowsNull,
+      emptyStringAllowed: this.emptyStringAllowed,
+      required: this.required,
       touched: this.touched,
       onTouched: () => this.touched = true,
     };
@@ -60,7 +69,7 @@ export class ApieTestInput {
   private renderTestField(field: VNode, name: string, label: string): VNode|VNode[]
   {
     return (
-      <div style={{display: 'flex'}}>
+      <div style={{display: 'flex', width: "30%"}}>
         <div>{field}</div><div><label htmlFor={name}>{ label }</label></div>
       </div>
     );
@@ -79,35 +88,43 @@ export class ApieTestInput {
     </select>;
   }
 
+  private renderCheckbox(name: string, label: string): VNode|VNode[]
+  {
+    return this.renderTestField(
+      <input
+        name={name}
+        type="checkbox"
+        checked={this[name]}
+        onInput={(ev) => this[name] = (ev.target as any).checked} />,
+      name,
+      label
+    )
+  }
+
   public render() {
     return (
       <Host>
         <div style={{display:'flex', flexDirection: 'column'}}>
-          <div style={{display: 'flex'}}>
+          <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
             { this.renderTestField(
               this.renderTypesField(),
               'type',
               'Field type'
             )}
+            { this.renderCheckbox('disabled', 'Field disabled')}
+            { this.renderCheckbox('hasServersideError', 'Has server-side validation error')}
+            { this.renderCheckbox('hasClientValidationError', 'Has client-side validation error')}
+            { this.renderCheckbox('clientValidationError', 'Has friendly validation error check')}
+            { this.renderCheckbox('touched', 'Field is touched') }
+            { this.renderCheckbox('allowsNull', 'Allows null') }
+            { this.renderCheckbox('emptyStringAllowed', 'Empty string allowed')}
+            { this.renderCheckbox('required', 'Field is required') }
             { this.renderTestField(
-              <input name="disabled" type="checkbox" checked={this.disabled} onInput={(ev) => this.disabled = (ev.target as any).checked} />,
-              'disabled',
-              'Field disabled'
-            )}
-            { this.renderTestField(
-              <input name="server_error" type="checkbox" checked={this.hasServersideError} onInput={(ev) => this.hasServersideError = (ev.target as any).checked} />,
-              'server_error',
-              'Has server-side validation error'
-            )}
-            { this.renderTestField(
-              <input name="client_error" type="checkbox" checked={this.hasClientValidationError} onInput={(ev) => this.hasClientValidationError = (ev.target as any).checked} />,
-              'client_error',
-              'Has client-side validation error'
-            )}
-            { this.renderTestField(
-              <input name="client_validation_error" type="checkbox" checked={this.clientValidationError} onInput={(ev) => this.clientValidationError = (ev.target as any).checked} />,
-              'client_validation_error',
-              'Has friendly validation error check'
+              <textarea name="data" onInput={(ev) => this.value = JSON.parse((ev.target as any).value)}>
+                {JSON.stringify(this.value)}
+              </textarea>,
+              'data',
+              'Current value'
             )}
             { this.renderTestField(
               <textarea name="initial_data" onInput={(ev) => this.initialValue = JSON.parse((ev.target as any).value)}>
@@ -115,11 +132,6 @@ export class ApieTestInput {
               </textarea>,
               'initial_data',
               'Initial data'
-            )}
-            { this.renderTestField(
-              <input name="touched" type="checkbox" checked={this.touched} onInput={(ev) => this.touched = (ev.target as any).checked} />,
-              'touched',
-              'Field touched'
             )}
           </div>
 

@@ -15,6 +15,9 @@ export class ApieFormFieldDefinition {
   @Prop({ reflect: true, mutable: true}) status: string = 'idle';
   @Prop({ reflect: true }) prototyped: boolean = false;
   @Prop({ reflect: true }) valueWhenMissing: any = null;
+  @Prop({reflect: true}) allowsNull: boolean = false;
+  @Prop({reflect: true}) emptyStringAllowed: boolean = false;
+  @Prop({reflect: true}) required: boolean = false;
 
   @Method()
   async getDefinition(): Promise<SingleField> {
@@ -28,6 +31,9 @@ export class ApieFormFieldDefinition {
       types: this.types.split(','),
       valueWhenMissing: this.valueWhenMissing,
       additionalSettings: this.additionalSettings,
+      allowsNull: this.allowsNull,
+      emptyStringAllowed: this.emptyStringAllowed,
+      required: this.required,
       constraints,
     })
   }

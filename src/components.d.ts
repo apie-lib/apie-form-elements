@@ -57,10 +57,13 @@ export namespace Components {
     }
     interface ApieFormFieldDefinition {
         "additionalSettings"?: SingleFieldSettings;
+        "allowsNull": boolean;
+        "emptyStringAllowed": boolean;
         "getDefinition": () => Promise<SingleField>;
         "label": string;
         "name": string;
         "prototyped": boolean;
+        "required": boolean;
         "status": string;
         "types": string;
         "valueWhenMissing": any;
@@ -136,13 +139,16 @@ export namespace Components {
     }
     interface ApieSingleInput {
         "additionalSettings"?: SingleFieldSettings1;
+        "allowsNull": boolean;
+        "emptyStringAllowed": boolean;
         "label": string | null;
         "name": string;
         "renderInfo": RenderInfo;
+        "required": boolean;
         "serverValidationError": NestedRecord<string>;
         "types": string;
         "validationResult": ValidationResult;
-        "value": string;
+        "value": string | null;
     }
     interface ApieTestInput {
         "renderInfo": RenderInfo;
@@ -347,9 +353,12 @@ declare namespace LocalJSX {
     }
     interface ApieFormFieldDefinition {
         "additionalSettings"?: SingleFieldSettings;
+        "allowsNull"?: boolean;
+        "emptyStringAllowed"?: boolean;
         "label"?: string;
         "name"?: string;
         "prototyped"?: boolean;
+        "required"?: boolean;
         "status"?: string;
         "types"?: string;
         "valueWhenMissing"?: any;
@@ -425,15 +434,18 @@ declare namespace LocalJSX {
     }
     interface ApieSingleInput {
         "additionalSettings"?: SingleFieldSettings1;
+        "allowsNull"?: boolean;
+        "emptyStringAllowed"?: boolean;
         "label"?: string | null;
         "name"?: string;
         "onTouched"?: (event: ApieSingleInputCustomEvent<ChangeEvent>) => void;
         "onTriggerChange"?: (event: ApieSingleInputCustomEvent<ChangeEvent>) => void;
         "renderInfo"?: RenderInfo;
+        "required"?: boolean;
         "serverValidationError"?: NestedRecord<string>;
         "types"?: string;
         "validationResult"?: ValidationResult;
-        "value"?: string;
+        "value"?: string | null;
     }
     interface ApieTestInput {
         "renderInfo"?: RenderInfo;

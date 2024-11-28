@@ -21,10 +21,13 @@ export interface InputState {
       imageUrl?: string
       forcedValue?: any
     };
+    allowsNull?: boolean;
+    emptyStringAllowed?: boolean;
+    required?: boolean;
     validationResult: ValidationResult;
     serverValidationError: NestedRecord<string>;
     renderInfo: RenderInfo;
-    touched: boolean;
+    touched?: boolean;
     onTouched: () => void;
 }
 

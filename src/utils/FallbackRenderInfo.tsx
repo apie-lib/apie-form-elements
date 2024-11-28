@@ -3,6 +3,17 @@ import { InputState, RenderInfo } from "./RenderInfo";
 import { toEmptyFileList, toFileList, toString, toArray } from './utils';
 import { hasInputOptionValue, IndividualConstraintResult, NestedRecord, ValidationResult } from './FormDefinition';
 
+function renderFieldRow(content: VNode|VNode[], input: InputState, canEnterEmptyString: boolean = true): VNode|VNode[]{
+  return <div style={{display: 'flex', flexWrap: 'nowrap', alignItems: 'left', justifyContent: 'left'}}>
+    <div style={{maxWidth: '10%'}}>
+      { input.allowsNull && (!canEnterEmptyString || input.emptyStringAllowed) && <input type="checkbox" checked={input.value !== null} onClick={(ev) => { input.onTouched(); if (!(ev.target as any).checked) { input.valueChanged(null); } else { input.valueChanged(''); }}} /> }
+    </div>
+    <div>
+      { content }
+    </div>
+  </div>
+}
+
 function renderValidationResult(validationResult: ValidationResult, serverSideError: NestedRecord<string>): VNode[] {
   return [
     ((validationResult.valid && undefined === serverSideError['']) ? <div style={{color: 'green'}}>✅</div> : <div style={{color: 'red'}}>❌</div>),
@@ -25,54 +36,89 @@ export class FallbackRenderInfo extends RenderInfo
         super(null);
         this.singleInputRenderers = {
           text(state: InputState) {
-            return [
-                <input type="text" disabled={state.disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
+            const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
+            return renderFieldRow(
+              [
+                <input type="text" disabled={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
                 renderValidationResult(state.validationResult, state.serverValidationError)
-            ];
+              ],
+              state
+            );
           },
           number(state: InputState) {
-            return [
-                <input type="number" disabled={state.disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
+            const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
+            
+            return renderFieldRow(
+              [
+                <input type="number" disabled={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
                 renderValidationResult(state.validationResult, state.serverValidationError)
-            ];
+              ],
+              state
+            );
           },
           integer(state: InputState) {
-            return [
-                <input type="number" step="1" onBlur={() => state.onTouched()} disabled={state.disabled} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
+            const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
+            
+            return renderFieldRow(
+              [
+                <input type="number" step="1" onBlur={() => state.onTouched()} disabled={disabled} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
                 renderValidationResult(state.validationResult, state.serverValidationError)
-            ];
+              ],
+              state
+            );
           },
           datetime(state: InputState) {
-            return [
-              <apie-php-date-input renderInfo={state.renderInfo} onBlur={() => state.onTouched()} disabled={state.disabled} onChange={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)} dateFormat={state.additionalSettings.dateFormat ?? 'Y-m-d\\TH:i'}/>,
-              (state.label && <label htmlFor={state.name}>{state.label}</label>),
-              renderValidationResult(state.validationResult, state.serverValidationError)
-            ];
-          },
-          password(state: InputState) {
-            return [
-                <input type="password" disabled={state.disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
+            const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
+            
+            return renderFieldRow(
+              [
+                <apie-php-date-input renderInfo={state.renderInfo} onBlur={() => state.onTouched()} disabled={disabled} onChange={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)} dateFormat={state.additionalSettings.dateFormat ?? 'Y-m-d\\TH:i'}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
                 renderValidationResult(state.validationResult, state.serverValidationError)
-            ];
+              ],
+              state,
+              false
+            );
+          },
+          password(state: InputState) {
+            const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
+
+            return renderFieldRow(
+              [
+                <input type="password" disabled={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
+                (state.label && <label htmlFor={state.name}>{state.label}</label>),
+                renderValidationResult(state.validationResult, state.serverValidationError)
+              ],
+              state
+            );
           },
           datetime_internal(state: InputState) {
-            return [
-              <input type="text" readonly={state.disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
-              (state.label && <label htmlFor={state.name}>{state.label}</label>),
-              renderValidationResult(state.validationResult, state.serverValidationError)
-            ];
+            const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
+            
+            return renderFieldRow(
+              [
+                <input type="text" readonly={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
+                (state.label && <label htmlFor={state.name}>{state.label}</label>),
+                renderValidationResult(state.validationResult, state.serverValidationError)
+              ],
+              state
+            );
           },
           textarea(state: InputState) {
+            const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
             const rows = Math.max(2, String(state.value).split("\n").length + 1);
-            return [
-              <textarea disabled={state.disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} rows={rows}>{toString(state.value)}</textarea>,
-              (state.label && <label htmlFor={state.name}>{state.label}</label>),
-              renderValidationResult(state.validationResult, state.serverValidationError)
-            ];
+
+            return renderFieldRow(
+              [
+                <textarea disabled={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} rows={rows}>{toString(state.value)}</textarea>,
+                (state.label && <label htmlFor={state.name}>{state.label}</label>),
+                renderValidationResult(state.validationResult, state.serverValidationError)
+              ],
+              state
+            );
           },
           hidden(state: InputState) {
             if (state.additionalSettings.forcedValue !== undefined && state.value !== state.additionalSettings.forcedValue) {
@@ -133,15 +179,25 @@ export class FallbackRenderInfo extends RenderInfo
           .html-field::-webkit-scrollbar-thumb:hover {
               background-color: #aaa;
           }
-`;
+          .html-field.disabled {
+            background-color: #f8f9fa; /* Light gray to indicate disabled */
+            color: #6c757d; /* Muted text color */
+            border-color: #e0e0e0;
+            pointer-events: none; /* Prevent interaction */
+        }
+`;          
+            const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
 
-            return <div style={ { margin: "5px", padding: "5px" }}>
-              <style>{style}</style>
-              <article contenteditable="true" class="html-field unhandled" onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.innerHTML)} innerHTML={ toString(state.value) }></article>
-              <textarea style={ { display: 'none' } } name={ state.name } class="unhandled-editor">{ state.value }</textarea>
-              <label htmlFor={state.label}>{ state.label }</label>
-              {renderValidationResult(state.validationResult, state.serverValidationError)}
-            </div>
+            return renderFieldRow(
+              <div style={ { margin: "5px", padding: "5px" }}>
+                <style>{style}</style>
+                <article contenteditable={!disabled} class={`html-field unhandled${disabled ? ' disabled' : ''}`} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.innerHTML)} innerHTML={ toString(state.value) }></article>
+                <textarea style={ { display: 'none' } } name={ state.name } class="unhandled-editor">{ state.value }</textarea>
+                <label htmlFor={state.label}>{ state.label }</label>
+                {renderValidationResult(state.validationResult, state.serverValidationError)}
+              </div>,
+              state
+            );
           },
           select(state: InputState) {
             if (!Array.isArray(state.additionalSettings?.options)) {
@@ -150,14 +206,20 @@ export class FallbackRenderInfo extends RenderInfo
                 renderValidationResult(state.validationResult, state.serverValidationError)
               ]
             }
+            const nullIsOption = hasInputOptionValue(state, null);
+            const disabled = state.disabled || (!nullIsOption && state.value === null);
             
-            return [
-              <select disabled={state.disabled}  onBlur={() => state.onTouched()} onChange={(ev: any) => state.valueChanged(ev.target.value)}>
-                { !hasInputOptionValue(state, state.value) && <option key={toString(state.value)} value={toString(state.value)} selected>{ state.value }</option> }
-                { state.additionalSettings.options.map((opt) => <option key={toString(opt.value as any)} value={toString(opt.value as any)} selected={state.value === opt.value}>{opt.name}</option>)}
-              </select>,
-              renderValidationResult(state.validationResult, state.serverValidationError)
-            ];
+            return renderFieldRow(
+              [
+                <select disabled={disabled}  onBlur={() => state.onTouched()} onChange={(ev: any) => state.valueChanged(ev.target.value)}>
+                  { !hasInputOptionValue(state, state.value) && <option key={toString(state.value)} value={toString(state.value)} selected>{ state.value }</option> }
+                  { state.additionalSettings.options.map((opt) => <option key={toString(opt.value as any)} value={toString(opt.value as any)} selected={state.value === opt.value}>{opt.name}</option>)}
+                </select>,
+                renderValidationResult(state.validationResult, state.serverValidationError)
+              ],
+              state,
+              !nullIsOption
+            );
           },
           multi(state: InputState) {
             const value = new Set(toArray(state.value));
@@ -168,13 +230,18 @@ export class FallbackRenderInfo extends RenderInfo
                 renderValidationResult(state.validationResult, state.serverValidationError)
               ]
             }
+            const disabled = state.disabled || (state.allowsNull && state.value === null);
             
-            return [
-              <select multiple disabled={state.disabled} onBlur={() => state.onTouched()} onChange={(ev: any) => state.valueChanged(Array.from(ev.target.selectedOptions).map((option: any) => option.value) as any)}>
-                { state.additionalSettings.options.map((opt) => <option value={toString(opt.value as any)} selected={value.has(opt.value)}>{opt.name}</option>)}
-              </select>,
-              renderValidationResult(state.validationResult, state.serverValidationError)
-            ]
+            return renderFieldRow(
+              [
+                <select multiple disabled={disabled} onBlur={() => state.onTouched()} onChange={(ev: any) => state.valueChanged(Array.from(ev.target.selectedOptions).map((option: any) => option.value) as any)}>
+                  { state.additionalSettings.options.map((opt) => <option value={toString(opt.value as any)} selected={value.has(opt.value)}>{opt.name}</option>)}
+                </select>,
+                renderValidationResult(state.validationResult, state.serverValidationError)
+              ],
+              state,
+              false
+            )
           },
           "null"(state: InputState) {
             const showValidationError = !state.validationResult.valid && state.validationResult.messages.length > 0;
