@@ -1,34 +1,40 @@
 import { h, VNode } from '@stencil/core';
-import { FieldWrapperFn, InputState, RenderInfo } from "./RenderInfo";
+import { FieldWrapperFn, FieldWrapperOptions, InputState, RenderInfo } from "./RenderInfo";
 import { toEmptyFileList, toFileList, toString, toArray } from './utils';
 import { hasInputOptionValue, IndividualConstraintResult, NestedRecord, ValidationResult } from './FormDefinition';
 
-function renderFieldRow(content: VNode|VNode[], input: InputState, canEnterEmptyString: boolean = true): VNode|VNode[]{
-  return <div style={{width: '100%', display: 'flex', flexWrap: 'nowrap', alignItems: 'left', justifyContent: 'left'}}>
-    <div style={{maxWidth: '10%'}}>
-      { input.allowsNull && (!canEnterEmptyString || input.emptyStringAllowed) && <input type="checkbox" checked={input.value !== null} onClick={(ev) => { input.onTouched(); if (!(ev.target as any).checked) { input.valueChanged(null); } else { input.valueChanged(''); }}} /> }
-    </div>
-    <div style={{width: '100%'}}>
-      { content }
-    </div>
-  </div>
-}
 
 function renderValidationResult(validationResult: ValidationResult, serverSideError: NestedRecord<string>): VNode[] {
   return [
-    ((validationResult.valid && undefined === serverSideError['']) ? <div style={{color: 'green'}}>✅</div> : <div style={{color: 'red'}}>❌</div>),
-    (Object.keys(serverSideError).length > 0 && <div style={{ color: 'red', fontWeight: 'bold', padding: '10px', backgroundColor: '#fdd' }}>
+    ((validationResult.valid && undefined === serverSideError['']) ? <div style={{width: "5%", color: 'green'}}>✅</div> : <div style={{width: "5%", color: 'red'}}>❌</div>),
+    (Object.keys(serverSideError).length > 0 && <div style={{ width: "100%", color: 'red', fontWeight: 'bold', padding: '10px', backgroundColor: '#fdd' }}>
       {Object.entries(serverSideError).map((v) => toString(v[1] as any)) }
     </div>),
     (validationResult.messages.filter((r: IndividualConstraintResult) => !r.valid || !r.serverSide)
       .map((r: IndividualConstraintResult) => {
-      return <div>
+      return <div style={{width: "100%"}}>
         <span>{ r.message}</span>
         { r.valid ? <span style={{color: 'green'}}>✅</span> : <span style={{color: 'red'}}>❌</span>}
       </div>;
     }))
   ]
 }
+
+function renderFieldRow(content: VNode|VNode[], input: InputState, fieldWrapOptions: FieldWrapperOptions = {}): VNode|VNode[]{
+  const canEnterEmptyString = fieldWrapOptions.canEnterEmptyString !== false;
+  const hasValidationErrors = fieldWrapOptions.canShowClientsideValidationErrors !== false
+    || fieldWrapOptions.canShowServersideValidationErrors !== false;
+  return <div style={{width: '100%', display: 'flex', flexWrap: 'wrap', alignItems: 'left', justifyContent: 'left'}}>
+    <div style={{width: '5%'}}>
+      { input.allowsNull && (!canEnterEmptyString || input.emptyStringAllowed) && <input type="checkbox" checked={input.value !== null} onClick={(ev) => { input.onTouched(); if (!(ev.target as any).checked) { input.valueChanged(null); } else { input.valueChanged(''); }}} /> }
+    </div>
+    <div style={{width: '90%'}}>
+      { content }
+    </div>
+    { hasValidationErrors && renderValidationResult(input.validationResult, fieldWrapOptions.canShowServersideValidationErrors !== false ? input.serverValidationError : {})}
+  </div>
+}
+
 
 export class FallbackRenderInfo extends RenderInfo
 {
@@ -41,7 +47,6 @@ export class FallbackRenderInfo extends RenderInfo
               [
                 <input type="text" disabled={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
-                renderValidationResult(state.validationResult, state.serverValidationError)
               ],
               state
             );
@@ -53,7 +58,6 @@ export class FallbackRenderInfo extends RenderInfo
               [
                 <input type="number" disabled={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
-                renderValidationResult(state.validationResult, state.serverValidationError)
               ],
               state
             );
@@ -65,7 +69,6 @@ export class FallbackRenderInfo extends RenderInfo
               [
                 <input type="number" step="1" onBlur={() => state.onTouched()} disabled={disabled} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
-                renderValidationResult(state.validationResult, state.serverValidationError)
               ],
               state
             );
@@ -77,10 +80,11 @@ export class FallbackRenderInfo extends RenderInfo
               [
                 <apie-php-date-input renderInfo={state.renderInfo} onBlur={() => state.onTouched()} disabled={disabled} onChange={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)} dateFormat={state.additionalSettings.dateFormat ?? 'Y-m-d\\TH:i'}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
-                renderValidationResult(state.validationResult, state.serverValidationError)
               ],
               state,
-              false
+              {
+                canEnterEmptyString: false
+              }
             );
           },
           password(state: InputState) {
@@ -90,7 +94,6 @@ export class FallbackRenderInfo extends RenderInfo
               [
                 <input type="password" disabled={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
-                renderValidationResult(state.validationResult, state.serverValidationError)
               ],
               state
             );
@@ -103,7 +106,6 @@ export class FallbackRenderInfo extends RenderInfo
               [
                 <textarea disabled={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} rows={rows}>{toString(state.value)}</textarea>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
-                renderValidationResult(state.validationResult, state.serverValidationError)
               ],
               state
             );
@@ -182,17 +184,22 @@ export class FallbackRenderInfo extends RenderInfo
                 <article contenteditable={!disabled} class={`html-field unhandled${disabled ? ' disabled' : ''}`} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.innerHTML)} innerHTML={ toString(state.value) }></article>
                 <textarea style={ { display: 'none' } } name={ state.name } class="unhandled-editor">{ state.value }</textarea>
                 <label htmlFor={state.label}>{ state.label }</label>
-                {renderValidationResult(state.validationResult, state.serverValidationError)}
               </div>,
               state
             );
           },
           select(state: InputState) {
             if (!Array.isArray(state.additionalSettings?.options)) {
-              return [
-                <select disabled><option selected>{state.value}</option></select>,
-                renderValidationResult(state.validationResult, state.serverValidationError)
-              ]
+              return state.currentFieldWrapper(
+                [
+                  <select disabled><option selected>{state.value}</option></select>,
+                  renderValidationResult(state.validationResult, state.serverValidationError)
+                ],
+                state,
+                {
+                  canEnterEmptyString: false
+                }
+              );
             }
             const nullIsOption = hasInputOptionValue(state, null);
             const disabled = state.disabled || (!nullIsOption && state.value === null);
@@ -203,10 +210,11 @@ export class FallbackRenderInfo extends RenderInfo
                   { !hasInputOptionValue(state, state.value) && <option key={toString(state.value)} value={toString(state.value)} selected>{ state.value }</option> }
                   { state.additionalSettings.options.map((opt) => <option key={toString(opt.value as any)} value={toString(opt.value as any)} selected={state.value === opt.value}>{opt.name}</option>)}
                 </select>,
-                renderValidationResult(state.validationResult, state.serverValidationError)
               ],
               state,
-              !nullIsOption
+              {
+                canEnterEmptyString: !nullIsOption
+              }
             );
           },
           multi(state: InputState) {
@@ -219,7 +227,9 @@ export class FallbackRenderInfo extends RenderInfo
                   renderValidationResult(state.validationResult, state.serverValidationError)
                 ],
                 state,
-                false
+                {
+                  canEnterEmptyString: false
+                }
               )
             }
             const disabled = state.disabled || (state.allowsNull && state.value === null);
@@ -232,7 +242,9 @@ export class FallbackRenderInfo extends RenderInfo
                 renderValidationResult(state.validationResult, state.serverValidationError)
               ],
               state,
-              false
+              {
+                canEnterEmptyString: false
+              }
             )
           },
           "null"(state: InputState) {

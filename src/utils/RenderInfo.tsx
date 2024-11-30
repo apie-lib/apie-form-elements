@@ -7,7 +7,13 @@ export interface Option {
     value: string|Record<string, any>|File;
   }
 
-export type FieldWrapperFn = (content: VNode|VNode[], input: InputState, canEnterEmptyString?: boolean) => VNode|VNode[];
+export interface FieldWrapperOptions {
+    canEnterEmptyString?: boolean;
+    canShowClientsideValidationErrors?: boolean;
+    canShowServersideValidationErrors?: boolean;
+}
+
+export type FieldWrapperFn = (content: VNode|VNode[], input: InputState, fieldWrapOptions?: FieldWrapperOptions) => VNode|VNode[];
 
 export interface InputState {
     name: string;
