@@ -69,7 +69,8 @@ export class ApieFormSelect {
         messages: []
       },
       serverValidationError: this.serverValidationError,
-      renderInfo: this.renderInfo
+      renderInfo: this.renderInfo,
+      currentFieldWrapper: this.renderInfo.createFieldWrapper(),
     })
   }
 

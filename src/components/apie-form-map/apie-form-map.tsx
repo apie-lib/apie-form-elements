@@ -74,6 +74,7 @@ export class ApieFormMap {
       serverValidationError: {},
       touched: this.touched,
       onTouched: () => this.touched = true,
+      currentFieldWrapper: this.renderInfo.createFieldWrapper(),
     });
     const addButton = this.renderInfo.renderAddItemToList({
       mappingKey: '__add' + this.enteredKey,

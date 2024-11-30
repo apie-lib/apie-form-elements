@@ -179,7 +179,8 @@ export class ApieForm {
           this.value[this.polymorphicColumnName],
           this.initialValue[this.polymorphicColumnName],
         ),
-        renderInfo: this.renderInfo
+        renderInfo: this.renderInfo,
+        currentFieldWrapper: this.renderInfo.createFieldWrapper(),
       }
     )
   }

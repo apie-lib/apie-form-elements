@@ -1,6 +1,6 @@
 {
   "name": "apie-form-elements",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "form element helpers for php package apie/cms",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",

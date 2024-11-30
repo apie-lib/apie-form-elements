@@ -1,14 +1,14 @@
 import { h, VNode } from '@stencil/core';
-import { InputState, RenderInfo } from "./RenderInfo";
+import { FieldWrapperFn, InputState, RenderInfo } from "./RenderInfo";
 import { toEmptyFileList, toFileList, toString, toArray } from './utils';
 import { hasInputOptionValue, IndividualConstraintResult, NestedRecord, ValidationResult } from './FormDefinition';
 
 function renderFieldRow(content: VNode|VNode[], input: InputState, canEnterEmptyString: boolean = true): VNode|VNode[]{
-  return <div style={{display: 'flex', flexWrap: 'nowrap', alignItems: 'left', justifyContent: 'left'}}>
+  return <div style={{width: '100%', display: 'flex', flexWrap: 'nowrap', alignItems: 'left', justifyContent: 'left'}}>
     <div style={{maxWidth: '10%'}}>
       { input.allowsNull && (!canEnterEmptyString || input.emptyStringAllowed) && <input type="checkbox" checked={input.value !== null} onClick={(ev) => { input.onTouched(); if (!(ev.target as any).checked) { input.valueChanged(null); } else { input.valueChanged(''); }}} /> }
     </div>
-    <div>
+    <div style={{width: '100%'}}>
       { content }
     </div>
   </div>
@@ -37,7 +37,7 @@ export class FallbackRenderInfo extends RenderInfo
         this.singleInputRenderers = {
           text(state: InputState) {
             const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
-            return renderFieldRow(
+            return state.currentFieldWrapper(
               [
                 <input type="text" disabled={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
@@ -49,7 +49,7 @@ export class FallbackRenderInfo extends RenderInfo
           number(state: InputState) {
             const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
             
-            return renderFieldRow(
+            return state.currentFieldWrapper(
               [
                 <input type="number" disabled={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
@@ -61,7 +61,7 @@ export class FallbackRenderInfo extends RenderInfo
           integer(state: InputState) {
             const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
             
-            return renderFieldRow(
+            return state.currentFieldWrapper(
               [
                 <input type="number" step="1" onBlur={() => state.onTouched()} disabled={disabled} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
@@ -73,7 +73,7 @@ export class FallbackRenderInfo extends RenderInfo
           datetime(state: InputState) {
             const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
             
-            return renderFieldRow(
+            return state.currentFieldWrapper(
               [
                 <apie-php-date-input renderInfo={state.renderInfo} onBlur={() => state.onTouched()} disabled={disabled} onChange={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)} dateFormat={state.additionalSettings.dateFormat ?? 'Y-m-d\\TH:i'}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
@@ -86,21 +86,9 @@ export class FallbackRenderInfo extends RenderInfo
           password(state: InputState) {
             const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
 
-            return renderFieldRow(
+            return state.currentFieldWrapper(
               [
                 <input type="password" disabled={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
-                (state.label && <label htmlFor={state.name}>{state.label}</label>),
-                renderValidationResult(state.validationResult, state.serverValidationError)
-              ],
-              state
-            );
-          },
-          datetime_internal(state: InputState) {
-            const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
-            
-            return renderFieldRow(
-              [
-                <input type="text" readonly={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
                 renderValidationResult(state.validationResult, state.serverValidationError)
               ],
@@ -111,7 +99,7 @@ export class FallbackRenderInfo extends RenderInfo
             const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
             const rows = Math.max(2, String(state.value).split("\n").length + 1);
 
-            return renderFieldRow(
+            return state.currentFieldWrapper(
               [
                 <textarea disabled={disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} rows={rows}>{toString(state.value)}</textarea>,
                 (state.label && <label htmlFor={state.name}>{state.label}</label>),
@@ -188,7 +176,7 @@ export class FallbackRenderInfo extends RenderInfo
 `;          
             const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
 
-            return renderFieldRow(
+            return state.currentFieldWrapper(
               <div style={ { margin: "5px", padding: "5px" }}>
                 <style>{style}</style>
                 <article contenteditable={!disabled} class={`html-field unhandled${disabled ? ' disabled' : ''}`} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.innerHTML)} innerHTML={ toString(state.value) }></article>
@@ -209,7 +197,7 @@ export class FallbackRenderInfo extends RenderInfo
             const nullIsOption = hasInputOptionValue(state, null);
             const disabled = state.disabled || (!nullIsOption && state.value === null);
             
-            return renderFieldRow(
+            return state.currentFieldWrapper(
               [
                 <select disabled={disabled}  onBlur={() => state.onTouched()} onChange={(ev: any) => state.valueChanged(ev.target.value)}>
                   { !hasInputOptionValue(state, state.value) && <option key={toString(state.value)} value={toString(state.value)} selected>{ state.value }</option> }
@@ -225,14 +213,18 @@ export class FallbackRenderInfo extends RenderInfo
             const value = new Set(toArray(state.value));
             
             if (!Array.isArray(state.additionalSettings?.options)) {
-              return [
-                <select multiple disabled><option selected>{toString(value)}</option></select>,
-                renderValidationResult(state.validationResult, state.serverValidationError)
-              ]
+              return state.currentFieldWrapper(
+                [
+                  <select multiple disabled><option selected>{toString(value)}</option></select>,
+                  renderValidationResult(state.validationResult, state.serverValidationError)
+                ],
+                state,
+                false
+              )
             }
             const disabled = state.disabled || (state.allowsNull && state.value === null);
             
-            return renderFieldRow(
+            return state.currentFieldWrapper(
               [
                 <select multiple disabled={disabled} onBlur={() => state.onTouched()} onChange={(ev: any) => state.valueChanged(Array.from(ev.target.selectedOptions).map((option: any) => option.value) as any)}>
                   { state.additionalSettings.options.map((opt) => <option value={toString(opt.value as any)} selected={value.has(opt.value)}>{opt.name}</option>)}
@@ -256,4 +248,9 @@ export class FallbackRenderInfo extends RenderInfo
           }
         }
     };
+
+    public createFieldWrapper(): FieldWrapperFn
+    {
+        return renderFieldRow;
+    }
 }

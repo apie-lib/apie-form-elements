@@ -32,6 +32,8 @@ export class ApieTestInput {
 
   @State() touched: boolean = false;
 
+  @State() withWrapper: boolean = true;
+
   private renderField(): VNode|VNode[] {
     const input: InputState = {
       valueChanged: (newValue?: string): void => { this.value = newValue; },
@@ -51,6 +53,7 @@ export class ApieTestInput {
       },
       serverValidationError: this.hasServersideError ? {'': 'Server side validation error' } : {},
       renderInfo: this.renderInfo,
+      currentFieldWrapper: this.withWrapper ? this.renderInfo.createFieldWrapper() : (content) => content,
       additionalSettings: {
         streamType: 'readAsDataURL',
         options: [{name: 'Option A', value: 'A'},{name: 'Option B', value: "B"}],
@@ -119,6 +122,7 @@ export class ApieTestInput {
             { this.renderCheckbox('allowsNull', 'Allows null') }
             { this.renderCheckbox('emptyStringAllowed', 'Empty string allowed')}
             { this.renderCheckbox('required', 'Field is required') }
+            { this.renderCheckbox('withWrapper', 'Row rendering') }
             { this.renderTestField(
               <textarea name="data" onInput={(ev) => this.value = JSON.parse((ev.target as any).value)}>
                 {JSON.stringify(this.value)}

@@ -135,6 +135,7 @@ export class ApiePhpDateInput {
         messages: []
       },
       serverValidationError: {},
+      currentFieldWrapper: (content) => content,
       touched: this.isTouched,
       onTouched: () => { this.isTouched = true; this.touched.emit(); }
     }
@@ -154,6 +155,7 @@ export class ApiePhpDateInput {
         messages: []
       },
       serverValidationError: {},
+      currentFieldWrapper: (content) => content,
       touched: this.isTouched,
       onTouched: () => { this.isTouched = true; this.touched.emit(); }
     }

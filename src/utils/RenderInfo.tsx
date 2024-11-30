@@ -7,6 +7,8 @@ export interface Option {
     value: string|Record<string, any>|File;
   }
 
+export type FieldWrapperFn = (content: VNode|VNode[], input: InputState, canEnterEmptyString?: boolean) => VNode|VNode[];
+
 export interface InputState {
     name: string;
     label?: string;
@@ -27,6 +29,7 @@ export interface InputState {
     validationResult: ValidationResult;
     serverValidationError: NestedRecord<string>;
     renderInfo: RenderInfo;
+    currentFieldWrapper: FieldWrapperFn
     touched?: boolean;
     onTouched: () => void;
 }
@@ -82,7 +85,7 @@ export function toSingleError(
 export class RenderInfo {
     protected singleInputRenderers: Record<string, SingleInputRender> = {}
 
-    constructor(private parent: RenderInfo|null = null)
+    constructor(protected parent: RenderInfo|null = null)
     {
     }
 
@@ -93,6 +96,11 @@ export class RenderInfo {
             list.push(...this.parent.getAvailabeInputTypes());
         }
         return new Set(list);
+    }
+
+    public createFieldWrapper(): FieldWrapperFn
+    {
+        return (content: VNode|VNode[]) => content;
     }
 
     private getSingleInputRenderer(types: Array<string>): SingleInputRender

@@ -76,11 +76,12 @@ export class ApieSingleInput {
       validationResult: this.validationResult,
       serverValidationError: this.serverValidationError,
       renderInfo: this.renderInfo,
-      touched: this.isTouched,
+      currentFieldWrapper: this.renderInfo.createFieldWrapper(),
       allowsNull: this.allowsNull,
       emptyStringAllowed: this.emptyStringAllowed,
       required: this.required,
-      onTouched: () => { this.isTouched = true; this.touched.emit(); }
+      touched: this.isTouched,
+      onTouched: () => { this.isTouched = true; this.touched.emit(); },
     })
   }
 
