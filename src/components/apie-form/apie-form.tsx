@@ -36,6 +36,7 @@ export class ApieForm {
   instantiated: boolean = false;
 
   private onInternalStateUpdate(fieldNamePath: string[], value: SubmitField) {
+    console.log(fieldNamePath, value);
     if (fieldNamePath.length === 0) {
       // todo ensure {}
       this.internalState = value as any;
@@ -204,6 +205,8 @@ export class ApieForm {
         label={state.form.label}
         value={state.value as any}
         allowsNull={state.form.allowsNull}
+        internalState={state.internalState}
+        onInternalStateChanged={(ev) => this.onInternalStateUpdate(newPrefix.slice(0), ev as any)}
         emptyStringAllowed={state.form.emptyStringAllowed}
         required={state.form.required}
         renderInfo={this.renderInfo}

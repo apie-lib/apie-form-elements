@@ -1,5 +1,5 @@
 import { h, VNode } from '@stencil/core';
-import { FieldWrapperFn, FieldWrapperOptions, InputState, RenderInfo } from "./RenderInfo";
+import { FieldWrapperFn, FieldWrapperOptions, InputState, Option, RenderInfo } from "./RenderInfo";
 import { toEmptyFileList, toFileList, toString, toArray } from './utils';
 import { hasInputOptionValue, IndividualConstraintResult, NestedRecord, ValidationResult } from './FormDefinition';
 
@@ -26,7 +26,7 @@ function renderFieldRow(content: VNode|VNode[], input: InputState, fieldWrapOpti
     || fieldWrapOptions.canShowServersideValidationErrors !== false;
   return <div style={{width: '100%', display: 'flex', flexWrap: 'wrap', alignItems: 'left', justifyContent: 'left'}}>
     <div style={{width: '5%'}}>
-      { input.allowsNull && (!canEnterEmptyString || input.emptyStringAllowed) && <input type="checkbox" checked={input.value !== null} onClick={(ev) => { input.onTouched(); if (!(ev.target as any).checked) { input.valueChanged(null); } else { input.valueChanged(''); }}} /> }
+      { input.allowsNull && (!canEnterEmptyString || input.emptyStringAllowed) && <input disabled={input.disabled} type="checkbox" checked={input.value !== null} onClick={(ev) => { input.onTouched(); if (!(ev.target as any).checked) { input.valueChanged(null); } else { input.valueChanged(''); }}} /> }
     </div>
     <div style={{width: '90%'}}>
       { content }
@@ -50,6 +50,39 @@ export class FallbackRenderInfo extends RenderInfo
               ],
               state
             );
+          },
+          combobox(state: InputState) {
+            const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);
+
+            return state.currentFieldWrapper(
+              [
+                <apie-combobox-input
+                  name={state.name}
+                  label={state.label}
+                  disabled={disabled}
+                  value={toString(state.internalState)}
+                  selectedValues={state.value ? [toString(state.value)] : []}
+                  options={state.additionalSettings.autocompleteUrl ? null : state.additionalSettings.options.map((v: Option) => {
+                    return { displayValue: v.name, value: v.value as string };
+                  })}
+                  removeDisabled
+                  touched={state.touched}
+                  autocompleteUrl={state.additionalSettings.autocompleteUrl}
+                  renderInfo={state.renderInfo}
+                  onValueChanged={(ev)=>state.internalStateChanged(ev)}
+                  onFieldTouched={() => state.onTouched()}
+                  onOptionClicked={(ev) => state.valueChanged(ev.detail.value)}
+                  onSelectedValueChanged={(ev) => state.valueChanged(ev.detail[0] ?? null)}
+                ></apie-combobox-input>,
+              ],
+              state
+            );
+          },
+          comboboxtext(state: InputState) {
+            return [
+              <input type="text" disabled={state.disabled} onBlur={() => state.onTouched()} onInput={(ev: any) => state.valueChanged(ev.target?.value)} name={state.name} value={toString(state.value)}/>,
+              (state.label && <label htmlFor={state.name}>{state.label}</label>),
+            ];
           },
           number(state: InputState) {
             const disabled = state.disabled || (state.allowsNull && state.emptyStringAllowed && state.value === null);

@@ -9,6 +9,7 @@ export type Primitive = NestedRecord<string|boolean|number|null>;
 export interface SingleFieldSettings {
     options?: Option[], // used by Select
     dateFormat?: string, // used by date time formats
+    autocompleteUrl?: string, // used by combobox
 }
 
 export interface FormSelectOption extends Option
@@ -16,6 +17,11 @@ export interface FormSelectOption extends Option
   name: string;
   value: string|Record<string, any>|File;
   definition?: FormField
+}
+
+export interface ComboboxResult {
+  value: string;
+  displayValue: string;
 }
 
 export interface SingleField {

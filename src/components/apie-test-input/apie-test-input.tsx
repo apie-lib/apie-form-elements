@@ -55,6 +55,7 @@ export class ApieTestInput {
       renderInfo: this.renderInfo,
       currentFieldWrapper: this.withWrapper ? this.renderInfo.createFieldWrapper() : (content) => content,
       additionalSettings: {
+        autocompleteUrl: this.type === 'combobox' ? '/pages/dummy.json' : null,
         streamType: 'readAsDataURL',
         options: [{name: 'Option A', value: 'A'},{name: 'Option B', value: "B"}],
         dateFormat: 'c',
@@ -138,7 +139,6 @@ export class ApieTestInput {
               'Initial data'
             )}
           </div>
-
           <div>{this.renderField()}</div>
         </div>
       </Host>

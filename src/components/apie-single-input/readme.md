@@ -12,6 +12,7 @@
 | `additionalSettings`    | --                     |             | `SingleFieldSettings`                           | `{}`                                      |
 | `allowsNull`            | `allows-null`          |             | `boolean`                                       | `false`                                   |
 | `emptyStringAllowed`    | `empty-string-allowed` |             | `boolean`                                       | `false`                                   |
+| `internalState`         | `internal-state`       |             | `any`                                           | `{}`                                      |
 | `label`                 | `label`                |             | `string`                                        | `null`                                    |
 | `name`                  | `name`                 |             | `string`                                        | `undefined`                               |
 | `renderInfo`            | --                     |             | `RenderInfo`                                    | `new FallbackRenderInfo()`                |
@@ -24,10 +25,11 @@
 
 ## Events
 
-| Event           | Description | Type                       |
-| --------------- | ----------- | -------------------------- |
-| `touched`       |             | `CustomEvent<ChangeEvent>` |
-| `triggerChange` |             | `CustomEvent<ChangeEvent>` |
+| Event                  | Description | Type                       |
+| ---------------------- | ----------- | -------------------------- |
+| `internalStateChanged` |             | `CustomEvent<any>`         |
+| `touched`              |             | `CustomEvent<ChangeEvent>` |
+| `triggerChange`        |             | `CustomEvent<ChangeEvent>` |
 
 
 ## Dependencies

@@ -18,9 +18,11 @@ export type FieldWrapperFn = (content: VNode|VNode[], input: InputState, fieldWr
 export interface InputState {
     name: string;
     label?: string;
-    value?: string|number|File;
     disabled?: boolean;
+    value?: string|number|File;
     valueChanged: (newValue?: string) => void|any;
+    internalState?: any;
+    internalStateChanged?: (newValue?: any) => void|any;
     additionalSettings?: {
       streamType?: 'readAsArrayBuffer'|'readAsBinaryString'|'readAsDataURL'|'readAsText'
       options?: Option[],

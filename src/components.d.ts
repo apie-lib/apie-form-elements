@@ -5,23 +5,37 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField, ValidationResult } from "./utils/FormDefinition";
-import { Option, RenderInfo } from "./utils/RenderInfo";
+import { ComboboxResult, Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField, ValidationResult } from "./utils/FormDefinition";
 import { VNode } from "@stencil/core";
+import { Option, RenderInfo } from "./utils/RenderInfo";
 import { ChangeEvent } from "./utils/utils";
 import { NestedRecord as NestedRecord1, SingleFieldSettings as SingleFieldSettings1 } from "./components";
 import { PhpDate } from "./utils/dates/PhpDate";
 import { DateFormatString } from "./utils/dates/DateFormatString";
 import { RenderInputFn } from "./components/apie-php-date-input/apie-php-date-input";
-export { Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField, ValidationResult } from "./utils/FormDefinition";
-export { Option, RenderInfo } from "./utils/RenderInfo";
+export { ComboboxResult, Constraint, FieldList, FieldMap, FieldSplit, FormDefinition, FormField, FormGroupField, FormSelectOption, NestedRecord, Primitive, SingleField, SingleFieldSettings, SubmitField, ValidationResult } from "./utils/FormDefinition";
 export { VNode } from "@stencil/core";
+export { Option, RenderInfo } from "./utils/RenderInfo";
 export { ChangeEvent } from "./utils/utils";
 export { NestedRecord as NestedRecord1, SingleFieldSettings as SingleFieldSettings1 } from "./components";
 export { PhpDate } from "./utils/dates/PhpDate";
 export { DateFormatString } from "./utils/dates/DateFormatString";
 export { RenderInputFn } from "./components/apie-php-date-input/apie-php-date-input";
 export namespace Components {
+    interface ApieComboboxInput {
+        "autocompleteUrl": string | null;
+        "disabled": boolean;
+        "label": string|null;
+        "name": string;
+        "optionRender": (options: Array<ComboboxResult>, optionClicked: (result: ComboboxResult) => void) => VNode|VNode[];
+        "options": Array<ComboboxResult>;
+        "refetch": () => Promise<Array<ComboboxResult>>;
+        "removeDisabled": boolean;
+        "renderInfo": RenderInfo;
+        "selectedValues": Array<string>;
+        "touched": boolean;
+        "value": string;
+    }
     interface ApieConstraintCheckDefinition {
         "exactMatch": string|number|null|undefined;
         "getDefinition": () => Promise<Constraint>;
@@ -141,6 +155,7 @@ export namespace Components {
         "additionalSettings"?: SingleFieldSettings1;
         "allowsNull": boolean;
         "emptyStringAllowed": boolean;
+        "internalState": any;
         "label": string | null;
         "name": string;
         "renderInfo": RenderInfo;
@@ -153,6 +168,10 @@ export namespace Components {
     interface ApieTestInput {
         "renderInfo": RenderInfo;
     }
+}
+export interface ApieComboboxInputCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLApieComboboxInputElement;
 }
 export interface ApieFormMapCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -171,6 +190,26 @@ export interface ApieSingleInputCustomEvent<T> extends CustomEvent<T> {
     target: HTMLApieSingleInputElement;
 }
 declare global {
+    interface HTMLApieComboboxInputElementEventMap {
+        "valueChanged": string;
+        "selectedValueChanged": string[];
+        "fieldTouched": boolean;
+        "optionClicked": ComboboxResult;
+    }
+    interface HTMLApieComboboxInputElement extends Components.ApieComboboxInput, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLApieComboboxInputElementEventMap>(type: K, listener: (this: HTMLApieComboboxInputElement, ev: ApieComboboxInputCustomEvent<HTMLApieComboboxInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLApieComboboxInputElementEventMap>(type: K, listener: (this: HTMLApieComboboxInputElement, ev: ApieComboboxInputCustomEvent<HTMLApieComboboxInputElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLApieComboboxInputElement: {
+        prototype: HTMLApieComboboxInputElement;
+        new (): HTMLApieComboboxInputElement;
+    };
     interface HTMLApieConstraintCheckDefinitionElement extends Components.ApieConstraintCheckDefinition, HTMLStencilElement {
     }
     var HTMLApieConstraintCheckDefinitionElement: {
@@ -279,6 +318,7 @@ declare global {
         new (): HTMLApieRenderTypesElement;
     };
     interface HTMLApieSingleInputElementEventMap {
+        "internalStateChanged": any;
         "touched": ChangeEvent;
         "triggerChange": ChangeEvent;
     }
@@ -303,6 +343,7 @@ declare global {
         new (): HTMLApieTestInputElement;
     };
     interface HTMLElementTagNameMap {
+        "apie-combobox-input": HTMLApieComboboxInputElement;
         "apie-constraint-check-definition": HTMLApieConstraintCheckDefinitionElement;
         "apie-form": HTMLApieFormElement;
         "apie-form-definition": HTMLApieFormDefinitionElement;
@@ -320,6 +361,23 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface ApieComboboxInput {
+        "autocompleteUrl"?: string | null;
+        "disabled"?: boolean;
+        "label"?: string|null;
+        "name"?: string;
+        "onFieldTouched"?: (event: ApieComboboxInputCustomEvent<boolean>) => void;
+        "onOptionClicked"?: (event: ApieComboboxInputCustomEvent<ComboboxResult>) => void;
+        "onSelectedValueChanged"?: (event: ApieComboboxInputCustomEvent<string[]>) => void;
+        "onValueChanged"?: (event: ApieComboboxInputCustomEvent<string>) => void;
+        "optionRender"?: (options: Array<ComboboxResult>, optionClicked: (result: ComboboxResult) => void) => VNode|VNode[];
+        "options"?: Array<ComboboxResult>;
+        "removeDisabled"?: boolean;
+        "renderInfo"?: RenderInfo;
+        "selectedValues"?: Array<string>;
+        "touched"?: boolean;
+        "value"?: string;
+    }
     interface ApieConstraintCheckDefinition {
         "exactMatch"?: string|number|null|undefined;
         "inverseCheck"?: boolean;
@@ -436,8 +494,10 @@ declare namespace LocalJSX {
         "additionalSettings"?: SingleFieldSettings1;
         "allowsNull"?: boolean;
         "emptyStringAllowed"?: boolean;
+        "internalState"?: any;
         "label"?: string | null;
         "name"?: string;
+        "onInternalStateChanged"?: (event: ApieSingleInputCustomEvent<any>) => void;
         "onTouched"?: (event: ApieSingleInputCustomEvent<ChangeEvent>) => void;
         "onTriggerChange"?: (event: ApieSingleInputCustomEvent<ChangeEvent>) => void;
         "renderInfo"?: RenderInfo;
@@ -451,6 +511,7 @@ declare namespace LocalJSX {
         "renderInfo"?: RenderInfo;
     }
     interface IntrinsicElements {
+        "apie-combobox-input": ApieComboboxInput;
         "apie-constraint-check-definition": ApieConstraintCheckDefinition;
         "apie-form": ApieForm;
         "apie-form-definition": ApieFormDefinition;
@@ -471,6 +532,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "apie-combobox-input": LocalJSX.ApieComboboxInput & JSXBase.HTMLAttributes<HTMLApieComboboxInputElement>;
             "apie-constraint-check-definition": LocalJSX.ApieConstraintCheckDefinition & JSXBase.HTMLAttributes<HTMLApieConstraintCheckDefinitionElement>;
             "apie-form": LocalJSX.ApieForm & JSXBase.HTMLAttributes<HTMLApieFormElement>;
             "apie-form-definition": LocalJSX.ApieFormDefinition & JSXBase.HTMLAttributes<HTMLApieFormDefinitionElement>;

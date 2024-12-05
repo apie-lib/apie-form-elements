@@ -1,5 +1,5 @@
 import { Component, Event, EventEmitter, Host, Prop, State, h } from '@stencil/core';
-import type { ChangeEvent } from '../../utils/utils';
+import { toString, type ChangeEvent } from '../../utils/utils';
 import { RenderInfo } from '../../utils/RenderInfo';
 import { FallbackRenderInfo } from '../../utils/FallbackRenderInfo';
 import { SingleFieldSettings } from '../../components';
@@ -25,6 +25,8 @@ export class ApieSingleInput {
 
   @Prop({reflect: true}) serverValidationError: NestedRecord<string> = {};
 
+  @Prop({reflect: true}) internalState: any = {};
+
   @Prop({reflect: true}) allowsNull: boolean = false;
 
   @Prop({reflect: true}) emptyStringAllowed: boolean = false;
@@ -32,6 +34,8 @@ export class ApieSingleInput {
   @Prop({reflect: true}) required: boolean = false;
 
   @State() isTouched: boolean = false;
+
+  @Event() internalStateChanged: EventEmitter<any>;
 
   @Event() touched: EventEmitter<ChangeEvent>;
 
@@ -68,7 +72,7 @@ export class ApieSingleInput {
       additionalSettings: this.additionalSettings,
       valueChanged: (newValue: string) => {
         newValue = this.sanitizeInput(newValue);
-        if (newValue !== this.value) {
+        if (newValue !== this.value) {       
           this.value = newValue;
           this.triggerChange.emit({ name: this.name, value: newValue })
         }
@@ -82,6 +86,11 @@ export class ApieSingleInput {
       required: this.required,
       touched: this.isTouched,
       onTouched: () => { this.isTouched = true; this.touched.emit(); },
+      internalState: toString(this.internalState),
+      internalStateChanged: (newValue) => {
+        this.internalState = newValue
+        this.internalStateChanged.emit(this.internalState);
+      }
     })
   }
 

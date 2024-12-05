@@ -1,0 +1,41 @@
+:host {
+  display: block;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  margin: 5px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 15px;
+  font-size: 14px;
+  position: relative;
+}
+
+.pill .close-icon {
+  margin-left: 8px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.pill .close-icon:hover {
+  color: #ff6b6b;
+}
+
+.loading-indicator {
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 5px;
+  background-color: #f0f0f0;
+  color: #888;
+  border-radius: 15px;
+  font-size: 14px;
+  font-style: italic;
+}
