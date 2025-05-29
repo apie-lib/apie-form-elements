@@ -76,6 +76,7 @@ export namespace Components {
         "getDefinition": () => Promise<SingleField>;
         "label": string;
         "name": string;
+        "optional": boolean;
         "prototyped": boolean;
         "required": boolean;
         "status": string;
@@ -158,6 +159,7 @@ export namespace Components {
         "internalState": any;
         "label": string | null;
         "name": string;
+        "optional": boolean;
         "renderInfo": RenderInfo;
         "required": boolean;
         "serverValidationError": NestedRecord<string>;
@@ -321,6 +323,7 @@ declare global {
         "internalStateChanged": any;
         "touched": ChangeEvent;
         "triggerChange": ChangeEvent;
+        "valueRemoved": ChangeEvent;
     }
     interface HTMLApieSingleInputElement extends Components.ApieSingleInput, HTMLStencilElement {
         addEventListener<K extends keyof HTMLApieSingleInputElementEventMap>(type: K, listener: (this: HTMLApieSingleInputElement, ev: ApieSingleInputCustomEvent<HTMLApieSingleInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -415,6 +418,7 @@ declare namespace LocalJSX {
         "emptyStringAllowed"?: boolean;
         "label"?: string;
         "name"?: string;
+        "optional"?: boolean;
         "prototyped"?: boolean;
         "required"?: boolean;
         "status"?: string;
@@ -500,6 +504,8 @@ declare namespace LocalJSX {
         "onInternalStateChanged"?: (event: ApieSingleInputCustomEvent<any>) => void;
         "onTouched"?: (event: ApieSingleInputCustomEvent<ChangeEvent>) => void;
         "onTriggerChange"?: (event: ApieSingleInputCustomEvent<ChangeEvent>) => void;
+        "onValueRemoved"?: (event: ApieSingleInputCustomEvent<ChangeEvent>) => void;
+        "optional"?: boolean;
         "renderInfo"?: RenderInfo;
         "required"?: boolean;
         "serverValidationError"?: NestedRecord<string>;

@@ -7,16 +7,16 @@
 
 ## Properties
 
-| Property                | Attribute | Description | Type                                            | Default                    |
-| ----------------------- | --------- | ----------- | ----------------------------------------------- | -------------------------- |
-| `internalState`         | --        |             | `{ [x: string]: any; }`                         | `{}`                       |
-| `label`                 | `label`   |             | `string`                                        | `null`                     |
-| `name`                  | `name`    |             | `string`                                        | `undefined`                |
-| `options`               | --        |             | `Option[]`                                      | `[]`                       |
-| `renderInfo`            | --        |             | `RenderInfo`                                    | `new FallbackRenderInfo()` |
-| `serverValidationError` | --        |             | `{ [key: string]: NestedRecordField<string>; }` | `{}`                       |
-| `subElements`           | --        |             | `VNode[]`                                       | `undefined`                |
-| `value`                 | --        |             | `{ [x: string]: any; }`                         | `undefined`                |
+| Property                | Attribute                 | Description | Type                                            | Default                    |
+| ----------------------- | ------------------------- | ----------- | ----------------------------------------------- | -------------------------- |
+| `internalState`         | `internal-state`          |             | `{ [x: string]: any; }`                         | `{}`                       |
+| `label`                 | `label`                   |             | `string`                                        | `null`                     |
+| `name`                  | `name`                    |             | `string`                                        | `undefined`                |
+| `options`               | `options`                 |             | `Option[]`                                      | `[]`                       |
+| `renderInfo`            | `render-info`             |             | `RenderInfo`                                    | `new FallbackRenderInfo()` |
+| `serverValidationError` | `server-validation-error` |             | `{ [key: string]: NestedRecordField<string>; }` | `{}`                       |
+| `subElements`           | `sub-elements`            |             | `VNode[]`                                       | `undefined`                |
+| `value`                 | `value`                   |             | `{ [x: string]: any; }`                         | `undefined`                |
 
 
 ## Events

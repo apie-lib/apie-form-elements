@@ -18,6 +18,7 @@ export class ApieFormFieldDefinition {
   @Prop({reflect: true}) allowsNull: boolean = false;
   @Prop({reflect: true}) emptyStringAllowed: boolean = false;
   @Prop({reflect: true}) required: boolean = false;
+  @Prop({reflect: true}) optional: boolean = false;
 
   @Method()
   async getDefinition(): Promise<SingleField> {
@@ -28,6 +29,7 @@ export class ApieFormFieldDefinition {
       fieldType: 'single',
       name: this.name,
       label: this.label,
+      optional: this.optional,
       types: this.types.split(','),
       valueWhenMissing: this.valueWhenMissing,
       additionalSettings: this.additionalSettings,

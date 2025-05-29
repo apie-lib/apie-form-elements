@@ -9,11 +9,12 @@
 
 | Property             | Attribute              | Description | Type                  | Default     |
 | -------------------- | ---------------------- | ----------- | --------------------- | ----------- |
-| `additionalSettings` | --                     |             | `SingleFieldSettings` | `{}`        |
+| `additionalSettings` | `additional-settings`  |             | `SingleFieldSettings` | `{}`        |
 | `allowsNull`         | `allows-null`          |             | `boolean`             | `false`     |
 | `emptyStringAllowed` | `empty-string-allowed` |             | `boolean`             | `false`     |
 | `label`              | `label`                |             | `string`              | `undefined` |
 | `name`               | `name`                 |             | `string`              | `undefined` |
+| `optional`           | `optional`             |             | `boolean`             | `false`     |
 | `prototyped`         | `prototyped`           |             | `boolean`             | `false`     |
 | `required`           | `required`             |             | `boolean`             | `false`     |
 | `status`             | `status`               |             | `string`              | `'idle'`    |

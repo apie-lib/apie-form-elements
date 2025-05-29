@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property     | Attribute | Description | Type         | Default                    |
-| ------------ | --------- | ----------- | ------------ | -------------------------- |
-| `renderInfo` | --        |             | `RenderInfo` | `new FallbackRenderInfo()` |
+| Property     | Attribute     | Description | Type         | Default                    |
+| ------------ | ------------- | ----------- | ------------ | -------------------------- |
+| `renderInfo` | `render-info` |             | `RenderInfo` | `new FallbackRenderInfo()` |
 
 
 ----------------------------------------------

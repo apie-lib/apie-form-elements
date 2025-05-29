@@ -34,6 +34,7 @@ export interface InputState {
     allowsNull?: boolean;
     emptyStringAllowed?: boolean;
     required?: boolean;
+    optional?: boolean;
     validationResult: ValidationResult;
     serverValidationError: NestedRecord<string>;
     renderInfo: RenderInfo;

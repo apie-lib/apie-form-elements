@@ -7,14 +7,14 @@
 
 ## Properties
 
-| Property      | Attribute | Description | Type                    | Default                    |
-| ------------- | --------- | ----------- | ----------------------- | -------------------------- |
-| `label`       | `label`   |             | `string`                | `null`                     |
-| `name`        | `name`    |             | `string`                | `undefined`                |
-| `renderInfo`  | --        |             | `RenderInfo`            | `new FallbackRenderInfo()` |
-| `subElements` | --        |             | `VNode[]`               | `undefined`                |
-| `types`       | `types`   |             | `string`                | `''`                       |
-| `value`       | --        |             | `{ [x: string]: any; }` | `undefined`                |
+| Property      | Attribute      | Description | Type                    | Default                    |
+| ------------- | -------------- | ----------- | ----------------------- | -------------------------- |
+| `label`       | `label`        |             | `string`                | `null`                     |
+| `name`        | `name`         |             | `string`                | `undefined`                |
+| `renderInfo`  | `render-info`  |             | `RenderInfo`            | `new FallbackRenderInfo()` |
+| `subElements` | `sub-elements` |             | `VNode[]`               | `undefined`                |
+| `types`       | `types`        |             | `string`                | `''`                       |
+| `value`       | `value`        |             | `{ [x: string]: any; }` | `undefined`                |
 
 
 ## Events

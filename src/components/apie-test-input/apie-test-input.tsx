@@ -30,6 +30,8 @@ export class ApieTestInput {
 
   @State() required: boolean = false;
 
+  @State() optional: boolean = false;
+
   @State() touched: boolean = false;
 
   @State() withWrapper: boolean = true;
@@ -64,6 +66,7 @@ export class ApieTestInput {
       allowsNull: this.allowsNull,
       emptyStringAllowed: this.emptyStringAllowed,
       required: this.required,
+      optional: this.optional,
       touched: this.touched,
       onTouched: () => this.touched = true,
     };
@@ -123,16 +126,29 @@ export class ApieTestInput {
             { this.renderCheckbox('allowsNull', 'Allows null') }
             { this.renderCheckbox('emptyStringAllowed', 'Empty string allowed')}
             { this.renderCheckbox('required', 'Field is required') }
+            { this.renderCheckbox('optional', 'Field can be discarded') }
             { this.renderCheckbox('withWrapper', 'Row rendering') }
             { this.renderTestField(
-              <textarea name="data" onInput={(ev) => this.value = JSON.parse((ev.target as any).value)}>
+              <textarea name="data" onInput={(ev) => {
+                try {
+                  this.value = JSON.parse((ev.target as any).value);
+                } catch (err) {
+                  this.value = undefined;
+                }
+              }}>
                 {JSON.stringify(this.value)}
               </textarea>,
               'data',
               'Current value'
             )}
             { this.renderTestField(
-              <textarea name="initial_data" onInput={(ev) => this.initialValue = JSON.parse((ev.target as any).value)}>
+              <textarea name="initial_data" onInput={(ev) => {
+                try {
+                  this.value = JSON.parse((ev.target as any).value);
+                } catch (err) {
+                  this.value = undefined;
+                }
+              }}>
                 {JSON.stringify(this.initialValue)}
               </textarea>,
               'initial_data',

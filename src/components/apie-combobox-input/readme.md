@@ -13,11 +13,11 @@
 | `disabled`        | `disabled`         |             | `boolean`                                                                                          | `false`                    |
 | `label`           | `label`            |             | `string`                                                                                           | `null`                     |
 | `name`            | `name`             |             | `string`                                                                                           | `undefined`                |
-| `optionRender`    | --                 |             | `(options: ComboboxResult[], optionClicked: (result: ComboboxResult) => void) => VNode \| VNode[]` | `defaultOptionsRender`     |
-| `options`         | --                 |             | `ComboboxResult[]`                                                                                 | `[]`                       |
+| `optionRender`    | `option-render`    |             | `(options: ComboboxResult[], optionClicked: (result: ComboboxResult) => void) => VNode \| VNode[]` | `defaultOptionsRender`     |
+| `options`         | `options`          |             | `ComboboxResult[]`                                                                                 | `[]`                       |
 | `removeDisabled`  | `remove-disabled`  |             | `boolean`                                                                                          | `false`                    |
-| `renderInfo`      | --                 |             | `RenderInfo`                                                                                       | `new FallbackRenderInfo()` |
-| `selectedValues`  | --                 |             | `string[]`                                                                                         | `[]`                       |
+| `renderInfo`      | `render-info`      |             | `RenderInfo`                                                                                       | `new FallbackRenderInfo()` |
+| `selectedValues`  | `selected-values`  |             | `string[]`                                                                                         | `[]`                       |
 | `touched`         | `touched`          |             | `boolean`                                                                                          | `undefined`                |
 | `value`           | `value`            |             | `string`                                                                                           | `undefined`                |
 

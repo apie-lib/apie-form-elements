@@ -24,14 +24,59 @@ function renderFieldRow(content: VNode|VNode[], input: InputState, fieldWrapOpti
   const canEnterEmptyString = fieldWrapOptions.canEnterEmptyString !== false;
   const hasValidationErrors = fieldWrapOptions.canShowClientsideValidationErrors !== false
     || fieldWrapOptions.canShowServersideValidationErrors !== false;
+  const rows = [];
+  if (input.optional) {
+    rows.push(
+        <div style={{width: '5%'}}>
+        </div>
+    );
+    if (input.value === undefined) {
+      rows.push(
+          <div style={{width: '95%'}}>
+            <button onClick={() => {
+              this.onTouched();
+              if ((input as any).initialData !== undefined) {
+                input.valueChanged((input as any).initialData);
+              } else if (input.allowsNull) {
+                input.valueChanged(null);
+              } else if (canEnterEmptyString) {
+                input.valueChanged('');
+              } else {
+                input.valueChanged({} as any);
+              }
+            }}>
+                { input.label }
+              </button>
+          </div>
+      );
+    } else {
+      rows.push(
+          <div style={{width: '95%'}}>
+            <button onClick={() => {
+              this.onTouched();
+              input.valueChanged(undefined);
+            }}>
+                discard
+              </button>
+          </div>
+      );
+    }
+  }
+  if (!input.optional || input.value  !== undefined) {
+    rows.push(<div style={{width: '5%'}}>
+        { input.allowsNull && (!canEnterEmptyString || input.emptyStringAllowed) && <input disabled={input.disabled} type="checkbox" checked={input.value !== null} onClick={(ev) => { input.onTouched(); if (!(ev.target as any).checked) { input.valueChanged(null); } else { input.valueChanged(''); }}} /> }
+      </div>);
+    rows.push(
+      <div style={{width: '90%'}}>
+        { content }
+      </div>
+    );
+}
+  if (hasValidationErrors) {
+    rows.push(renderValidationResult(input.validationResult, fieldWrapOptions.canShowServersideValidationErrors !== false ? input.serverValidationError : {}))
+  }
   return <div style={{width: '100%', display: 'flex', flexWrap: 'wrap', alignItems: 'left', justifyContent: 'left'}}>
-    <div style={{width: '5%'}}>
-      { input.allowsNull && (!canEnterEmptyString || input.emptyStringAllowed) && <input disabled={input.disabled} type="checkbox" checked={input.value !== null} onClick={(ev) => { input.onTouched(); if (!(ev.target as any).checked) { input.valueChanged(null); } else { input.valueChanged(''); }}} /> }
-    </div>
-    <div style={{width: '90%'}}>
-      { content }
-    </div>
-    { hasValidationErrors && renderValidationResult(input.validationResult, fieldWrapOptions.canShowServersideValidationErrors !== false ? input.serverValidationError : {})}
+    { rows }
   </div>
 }
 

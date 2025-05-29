@@ -33,6 +33,8 @@ export class ApieSingleInput {
 
   @Prop({reflect: true}) required: boolean = false;
 
+  @Prop({reflect: true}) optional: boolean = false;
+
   @State() isTouched: boolean = false;
 
   @Event() internalStateChanged: EventEmitter<any>;
@@ -59,6 +61,7 @@ export class ApieSingleInput {
   }
 
   @Event() triggerChange: EventEmitter<ChangeEvent>;
+  @Event() valueRemoved: EventEmitter<ChangeEvent>;
   private renderInput()  {
     if (this.value === undefined) {
       Promise.resolve().then(() => {
@@ -83,6 +86,7 @@ export class ApieSingleInput {
       currentFieldWrapper: this.renderInfo.createFieldWrapper(),
       allowsNull: this.allowsNull,
       emptyStringAllowed: this.emptyStringAllowed,
+      optional: this.optional,
       required: this.required,
       touched: this.isTouched,
       onTouched: () => { this.isTouched = true; this.touched.emit(); },

@@ -10,9 +10,9 @@
 | Property            | Attribute            | Description | Type                    | Default |
 | ------------------- | -------------------- | ----------- | ----------------------- | ------- |
 | `csrfToken`         | `csrf-token`         |             | `string`                | `null`  |
-| `internalState`     | --                   |             | `{ [x: string]: any; }` | `{}`    |
+| `internalState`     | `internal-state`     |             | `{ [x: string]: any; }` | `{}`    |
 | `supportsMultipart` | `supports-multipart` |             | `boolean`               | `false` |
-| `value`             | --                   |             | `{ [x: string]: any; }` | `{}`    |
+| `value`             | `value`              |             | `{ [x: string]: any; }` | `{}`    |
 
 
 ## Dependencies

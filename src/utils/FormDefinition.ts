@@ -35,6 +35,7 @@ export interface SingleField {
     allowsNull: boolean;
     emptyStringAllowed: boolean;
     required: boolean;
+    optional: boolean;
 }
 
 export interface FormGroupField {

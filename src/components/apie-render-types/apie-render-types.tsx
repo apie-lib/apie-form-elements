@@ -48,7 +48,7 @@ export class ApieRenderTypes {
         if (todo[0].length === 0) {
           res.push({name: todo[1], value: 'array'});
         }
-        todoList.push(...todo[0].map((value: any, index: number): [any, string] => {
+        todoList.push(...todo[0].filter((value: any) => value !== undefined).map((value: any, index: number): [any, string] => {
           return [value, todo[1] + '[' + index + ']'];
         }));
         continue;
